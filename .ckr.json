@@ -1,0 +1,10 @@
+{
+  "data_uid": "1e884df489890fa1", 
+  "data_name": "gemmbench", 
+  "dict": {
+    "url": "git@github.com:dividiti/gemmbench.git", 
+    "shared": "git"
+  }, 
+  "data_alias": "gemmbench", 
+  "data_uoa": "gemmbench"
+}
