@@ -14,5 +14,8 @@ int main(int argc, char * argv[])
     state.get_platform();
     assert(state.platform && "No platform.");
 
+    state.get_device();
+    assert(state.device && "No device.");
+
     exit(EXIT_SUCCESS);
 }

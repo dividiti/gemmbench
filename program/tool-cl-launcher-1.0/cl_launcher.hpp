@@ -126,8 +126,42 @@ public:
         xopenme_add_var_s(xopenme_var_count++, (char*) "  \"CL_PLATFORM_VERSION\":\"%s\"", xopenme_str);
         assert(xopenme_var_count < xopenme_max_var_count && "xOpenME max var count reached.");
 #endif
-
     } // END OF get_platform()
+
+
+    void get_device()
+    {
+        cl_uint err = CL_SUCCESS;
+
+        cl_uint device_idx = args.device_idx;
+        cl_uint num_entries = device_idx+1;
+        cl_device_id * devices = new cl_device_id[num_entries];
+
+        cl_uint num_devices;
+        err = clGetDeviceIDs(platform, CL_DEVICE_TYPE_ALL, num_entries, devices, &num_devices);
+        assert(CL_SUCCESS == err && "clGetDeviceIDs() failed.");
+        assert(device_idx < num_devices && "No device.");
+
+        this->device = devices[device_idx];
+        delete [] devices;
+
+#if (1 == XOPENME)
+        err = clGetDeviceInfo(device, CL_DEVICE_NAME, sizeof(xopenme_str),   &xopenme_str, NULL);
+        assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
+        xopenme_add_var_s(xopenme_var_count++, (char*) "  \"CL_DEVICE_NAME\":\"%s\"",   xopenme_str);
+        assert(xopenme_var_count < xopenme_max_var_count && "xOpenME max var count reached.");
+
+        err = clGetDeviceInfo(device, CL_DEVICE_VENDOR, sizeof(xopenme_str), &xopenme_str, NULL);
+        assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
+        xopenme_add_var_s(xopenme_var_count++, (char*) "  \"CL_DEVICE_VENDOR\":\"%s\"", xopenme_str);
+        assert(xopenme_var_count < xopenme_max_var_count && "xOpenME max var count reached.");
+
+        err = clGetDeviceInfo(device, CL_DEVICE_VERSION, sizeof(xopenme_str), &xopenme_str, NULL);
+        assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
+        xopenme_add_var_s(xopenme_var_count++, (char*) "  \"CL_DEVICE_VERSION\":\"%s\"", xopenme_str);
+        assert(xopenme_var_count < xopenme_max_var_count && "xOpenME max var count reached.");
+#endif
+    } // END OF get_device()
 
 };
 
