@@ -5,6 +5,7 @@
 #define CL_LAUNCHER_HPP
 
 #include <iostream>
+#include <fstream>
 #include <sstream>
 
 #include <cstdlib>
@@ -35,7 +36,7 @@ public:
     size_t   tmp_size_t;
     size_t   tmp_size_t_dims[max_work_dims];
 
-    xopenme() : 
+    xopenme() :
         var_count(0),
         tmp_uint(0),
         tmp_ulong(0),
@@ -60,11 +61,11 @@ public:
 class arguments
 {
 public:
-    std::string file;
+    std::string file_name;
     cl_uint platform_idx;
     cl_uint device_idx;
 
-    arguments() : file(""), platform_idx(0), device_idx(0)
+    arguments() : file_name(""), platform_idx(0), device_idx(0)
     { }
 
     void parse(int argc, char* argv[])
@@ -76,12 +77,12 @@ public:
 
             if ("-f" == this_arg)
             {
-                file = next_arg;
+                file_name = next_arg;
             }
             else if ("-p" == this_arg)
             {
                 std::istringstream ss(next_arg); ss >> platform_idx;
-            } 
+            }
             else if ("-d" == this_arg)
             {
                 std::istringstream ss(next_arg); ss >> device_idx;
@@ -107,8 +108,12 @@ private:
 public:
     cl_platform_id platform;
     cl_device_id device;
+    cl_program program;
 
-    state() : platform(NULL), device(NULL)
+    state() :
+        platform(NULL),
+        device(NULL),
+        program(NULL)
     { }
 
     ~state()
@@ -119,6 +124,7 @@ public:
         args.parse(argc, argv);
     }
 
+    // Get OpenCL platform specified with the "-p" command line argument.
     void get_platform()
     {
         cl_uint err = CL_SUCCESS;
@@ -154,6 +160,7 @@ public:
     } // END OF get_platform()
 
 
+    // Get OpenCL device specified with the "-d" command line argument.
     void get_device()
     {
         cl_uint err = CL_SUCCESS;
@@ -230,6 +237,43 @@ public:
 #endif
 
     } // END OF get_device()
+
+
+    // Get OpenCL program from file specified
+    // with the "-f" command line argument.
+    void get_program()
+    {
+        // Open file for reading. Close file on function exit.
+        const std::string & file_name = args.file_name;
+        std::cout << "Opening file \'" << file_name << "\' for reading..." << std::endl;
+        std::ifstream file(file_name.c_str(), std::ifstream::binary);
+        if (!file)
+        {
+            std::cerr << "Fatal error: cannot open file \'" << file_name << "\' for reading!" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+
+        // Get file size.
+        size_t file_size = 0;
+        file.seekg(0, file.end);
+        file_size = file.tellg();
+        file.seekg(0, file.beg);
+
+        // Read file into new buffer.
+        char * file_data = new char[file_size];
+        file.read(file_data, file_size);
+        if (!file)
+        {
+            std::cerr << "Warning: only " << file.gcount() << " characters could be read out of " << file_size << std::endl;
+        }
+
+        // TODO: clCreateProgramWithSource() here.
+        // https://www.khronos.org/registry/cl/sdk/1.1/docs/man/xhtml/clCreateProgramWithSource.html
+        cl_uint err = CL_SUCCESS;
+
+        delete [] file_data;
+
+    } // END of get_program()
 
 };
 

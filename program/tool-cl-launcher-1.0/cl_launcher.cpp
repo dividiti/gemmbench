@@ -17,5 +17,8 @@ int main(int argc, char * argv[])
     state.get_device();
     assert(state.device && "No device.");
 
+    state.get_program();
+    //assert(state.program && "No program.");
+
     exit(EXIT_SUCCESS);
 }
