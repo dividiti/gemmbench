@@ -17,8 +17,15 @@ int main(int argc, char * argv[])
     state.get_device();
     assert(state.device && "No device.");
 
+    state.get_context();
+    assert(state.context && "No context.");
+
+    state.get_queue();
+    assert(state.queue && "No queue.");
+
     state.get_program();
     //assert(state.program && "No program.");
 
+    std::cout << "Bye GEMMbench!\n";
     exit(EXIT_SUCCESS);
 }

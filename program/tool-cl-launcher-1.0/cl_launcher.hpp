@@ -117,11 +117,15 @@ private:
 public:
     cl_platform_id platform;
     cl_device_id device;
+    cl_context context;
+    cl_command_queue queue;
     cl_program program;
 
     state() :
         platform(NULL),
         device(NULL),
+        context(NULL),
+        queue(NULL),
         program(NULL)
     { }
 
@@ -147,10 +151,11 @@ public:
 #endif
     } // END OF parse_arguments()
 
+
     // Get OpenCL platform specified with the "-p" command line argument.
     void get_platform()
     {
-        cl_uint err = CL_SUCCESS;
+        cl_int err = CL_SUCCESS;
 
         cl_uint platform_idx = args.platform_idx;
         cl_uint num_entries = platform_idx+1;
@@ -159,7 +164,7 @@ public:
         cl_uint num_platforms;
         err = clGetPlatformIDs(num_entries, platforms, &num_platforms);
         assert(CL_SUCCESS == err && "clGetPlatformIDs() failed.");
-        assert(platform_idx < num_platforms && "No platform.");
+        assert(platform_idx < num_platforms && "Platform not available.");
 
         this->platform = platforms[platform_idx];
         delete [] platforms;
@@ -186,7 +191,7 @@ public:
     // Get OpenCL device specified with the "-d" command line argument.
     void get_device()
     {
-        cl_uint err = CL_SUCCESS;
+        cl_int err = CL_SUCCESS;
 
         cl_uint device_idx = args.device_idx;
         cl_uint num_entries = device_idx+1;
@@ -262,6 +267,27 @@ public:
     } // END OF get_device()
 
 
+    // Get OpenCL context for platform and device.
+    void get_context()
+    {
+        cl_context_properties properties[3] = { CL_CONTEXT_PLATFORM, (cl_context_properties) platform, 0 };
+        cl_int err = CL_SUCCESS;
+        context = clCreateContext(properties, /* number of devices */ 1, &device,
+            /* callback fn */ NULL, /* callback data */ NULL, &err);
+        assert(CL_SUCCESS == err && "clCreateContext() failed.");
+    } // END OF get_context()
+
+
+    // Get OpenCL queue for context and device with profiling enabled.
+    void get_queue()
+    {
+        cl_command_queue_properties properties = CL_QUEUE_PROFILING_ENABLE;
+        cl_int err = CL_SUCCESS;
+        queue = clCreateCommandQueue(context, device, properties, &err);
+        assert(CL_SUCCESS == err && "clCreateCommandQueue() failed.");
+    } // END OF get_queue()
+
+
     // Get OpenCL program from file specified
     // with the "-f" command line argument.
     void get_program()
@@ -292,7 +318,7 @@ public:
 
         // TODO: clCreateProgramWithSource() here.
         // https://www.khronos.org/registry/cl/sdk/1.1/docs/man/xhtml/clCreateProgramWithSource.html
-        cl_uint err = CL_SUCCESS;
+        cl_int err = CL_SUCCESS;
 
         delete [] file_data;
 
