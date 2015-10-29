@@ -64,8 +64,13 @@ public:
     std::string file_name;
     cl_uint platform_idx;
     cl_uint device_idx;
+    cl_uint matrix_order;
 
-    arguments() : file_name(""), platform_idx(0), device_idx(0)
+    arguments() :
+        file_name(""),
+        platform_idx(0),
+        device_idx(0),
+        matrix_order(512)
     { }
 
     void parse(int argc, char* argv[])
@@ -86,6 +91,10 @@ public:
             else if ("-d" == this_arg)
             {
                 std::istringstream ss(next_arg); ss >> device_idx;
+            }
+            else if ("-n" == this_arg)
+            {
+                std::istringstream ss(next_arg); ss >> matrix_order;
             }
             else
             {
@@ -122,7 +131,21 @@ public:
     void parse_arguments(int argc, char* argv[])
     {
         args.parse(argc, argv);
-    }
+
+#if (1 == XOPENME)
+        xopenme_add_var_s(openme.var_count++, (char*) "  \"CMD_LINE_ARGS#file_name\":\"%s\"", (char*) args.file_name.c_str());
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"CMD_LINE_ARGS#platform_idx\":%u",  args.platform_idx);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"CMD_LINE_ARGS#device_idx\":%u",    args.device_idx);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"CMD_LINE_ARGS#matrix_order\":%u",  args.matrix_order);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+#endif
+    } // END OF parse_arguments()
 
     // Get OpenCL platform specified with the "-p" command line argument.
     void get_platform()
