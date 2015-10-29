@@ -27,7 +27,6 @@ private:
     static const int max_work_dims = 3;
 
 public:
-
     char str[max_str_len];
     int  var_count;
 
@@ -56,7 +55,8 @@ public:
     {
         return var_count < max_var_count;
     }
-};
+
+}; // END OF gemmbench::xopenme class
 
 class arguments
 {
@@ -131,30 +131,43 @@ public:
 
     } // END OF parse()
 
-}; // END OF class arguments
+    
+
+}; // END OF gemmbench::arguments class
 
 
 class state
 {
 private:
-    arguments args;
+    // xOpenME state.
     xopenme openme;
 
 public:
-    cl_platform_id platform;
-    cl_device_id device;
-    cl_context context;
-    cl_command_queue queue;
-    cl_program program;
+    // Command line arguments (with defaults).
+    arguments args;
 
+    // OpenCL objects.
+    cl_platform_id   platform;
+    cl_device_id     device;
+    cl_context       context;
+    cl_command_queue queue;
+    cl_program       program;
+    cl_kernel        kernel;
+    cl_mem           buffer_A;
+    cl_mem           buffer_B;
+    cl_mem           buffer_C;
+
+    // Constructor.
     state() :
         platform(NULL),
         device(NULL),
         context(NULL),
         queue(NULL),
-        program(NULL)
+        program(NULL),
+        kernel(NULL)
     { }
 
+    // Destructor.
     ~state()
     { }
 
@@ -358,7 +371,7 @@ public:
 
         delete [] file_data;
 
-    } // END of create_program()
+    } // END OF create_program()
 
 
     // Build program with options specified with the "-b" command line argument.
@@ -369,11 +382,64 @@ public:
         err = clBuildProgram(program, /* num_devices */ 1, /* device_list */ &device,
             /* options */ build_options, /* callback fn */ NULL, /* callback data */ NULL);
         assert(CL_SUCCESS == err && "clBuildProgram() failed.");
-    } // END of build_program()
+    } // END OF build_program()
 
-};
+   
+    // Create kernel called "gemm".
+    void create_kernel()
+    {
+        cl_int err = CL_SUCCESS;
+        const char * kernel_name = "gemm";
+        kernel = clCreateKernel(program, kernel_name, &err);
+        assert(CL_SUCCESS == err && "clCreateKernel() failed.");
+    } // END OF create_kernel()
 
 
-} // END OF namespace gemmbench
+    // Create buffers and set kernel arguments.
+    void set_kernel_args(
+        const cl_float * matrix_A,
+        const cl_float * matrix_B,
+              cl_float * matrix_C,
+        cl_float alpha, cl_float beta, cl_uint n)
+    {
+        cl_int err = CL_SUCCESS;
+
+        // Create buffers.
+        buffer_A = clCreateBuffer(context, CL_MEM_READ_ONLY, n * n * sizeof(cl_float), (cl_float*) matrix_A, &err);
+        assert(CL_SUCCESS == err && "clCreateBuffer() failed.");
+        // TODO: Add mem flag CL_COPY_HOST_PTR when matrix_A != NULL.
+
+        buffer_B = clCreateBuffer(context, CL_MEM_READ_ONLY, n * n * sizeof(cl_float), (cl_float*) matrix_B, &err);
+        assert(CL_SUCCESS == err && "clCreateBuffer() failed.");
+        // TODO: Add mem flag CL_COPY_HOST_PTR when matrix_B != NULL.
+
+        buffer_C = clCreateBuffer(context, CL_MEM_WRITE_ONLY, n * n * sizeof(cl_float), (cl_float*) matrix_C, &err);
+        assert(CL_SUCCESS == err && "clCreateBuffer() failed.");
+        
+        // Set kernel arguments.
+        cl_uint arg_count = 0;
+
+        err = clSetKernelArg(kernel, arg_count++, sizeof(cl_mem), &buffer_A);
+        assert(CL_SUCCESS == err && "clSetKernelArg() failed.");
+
+        err = clSetKernelArg(kernel, arg_count++, sizeof(cl_mem), &buffer_B);
+        assert(CL_SUCCESS == err && "clSetKernelArg() failed.");
+
+        err = clSetKernelArg(kernel, arg_count++, sizeof(cl_mem), &buffer_C);
+        assert(CL_SUCCESS == err && "clSetKernelArg() failed.");
+
+        err = clSetKernelArg(kernel, arg_count++, sizeof(cl_float), &alpha);
+        assert(CL_SUCCESS == err && "clSetKernelArg() failed.");
+
+        err = clSetKernelArg(kernel, arg_count++, sizeof(cl_float), &beta);
+        assert(CL_SUCCESS == err && "clSetKernelArg() failed.");
+
+        err = clSetKernelArg(kernel, arg_count++, sizeof(cl_uint), &n);
+        assert(CL_SUCCESS == err && "clSetKernelArg() failed.");
+    }
+
+}; // END OF gemmbench::state class
+
+} // END OF gemmbench namespace
 
 #endif // CL_LAUNCHER_HPP
