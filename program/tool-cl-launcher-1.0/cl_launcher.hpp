@@ -60,14 +60,31 @@ public:
 
 class arguments
 {
+private:
+    void print_usage(const char * cmd)
+    {
+        // Print on one line.
+        std::cout << "Usage: " << cmd ;
+        std::cout << " -f <file name>";
+        std::cout << " -b <build options>";
+        std::cout << " -p <platform index>";
+        std::cout << " -d <device index>";
+        std::cout << " -n <matrix order>";
+        std::cout << std::endl;
+
+        exit(EXIT_SUCCESS);
+    }
+
 public:
     std::string file_name;
+    std::string build_options;
     cl_uint platform_idx;
     cl_uint device_idx;
     cl_uint matrix_order;
 
     arguments() :
         file_name(""),
+        build_options(""),
         platform_idx(0),
         device_idx(0),
         matrix_order(512)
@@ -75,6 +92,11 @@ public:
 
     void parse(int argc, char* argv[])
     {
+        if (1 == argc)
+        {
+            print_usage(argv[0]);
+        }
+
         for (int i = 1; i < argc-1; ++i)
         {
             std::string this_arg(argv[i]);
@@ -83,6 +105,10 @@ public:
             if ("-f" == this_arg)
             {
                 file_name = next_arg;
+            }
+            else if ("-b" == this_arg)
+            {
+                build_options = next_arg;
             }
             else if ("-p" == this_arg)
             {
@@ -137,16 +163,24 @@ public:
         args.parse(argc, argv);
 
 #if (1 == XOPENME)
-        xopenme_add_var_s(openme.var_count++, (char*) "  \"CMD_LINE_ARGS#file_name\":\"%s\"", (char*) args.file_name.c_str());
+        xopenme_add_var_s(openme.var_count++,
+            (char*) "  \"CMD_LINE_ARGS#file_name\":\"%s\"", (char*) args.file_name.c_str());
         assert(openme.var_count_below_max() && "xOpenME max var count reached.");
 
-        xopenme_add_var_i(openme.var_count++, (char*) "  \"CMD_LINE_ARGS#platform_idx\":%u",  args.platform_idx);
+        xopenme_add_var_s(openme.var_count++,
+            (char*) "  \"CMD_LINE_ARGS#build_options\":\"%s\"", (char*) args.build_options.c_str());
         assert(openme.var_count_below_max() && "xOpenME max var count reached.");
 
-        xopenme_add_var_i(openme.var_count++, (char*) "  \"CMD_LINE_ARGS#device_idx\":%u",    args.device_idx);
+        xopenme_add_var_i(openme.var_count++,
+            (char*) "  \"CMD_LINE_ARGS#platform_idx\":%u",  args.platform_idx);
         assert(openme.var_count_below_max() && "xOpenME max var count reached.");
 
-        xopenme_add_var_i(openme.var_count++, (char*) "  \"CMD_LINE_ARGS#matrix_order\":%u",  args.matrix_order);
+        xopenme_add_var_i(openme.var_count++,
+            (char*) "  \"CMD_LINE_ARGS#device_idx\":%u",    args.device_idx);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_i(openme.var_count++,
+            (char*) "  \"CMD_LINE_ARGS#matrix_order\":%u",  args.matrix_order);
         assert(openme.var_count_below_max() && "xOpenME max var count reached.");
 #endif
     } // END OF parse_arguments()
@@ -267,30 +301,29 @@ public:
     } // END OF get_device()
 
 
-    // Get OpenCL context for platform and device.
-    void get_context()
+    // Create OpenCL context for platform and device.
+    void create_context()
     {
         cl_context_properties properties[3] = { CL_CONTEXT_PLATFORM, (cl_context_properties) platform, 0 };
         cl_int err = CL_SUCCESS;
         context = clCreateContext(properties, /* number of devices */ 1, &device,
             /* callback fn */ NULL, /* callback data */ NULL, &err);
         assert(CL_SUCCESS == err && "clCreateContext() failed.");
-    } // END OF get_context()
+    } // END OF create_context()
 
 
-    // Get OpenCL queue for context and device with profiling enabled.
-    void get_queue()
+    // Create OpenCL queue for context and device with profiling enabled.
+    void create_queue()
     {
         cl_command_queue_properties properties = CL_QUEUE_PROFILING_ENABLE;
         cl_int err = CL_SUCCESS;
         queue = clCreateCommandQueue(context, device, properties, &err);
         assert(CL_SUCCESS == err && "clCreateCommandQueue() failed.");
-    } // END OF get_queue()
+    } // END OF create_queue()
 
 
-    // Get OpenCL program from file specified
-    // with the "-f" command line argument.
-    void get_program()
+    // Create OpenCL program from file specified with the "-f" command line argument.
+    void create_program()
     {
         // Open file for reading. Close file on function exit.
         const std::string & file_name = args.file_name;
@@ -315,14 +348,28 @@ public:
         {
             std::cerr << "Warning: only " << file.gcount() << " characters could be read out of " << file_size << std::endl;
         }
+        //file_data[file_size] = '\0';
 
-        // TODO: clCreateProgramWithSource() here.
-        // https://www.khronos.org/registry/cl/sdk/1.1/docs/man/xhtml/clCreateProgramWithSource.html
+        // Create program from source.
         cl_int err = CL_SUCCESS;
+        program = clCreateProgramWithSource(context,
+            /* num_strings */ 1, /* strings */ (const char**) &file_data, /* lengths */ &file_size, &err);
+        assert(CL_SUCCESS == err && "clCreateProgramWithSource() failed.");
 
         delete [] file_data;
 
-    } // END of get_program()
+    } // END of create_program()
+
+
+    // Build program with options specified with the "-b" command line argument.
+    void build_program()
+    {
+        cl_int err = CL_SUCCESS;
+        const char * build_options = args.build_options.c_str();
+        err = clBuildProgram(program, /* num_devices */ 1, /* device_list */ &device,
+            /* options */ build_options, /* callback fn */ NULL, /* callback data */ NULL);
+        assert(CL_SUCCESS == err && "clBuildProgram() failed.");
+    } // END of build_program()
 
 };
 

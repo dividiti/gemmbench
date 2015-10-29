@@ -7,7 +7,7 @@ static gemmbench::state state;
 
 int main(int argc, char * argv[])
 {
-    std::cout << "Hello GEMMbench!\n";
+    std::cout << "Hello GEMMbench!" << std::endl;
 
     state.parse_arguments(argc, argv);
     
@@ -15,17 +15,20 @@ int main(int argc, char * argv[])
     assert(state.platform && "No platform.");
 
     state.get_device();
-    assert(state.device && "No device.");
+    assert(state.device   && "No device."  );
 
-    state.get_context();
-    assert(state.context && "No context.");
+    state.create_context();
+    assert(state.context  && "No context." );
 
-    state.get_queue();
-    assert(state.queue && "No queue.");
+    state.create_queue();
+    assert(state.queue    && "No queue."   );
 
-    state.get_program();
-    //assert(state.program && "No program.");
+    state.create_program();
+    assert(state.program  && "No program." );
 
-    std::cout << "Bye GEMMbench!\n";
+    state.build_program();
+
+    std::cout << "Bye GEMMbench!" << std::endl;
+
     exit(EXIT_SUCCESS);
 }
