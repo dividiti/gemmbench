@@ -23,14 +23,26 @@ private:
     static const int max_str_len = 1024;
     static const int max_tmr_count = 1;
     static const int max_var_count = 24;
+    static const int max_work_dims = 3;
 
 public:
 
     char str[max_str_len];
     int  var_count;
 
-    xopenme() : var_count(0)
+    cl_uint  tmp_uint;
+    cl_ulong tmp_ulong;
+    size_t   tmp_size_t;
+    size_t   tmp_size_t_dims[max_work_dims];
+
+    xopenme() : 
+        var_count(0),
+        tmp_uint(0),
+        tmp_ulong(0),
+        tmp_size_t(0),
+        tmp_size_t_dims() // C++11: {0, ..., 0}
     {
+        assert(3 == max_work_dims);
         xopenme_init(max_tmr_count, max_var_count);
     }
 
@@ -178,7 +190,45 @@ public:
         assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
         xopenme_add_var_s(openme.var_count++, (char*) "  \"CL_DRIVER_VERSION\":\"%s\"", openme.str);
         assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        err = clGetDeviceInfo(device, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(cl_uint), &openme.tmp_uint, NULL);
+        assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"CL_DEVICE_MAX_COMPUTE_UNITS\":%u", openme.tmp_uint);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        err = clGetDeviceInfo(device, CL_DEVICE_MAX_CLOCK_FREQUENCY, sizeof(cl_uint), &openme.tmp_uint, NULL);
+        assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"CL_DEVICE_MAX_CLOCK_FREQUENCY\":%u", openme.tmp_uint);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        err = clGetDeviceInfo(device, CL_DEVICE_GLOBAL_MEM_SIZE, sizeof(cl_ulong), &openme.tmp_ulong, NULL);
+        assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"CL_DEVICE_GLOBAL_MEM_SIZE\":%u", openme.tmp_ulong);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        err = clGetDeviceInfo(device, CL_DEVICE_LOCAL_MEM_SIZE, sizeof(cl_ulong), &openme.tmp_ulong, NULL);
+        assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"CL_DEVICE_LOCAL_MEM_SIZE\":%u", openme.tmp_ulong);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        err = clGetDeviceInfo(device, CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(size_t), &openme.tmp_size_t, NULL);
+        assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"CL_DEVICE_MAX_WORK_GROUP_SIZE\":%u", openme.tmp_size_t);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        err = clGetDeviceInfo(device, CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS, sizeof(size_t), &openme.tmp_size_t, NULL);
+        assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS\":%u", openme.tmp_size_t);
+        assert(openme.tmp_size_t == 3 && "CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS != 3");
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        err = clGetDeviceInfo(device, CL_DEVICE_MAX_WORK_ITEM_SIZES, sizeof(openme.tmp_size_t_dims), openme.tmp_size_t_dims, NULL);
+        assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"CL_DEVICE_MAX_WORK_ITEM_SIZES_0\":%u", openme.tmp_size_t_dims[0]);
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"CL_DEVICE_MAX_WORK_ITEM_SIZES_1\":%u", openme.tmp_size_t_dims[1]);
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"CL_DEVICE_MAX_WORK_ITEM_SIZES_2\":%u", openme.tmp_size_t_dims[2]);
 #endif
+
     } // END OF get_device()
 
 };
