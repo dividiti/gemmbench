@@ -160,6 +160,11 @@ public:
         assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
         xopenme_add_var_s(xopenme_var_count++, (char*) "  \"CL_DEVICE_VERSION\":\"%s\"", xopenme_str);
         assert(xopenme_var_count < xopenme_max_var_count && "xOpenME max var count reached.");
+
+        err = clGetDeviceInfo(device, CL_DRIVER_VERSION, sizeof(xopenme_str), &xopenme_str, NULL);
+        assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
+        xopenme_add_var_s(xopenme_var_count++, (char*) "  \"CL_DRIVER_VERSION\":\"%s\"", xopenme_str);
+        assert(xopenme_var_count < xopenme_max_var_count && "xOpenME max var count reached.");
 #endif
     } // END OF get_device()
 
