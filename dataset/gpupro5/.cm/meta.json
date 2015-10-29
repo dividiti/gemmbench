@@ -1,0 +1,14 @@
+{
+  "dataset_files": [
+    "SGEMM_NN_1x1.cl", 
+    "SGEMM_NT_1x1.cl", 
+    "DGEMM_NN_1x1.cl", 
+    "DGEMM_NT_1x1.cl"
+  ], 
+  "tags": [
+    "dataset", 
+    "gemmbench", 
+    "opencl kernel", 
+    "gpupro5"
+  ]
+}

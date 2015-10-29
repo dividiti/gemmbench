@@ -1,0 +1,71 @@
+{
+  "build_compiler_vars": {
+    "XOPENME": "1"
+  }, 
+  "compile_deps": {
+    "compiler": {
+      "local": "yes", 
+      "sort": 10, 
+      "tags": "compiler,lang-cpp"
+    }, 
+    "lib.xopenme": {
+      "local": "yes", 
+      "sort": 30, 
+      "tags": "lib,xopenme"
+    }, 
+    "lib_opencl": {
+      "local": "yes", 
+      "sort": 15, 
+      "tags": "lib,opencl"
+    }
+  }, 
+  "data_name": "gemmbench-cl-launcher-1.0", 
+  "compiler_env": "CK_CXX", 
+  "compiler_flags_as_env": "$<<CK_COMPILER_FLAG_MFLOAT_ABI_HARD>>$", 
+  "extra_ld_vars": "$<<CK_EXTRA_LIB_M>>$", 
+  "main_language": "cpp", 
+  "process_in_tmp": "yes", 
+  "program": "yes", 
+  "run_cmds": {
+    "default": {
+      "dataset_tags": [
+        "dataset", 
+        "gemmbench", 
+        "opencl kernel"
+      ], 
+      "ignore_return_code": "no", 
+      "run_time": {
+        "fine_grain_timer_file": "tmp-ck-timer.json", 
+        "post_process_cmds": [
+          "python $#src_path_local#$ck_postprocess.py"
+        ], 
+        "run_cmd_main": "$#BIN_FILE#$ -f $#dataset_path#$$#dataset_filename#$ -p $<<PLATFORM_ID>>$ -d $<<DEVICE_ID>>$", 
+        "run_cmd_out1": "", 
+        "run_cmd_out2": "", 
+        "run_correctness_output_files": [], 
+        "run_input_files": [], 
+        "run_output_files": [
+          "tmp-output.tmp", 
+          "tmp-ck-timer.json"
+        ]
+      }
+    }
+  }, 
+  "run_vars": {
+    "DEVICE_ID": 0, 
+    "PLATFORM_ID": 0
+  }, 
+  "source_files": [
+    "cl_launcher.cpp"
+  ], 
+  "species": [], 
+  "tags": [
+    "opencl", 
+    "program", 
+    "gemmbench", 
+    "v1.0", 
+    "v1", 
+    "lang-cpp"
+  ], 
+  "target_file": "cl_launcher"
+}
