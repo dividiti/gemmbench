@@ -4,10 +4,33 @@
 #include "cl_dataset.hpp"
 #include "cl_state.hpp"
 
+#include <cassert>
+
 namespace gemmbench
 {
 
-// Compare the results against reference implementation.
+// Initialize the data in a random way.
+template<typename T>
+void dataset<T>::init_random()
+{
+    srand(seed);
+
+    // Initialize the scalars.
+    alpha = symmetric_rand();
+    beta = symmetric_rand();
+
+    // Initialize the matrices.
+    for (cl_ulong i = 0, k = static_cast<cl_ulong>(n) * static_cast<cl_ulong>(n); i < k; ++i)
+    {
+        matrix_A[i] = symmetric_rand();
+        matrix_B[i] = symmetric_rand();
+        matrix_C[i] = zero_matrix_C ? static_cast<T>(0) : symmetric_rand();
+    }
+
+} // END OF init_random()
+
+
+// Compare the results against a reference implementation.
 template<typename T>
 void dataset<T>::verify_results(state & s, T eps)
 {
@@ -32,7 +55,10 @@ void dataset<T>::verify_results(state & s, T eps)
 
 
 // Instantiate templates to GEMM types.
+template void dataset<cl_float>::init_random();
 template void dataset<cl_float>::verify_results(state& s, cl_float eps);
+
+template void dataset<cl_double>::init_random();
 template void dataset<cl_double>::verify_results(state& s, cl_double eps);
 
 

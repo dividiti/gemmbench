@@ -4,13 +4,9 @@
 #ifndef CL_DATASET_HPP
 #define CL_DATASET_HPP
 
-#include "cl_launcher.hpp"
-
-#include <cstdlib>
-#include <cassert>
-
 #include <CL/cl.h>
 
+#include <cstdlib>
 
 namespace gemmbench
 {
@@ -63,24 +59,8 @@ public:
         delete [] matrix_C;
     }
 
-    void init_random()
-    {
-        srand(seed);
-
-        // Initialize the scalars.
-        alpha = symmetric_rand();
-        beta = symmetric_rand();
-
-        // Initialize the matrices.
-        for (cl_ulong i = 0, k = static_cast<cl_ulong>(n) * static_cast<cl_ulong>(n); i < k; ++i)
-        {
-            matrix_A[i] = symmetric_rand();
-            matrix_B[i] = symmetric_rand();
-            matrix_C[i] = zero_matrix_C ? static_cast<T>(0) : symmetric_rand();
-        }
-
-    } // END OF init_random()
-
+    // Initialize the data in a random way.
+    void init_random();
 
     // Compare the results against reference implementation.
     void verify_results(gemmbench::state & s, T eps = static_cast<T>(1e-5));
