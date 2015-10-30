@@ -16,6 +16,7 @@
 #include <CL/cl.h>
 
 #include <xopenme.h>
+#include <cJSON.h>
 
 namespace gemmbench
 {
@@ -206,6 +207,7 @@ public:
 
     void parse_arguments(int argc, char* argv[])
     {
+        // Parse command line arguments.
         args.parse(argc, argv);
 
 #if (1 == XOPENME)
@@ -229,6 +231,23 @@ public:
             (char*) "  \"CMD_LINE_ARGS#matrix_order\":%u",  args.matrix_order);
         assert(openme.var_count_below_max() && "xOpenME max var count reached.");
 #endif
+
+        // TODO: Parse the metadata file specified with the "-f" command line argument.
+        // Example file:
+        //  {
+        //      "name"   : "DGEMM_NT_1x1",
+        //      "file"   : "DGEMM_NT_1x1.cl",
+        //      "type"   : "D",
+        //      "transA" : "N",
+        //      "transB" : "T",
+        //      "dj"     : 1,
+        //      "di"     : 1
+        //  }
+        const char *raw_metadata = "{ \"name\" : \"DGEMM_NT_1x1.cl\" }";
+        cJSON* metadata = cJSON_Parse(raw_metadata);
+        cJSON_Print(metadata);
+        cJSON_Delete(metadata);
+
     } // END OF parse_arguments()
 
 
