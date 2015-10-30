@@ -1,0 +1,9 @@
+{
+    "name"   : "SGEMM_NT_1x1",
+    "file"   : "SGEMM_NT_1x1.cl",
+    "type"   : "S",
+    "transA" : "N",
+    "transB" : "T",
+    "dj"     : 1,
+    "di"     : 1
+}
