@@ -25,7 +25,7 @@ template<typename T> class dataset;
 class xopenme
 {
 private:
-    static const int max_str_len = 1024;
+    static const int max_str_len = 1000;
     static const int max_tmr_count = 1;
     static const int max_var_count = 40;
     static const int max_work_dims = 3;
@@ -92,7 +92,7 @@ public:
         build_options(""),
         platform_idx(0),
         device_idx(0),
-        matrix_order(1024)
+        matrix_order(128)
     { }
 
     void parse(int argc, char* argv[])

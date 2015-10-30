@@ -5,6 +5,7 @@
 #include "cl_state.hpp"
 
 #include <cassert>
+#include <cmath>
 
 namespace gemmbench
 {
@@ -47,9 +48,47 @@ void dataset<T>::verify_results(state & s, T eps)
         cl_uint num_events_in_wait_list = 1;
         const cl_event event_wait_list[1] = { s.enqueue };
         cl_event *event = NULL;
+
+        cl_int err = CL_SUCCESS;
+        err = clEnqueueReadBuffer(queue, buffer, blocking_read,
+            offset, cb, ptr, num_events_in_wait_list, event_wait_list, event);
+        assert(CL_SUCCESS == err && "clEnqueueReadBuffer() failed.");
     }
 
-    // TODO: Allocate memory for reference
+    // Compute reference and compare the results against it.
+    {
+        T * matrix_C_ref = new T[n * n];
+
+        // Compute reference.
+        for (cl_uint i = 0; i < n; ++i)
+        {
+            for (cl_uint j = 0; j < n; ++j)
+            {
+                T ABij = static_cast<T>(0);
+                for (cl_uint k = 0; k < n; ++k)
+                {
+                    ABij += matrix_A[i*n + k] * matrix_B[k*n + j];
+                }
+                matrix_C_ref[i*n + j] = alpha * ABij + beta * matrix_C[i*n + j];
+            }
+        }
+
+        // Compare the results against reference.
+        for (cl_uint i = 0; i < n; ++i)
+        {
+            for (cl_uint j = 0; j < n; ++j)
+            {
+                if (abs(matrix_C[i*n + j] - matrix_C_ref[i*n + j]) > eps)
+                {
+                    std::cerr << "The results and reference mismatch for C[" << i << "][" << j << "]" << std::endl;
+                    std::cerr << "(No more mismatches will be reported.)" << std::endl;
+                    exit(EXIT_FAILURE);
+                }
+            }
+        }
+
+        delete [] matrix_C_ref;
+    }
 
 } // END OF dataset::verify_results()
 
