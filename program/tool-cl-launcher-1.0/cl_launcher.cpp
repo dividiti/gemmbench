@@ -1,7 +1,8 @@
 // (c) 2015, dividiti
 // BSD license
 
-#include "cl_launcher.hpp"
+#include "cl_state.hpp"
+#include "cl_dataset.hpp"
 
 static gemmbench::state state;
 
@@ -45,9 +46,9 @@ int main(int argc, char * argv[])
 
     state.enqueue_kernel();
 
-    //state.verify_data();
-
     state.profile_execution();
+
+    data.verify_results(state);
 
     std::cout << "Bye GEMMbench!" << std::endl;
 
