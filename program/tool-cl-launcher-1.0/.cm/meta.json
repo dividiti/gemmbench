@@ -13,6 +13,11 @@
       "sort": 30, 
       "tags": "lib,xopenme"
     }, 
+    "lib.cjson": {
+      "local": "yes",
+      "sort": 20,
+      "tags": "lib,cjson"
+    },
     "lib_opencl": {
       "local": "yes", 
       "sort": 15, 
