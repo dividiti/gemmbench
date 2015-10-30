@@ -32,10 +32,14 @@ int main(int argc, char * argv[])
     state.create_kernel();
     assert(state.kernel  && "No kernel." );
 
+
+    // Create buffers and set kernel arguments.
     {
+        // TODO: Load matrices A and B, or generate random ones.
         const cl_float * matrix_A = NULL;
         const cl_float * matrix_B = NULL;
         cl_float * matrix_C = NULL;
+
         const cl_float alpha = 2.0f;
         const cl_float beta  = 4.0f;
 
@@ -45,6 +49,15 @@ int main(int argc, char * argv[])
         assert(state.buffer_B && "No buffer.");
         assert(state.buffer_C && "No buffer.");
     }
+
+    state.enqueue_kernel();
+
+    // TODO: Check output for correctness or dump matrix C.
+    {
+        // TODO: clReadBuffer
+    }
+
+    state.profile_execution();
 
     std::cout << "Bye GEMMbench!" << std::endl;
 

@@ -23,7 +23,7 @@ class xopenme
 private:
     static const int max_str_len = 1024;
     static const int max_tmr_count = 1;
-    static const int max_var_count = 24;
+    static const int max_var_count = 40;
     static const int max_work_dims = 3;
 
 public:
@@ -87,7 +87,7 @@ public:
         build_options(""),
         platform_idx(0),
         device_idx(0),
-        matrix_order(512)
+        matrix_order(1024)
     { }
 
     void parse(int argc, char* argv[])
@@ -131,8 +131,6 @@ public:
 
     } // END OF parse()
 
-    
-
 }; // END OF gemmbench::arguments class
 
 
@@ -156,6 +154,7 @@ public:
     cl_mem           buffer_A;
     cl_mem           buffer_B;
     cl_mem           buffer_C;
+    cl_event         enqueue;
 
     // Constructor.
     state() :
@@ -164,12 +163,42 @@ public:
         context(NULL),
         queue(NULL),
         program(NULL),
-        kernel(NULL)
+        kernel(NULL),
+        buffer_A(NULL),
+        buffer_B(NULL),
+        buffer_C(NULL),
+        enqueue(NULL)
     { }
 
-    // Destructor.
+    // Destructor. Release in reverse order.
     ~state()
-    { }
+    {
+        cl_int err = CL_SUCCESS;
+
+        err = clReleaseEvent(enqueue);
+        assert(CL_SUCCESS == err && "clReleaseEvent() failed.");
+
+        err = clReleaseMemObject(buffer_C);
+        assert(CL_SUCCESS == err && "clReleaseMemObject() failed.");
+
+        err = clReleaseMemObject(buffer_B);
+        assert(CL_SUCCESS == err && "clReleaseMemObject() failed.");
+
+        err = clReleaseMemObject(buffer_A);
+        assert(CL_SUCCESS == err && "clReleaseMemObject() failed.");
+
+        err = clReleaseKernel(kernel);
+        assert(CL_SUCCESS == err && "clReleaseKernel() failed.");
+
+        err = clReleaseProgram(program);
+        assert(CL_SUCCESS == err && "clReleaseProgram() failed.");
+
+        err = clReleaseCommandQueue(queue);
+        assert(CL_SUCCESS == err && "clReleaseCommandQueue() failed.");
+
+        err = clReleaseContext(context);
+        assert(CL_SUCCESS == err && "clReleaseContext() failed.");
+    }
 
     void parse_arguments(int argc, char* argv[])
     {
@@ -384,7 +413,7 @@ public:
         assert(CL_SUCCESS == err && "clBuildProgram() failed.");
     } // END OF build_program()
 
-   
+
     // Create kernel called "gemm".
     void create_kernel()
     {
@@ -415,7 +444,7 @@ public:
 
         buffer_C = clCreateBuffer(context, CL_MEM_WRITE_ONLY, n * n * sizeof(cl_float), (cl_float*) matrix_C, &err);
         assert(CL_SUCCESS == err && "clCreateBuffer() failed.");
-        
+
         // Set kernel arguments.
         cl_uint arg_count = 0;
 
@@ -437,6 +466,82 @@ public:
         err = clSetKernelArg(kernel, arg_count++, sizeof(cl_uint), &n);
         assert(CL_SUCCESS == err && "clSetKernelArg() failed.");
     }
+
+
+    void enqueue_kernel()
+    {
+        cl_int err = CL_SUCCESS;
+
+        // Enqueue kernel.
+        {
+            const size_t n = (size_t) args.matrix_order;
+            const size_t work_dim = 2; assert(0 < work_dim && work_dim <= 3);
+            const size_t global_work_offset[work_dim] = { 0, 0 };
+            const size_t global_work_size[work_dim]   = { n, n };
+            const size_t local_work_size[work_dim]    = { 8, 8 };
+            cl_uint num_events_in_wait_list = 0;
+            const cl_event *event_wait_list = NULL;
+
+            err = clEnqueueNDRangeKernel(queue, kernel,
+                work_dim, global_work_offset, global_work_size, local_work_size,
+                num_events_in_wait_list, event_wait_list, &enqueue);
+            assert(CL_SUCCESS == err && "clEnqueueNDRangeKernel() failed.");
+        }
+
+        // Wait for kernel completion.
+        {
+            const cl_uint num_events = 1;
+            const cl_event event_list[num_events] = { enqueue };
+            err = clWaitForEvents(num_events, event_list);
+            assert(CL_SUCCESS == err && "clWaitForEvents() failed.");
+        }
+    } // END OF enqueue_kernel()
+
+
+    // Calculate nanoseconds, flops, Gflops/s (flops/ns), etc.
+    void profile_execution()
+    {
+        cl_int err = CL_SUCCESS;
+
+        cl_ulong end = 0;
+        err = clGetEventProfilingInfo(enqueue, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, 0);
+        assert(CL_SUCCESS == err && "clGetEventProfilingInfo() failed.");
+
+        cl_ulong start = 0;
+        err = clGetEventProfilingInfo(enqueue, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, 0);
+        assert(CL_SUCCESS == err && "clGetEventProfilingInfo() failed.");
+
+        const cl_ulong ns = end - start;
+        const cl_ulong n = (cl_ulong) args.matrix_order;
+        const cl_ulong flops = 2 * (n + 1) * (n * n);
+        const cl_double gflops_per_s = (cl_double) flops / (cl_double) ns;
+
+        std::cout << "GEMM performance: " << gflops_per_s << " Gflops/s";
+        std::cout << " [performed "  << flops << " flops in " << ns << " ns]" << std::endl;
+
+#if (1 == XOPENME)
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#ns\":%u", ns);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_f(openme.var_count++, (char*) "  \"EXECUTION#us\":%.3f", ns * 1e-3);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_f(openme.var_count++, (char*) "  \"EXECUTION#ms\":%.3f", ns * 1e-6);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_f(openme.var_count++, (char*) "  \"EXECUTION#s\":%.3f", ns * 1e-9);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#flops\":%u", flops);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_f(openme.var_count++, (char*) "  \"EXECUTION#Gflops\":%.3f", flops * 1e-9);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_d(openme.var_count++, (char*) "  \"EXECUTION#Gflops/s\":%.3lf", gflops_per_s);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+#endif
+    } // END OF profile_execution()
 
 }; // END OF gemmbench::state class
 
