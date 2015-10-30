@@ -368,12 +368,16 @@ public:
     } // END OF create_queue()
 
 
-    // Create OpenCL program from file specified with the "-f" command line argument.
+    // Create OpenCL program from file specified in the metadata supplied with the "-f" command line argument.
     void create_program()
     {
+        //TODO: Read the name of the file containing an OpenCL program from the metadata file.
+        //FIXME: For now, just assume the OpenCL file thas the same base name and the ".cl" extension.
+        const size_t index_of_last_dot = args.file_name.find_last_of(".");
+        const std::string file_name = args.file_name.substr(0, index_of_last_dot).append(".cl");
+
         // Open file for reading. Close file on function exit.
-        const std::string & file_name = args.file_name;
-        std::cout << "Reading GEMM kernel from \'" << file_name << "\'..." << std::endl;
+        std::cout << "Reading an OpenCL kernel from \'" << file_name << "\'..." << std::endl;
         std::ifstream file(file_name.c_str(), std::ifstream::binary);
         if (!file)
         {
@@ -517,8 +521,8 @@ public:
         const cl_ulong flops = 2 * (n + 1) * (n * n);
         const cl_double gflops_per_s = (cl_double) flops / (cl_double) ns;
 
-        std::cout << "GEMM performance: " << gflops_per_s << " Gflops/s";
-        std::cout << " [performed "  << flops << " flops in " << ns << " ns]" << std::endl;
+        std::cout << "Calculating performance... " << gflops_per_s << " Gflops/s";
+        std::cout << " (performed "  << flops << " flops in " << ns << " ns)." << std::endl;
 
 #if (1 == XOPENME)
         xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#ns\":%u", ns);

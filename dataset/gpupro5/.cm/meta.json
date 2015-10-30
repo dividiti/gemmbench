@@ -1,9 +1,9 @@
 {
   "dataset_files": [
-    "SGEMM_NN_1x1.cl", 
-    "SGEMM_NT_1x1.cl", 
-    "DGEMM_NN_1x1.cl", 
-    "DGEMM_NT_1x1.cl"
+    "SGEMM_NN_1x1.json",
+    "SGEMM_NT_1x1.json",
+    "DGEMM_NN_1x1.json",
+    "DGEMM_NT_1x1.json"
   ], 
   "tags": [
     "dataset", 

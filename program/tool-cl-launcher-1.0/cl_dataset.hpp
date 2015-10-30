@@ -17,7 +17,7 @@ template <class T>
 class dataset
 {
 public:
-    // Matrix order.
+    // Order of square (i.e. M[n][n]) matrix.
     cl_uint n;
 
     // Matrices.

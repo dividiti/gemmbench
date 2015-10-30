@@ -77,6 +77,7 @@ void dataset<T>::verify_results(state & s, T eps)
         }
 
         // Compare the results against reference.
+        std::cout << "Comparing the OpenCL and reference results... ";
         T max_abs_diff = static_cast<T>(0);
         for (cl_uint i = 0; i < n; ++i)
         {
@@ -86,8 +87,7 @@ void dataset<T>::verify_results(state & s, T eps)
                 max_abs_diff = std::max<T>(max_abs_diff, abs_diff);
                 if (abs_diff > eps)
                 {
-                    std::cerr << "The results and reference DO NOT match for C[" << i << "][" << j << "].";
-                    std::cerr << "(No more mismatches will be reported.)" << std::endl;
+                    std::cerr << "MISMATCH! (first at C[" << i << "][" << j << "])" << std::endl;
  #if (1 == XOPENME)
                     xopenme_add_var_i(s.openme.var_count++, (char*) "  \"RESULTS#match\":%u", 0);
                     assert(s.openme.var_count_below_max() && "xOpenME max var count reached.");
@@ -96,7 +96,7 @@ void dataset<T>::verify_results(state & s, T eps)
                 }
             }
         }
-        std::cout << "The results and reference match." << std::endl;
+        std::cout << "MATCH!" << std::endl;
 #if (1 == XOPENME)
         xopenme_add_var_i(s.openme.var_count++, (char*) "  \"RESULTS#match\":%u", 1);
         assert(s.openme.var_count_below_max() && "xOpenME max var count reached.");
