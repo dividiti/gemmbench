@@ -16,24 +16,16 @@ class state;
 template <class T>
 class dataset
 {
-private:
-    const static unsigned int seed = 12345;
-    const static T range = static_cast<T>(1);
-    const static bool zero_matrix_C = false;
-
-    // Generate random number in [-range/2; +range/2].
-    T symmetric_rand()
-    {
-        T zero_to_one = static_cast<T>(rand()) / static_cast<T>(RAND_MAX);
-        T minus_half_to_plus_half = zero_to_one - static_cast<T>(.5);
-        return minus_half_to_plus_half * range;
-    }
-
 public:
+    // Matrix order.
     cl_uint n;
+
+    // Matrices.
     T * matrix_A;
     T * matrix_B;
     T * matrix_C;
+
+    // Scalars.
     T alpha;
     T beta;
 
@@ -64,7 +56,33 @@ public:
 
     // Compare the results against reference implementation.
     void verify_results(gemmbench::state & s, T eps = static_cast<T>(1e-5));
-  
+
+private:
+    const static bool zero_matrix_C = false;
+    const static unsigned int seed = 12345;
+    const static T range = static_cast<T>(1);
+
+    // Generate random number in [-range/2; +range/2].
+    T symmetric_rand()
+    {
+        T zero_to_one = static_cast<T>(rand()) / static_cast<T>(RAND_MAX);
+        T minus_half_to_plus_half = zero_to_one - static_cast<T>(.5);
+        return minus_half_to_plus_half * range;
+    }
+
+    // Compute linear index for transposed and non-transposed matrices.
+    cl_uint index(cl_uint i, cl_uint j, bool transposed)
+    {
+        if (!transposed)
+        {
+            return i*n + j;
+        }
+        else
+        {
+            return j*n + i;
+        }
+    }
+
 }; // END OF gemmbench::dataset class
 
 } // END OF gemmbench namespace

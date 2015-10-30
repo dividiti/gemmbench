@@ -64,12 +64,13 @@ void dataset<T>::verify_results(state & s, T eps)
         {
             for (cl_uint j = 0; j < n; ++j)
             {
-                T ABij = static_cast<T>(0);
+                T ab = static_cast<T>(0);
                 for (cl_uint k = 0; k < n; ++k)
                 {
-                    ABij += matrix_A[i*n + k] * matrix_B[k*n + j];
+                    ab += matrix_A[index(i, k, false)] * matrix_B[index(k, j, true)];
                 }
-                matrix_C_ref[i*n + j] = alpha * ABij + beta * matrix_C[i*n + j];
+                matrix_C_ref[index(i, j, false)] *= beta;
+                matrix_C_ref[index(i, j, false)] += alpha * ab;
             }
         }
 
@@ -78,14 +79,15 @@ void dataset<T>::verify_results(state & s, T eps)
         {
             for (cl_uint j = 0; j < n; ++j)
             {
-                if (abs(matrix_C[i*n + j] - matrix_C_ref[i*n + j]) > eps)
+                if (abs(matrix_C[index(i, j, false)] - matrix_C_ref[index(i, j, false)]) > eps)
                 {
-                    std::cerr << "The results and reference mismatch for C[" << i << "][" << j << "]" << std::endl;
+                    std::cerr << "The results and reference DO NOT match for C[" << i << "][" << j << "].";
                     std::cerr << "(No more mismatches will be reported.)" << std::endl;
                     exit(EXIT_FAILURE);
                 }
             }
         }
+        std::cout << "The results and reference match." << std::endl;
 
         delete [] matrix_C_ref;
     }
