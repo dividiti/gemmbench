@@ -141,13 +141,12 @@ public:
 
 class state
 {
-private:
-    // xOpenME state.
-    xopenme openme;
-
 public:
     // Command line arguments (with defaults).
     arguments args;
+
+    // xOpenME state.
+    xopenme openme;
 
     // OpenCL objects.
     cl_platform_id   platform;

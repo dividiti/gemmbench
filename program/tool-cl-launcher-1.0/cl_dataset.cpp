@@ -7,6 +7,8 @@
 #include <cassert>
 #include <cmath>
 
+#include "xopenme.h"
+
 namespace gemmbench
 {
 
@@ -75,19 +77,36 @@ void dataset<T>::verify_results(state & s, T eps)
         }
 
         // Compare the results against reference.
+        T max_abs_diff = static_cast<T>(0);
         for (cl_uint i = 0; i < n; ++i)
         {
             for (cl_uint j = 0; j < n; ++j)
             {
-                if (abs(matrix_C[index(i, j, false)] - matrix_C_ref[index(i, j, false)]) > eps)
+                T abs_diff = abs(matrix_C[index(i, j, false)] - matrix_C_ref[index(i, j, false)]);
+                max_abs_diff = std::max<T>(max_abs_diff, abs_diff);
+                if (abs_diff > eps)
                 {
                     std::cerr << "The results and reference DO NOT match for C[" << i << "][" << j << "].";
                     std::cerr << "(No more mismatches will be reported.)" << std::endl;
+ #if (1 == XOPENME)
+                    xopenme_add_var_i(s.openme.var_count++, (char*) "  \"RESULTS#match\":%u", 0);
+                    assert(s.openme.var_count_below_max() && "xOpenME max var count reached.");
+ #endif
                     exit(EXIT_FAILURE);
                 }
             }
         }
         std::cout << "The results and reference match." << std::endl;
+#if (1 == XOPENME)
+        xopenme_add_var_i(s.openme.var_count++, (char*) "  \"RESULTS#match\":%u", 1);
+        assert(s.openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_d(s.openme.var_count++, (char*) "  \"RESULTS#eps\":%.8lf", eps);
+        assert(s.openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_d(s.openme.var_count++, (char*) "  \"RESULTS#max_abs_diff\":%.8lf", max_abs_diff);
+        assert(s.openme.var_count_below_max() && "xOpenME max var count reached.");
+#endif
 
         delete [] matrix_C_ref;
     }
