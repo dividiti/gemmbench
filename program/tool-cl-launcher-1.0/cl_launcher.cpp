@@ -30,32 +30,22 @@ int main(int argc, char * argv[])
     assert(state.program  && "No program." );
 
     state.create_kernel();
-    assert(state.kernel  && "No kernel." );
+    assert(state.kernel  &&  "No kernel." );
 
+    gemmbench::dataset<cl_double> data(state.args.matrix_order);
+    assert(data.matrix_A && "No data.");
+    assert(data.matrix_B && "No data.");
+    assert(data.matrix_C && "No data.");
+    data.init_random();
 
-    // Create buffers and set kernel arguments.
-    {
-        // TODO: Load matrices A and B, or generate random ones.
-        const cl_float * matrix_A = NULL;
-        const cl_float * matrix_B = NULL;
-        cl_float * matrix_C = NULL;
-
-        const cl_float alpha = 2.0f;
-        const cl_float beta  = 4.0f;
-
-        state.set_kernel_args(matrix_A, matrix_B, matrix_C,
-            alpha, beta, state.args.matrix_order);
-        assert(state.buffer_A && "No buffer.");
-        assert(state.buffer_B && "No buffer.");
-        assert(state.buffer_C && "No buffer.");
-    }
+    state.set_kernel_args<cl_double>(data);
+    assert(state.buffer_A && "No buffer.");
+    assert(state.buffer_B && "No buffer.");
+    assert(state.buffer_C && "No buffer.");
 
     state.enqueue_kernel();
 
-    // TODO: Check output for correctness or dump matrix C.
-    {
-        // TODO: clReadBuffer
-    }
+    //state.verify_data();
 
     state.profile_execution();
 

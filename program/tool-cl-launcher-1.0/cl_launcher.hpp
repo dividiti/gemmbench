@@ -134,6 +134,73 @@ public:
 }; // END OF gemmbench::arguments class
 
 
+template <class T>
+class dataset
+{
+private:
+    const static unsigned int seed = 12345;
+    const static T range = static_cast<T>(1);
+    const static bool zero_matrix_C = false;
+
+    // Generate random number in [-range/2; +range/2].
+    T symmetric_rand()
+    {
+        T zero_to_one = static_cast<T>(rand()) / static_cast<T>(RAND_MAX);
+        T minus_half_to_plus_half = zero_to_one - static_cast<T>(.5);
+        return minus_half_to_plus_half * range;
+    }
+
+public:
+    cl_uint n;
+    T * matrix_A;
+    T * matrix_B;
+    T * matrix_C;
+    T alpha;
+    T beta;
+
+    // Constructor.
+    dataset(cl_uint matrix_order) :
+        n(matrix_order),
+        matrix_A(NULL),
+        matrix_B(NULL),
+        matrix_C(NULL),
+        alpha(static_cast<T>(0)),
+        beta(static_cast<T>(0))
+    {
+        matrix_A = new T[n * n];
+        matrix_B = new T[n * n];
+        matrix_C = new T[n * n];
+    }
+
+    // Destructor.
+    ~dataset()
+    {
+        delete [] matrix_A;
+        delete [] matrix_B;
+        delete [] matrix_C;
+    }
+
+    void init_random()
+    {
+        srand(seed);
+
+        // Initialize the scalars.
+        alpha = symmetric_rand();
+        beta = symmetric_rand();
+
+        // Initialize the matrices.
+        for (cl_ulong i = 0, k = static_cast<cl_ulong>(n) * static_cast<cl_ulong>(n); i < k; ++i)
+        {
+            matrix_A[i] = symmetric_rand();
+            matrix_B[i] = symmetric_rand();
+            matrix_C[i] = zero_matrix_C ? static_cast<T>(0) : symmetric_rand();
+        }
+
+    } // END OF init_random()
+
+}; // END OF gemmbench::dataset class
+
+
 class state
 {
 private:
@@ -369,7 +436,7 @@ public:
     {
         // Open file for reading. Close file on function exit.
         const std::string & file_name = args.file_name;
-        std::cout << "Opening file \'" << file_name << "\' for reading..." << std::endl;
+        std::cout << "Reading GEMM kernel from \'" << file_name << "\'..." << std::endl;
         std::ifstream file(file_name.c_str(), std::ifstream::binary);
         if (!file)
         {
@@ -425,24 +492,21 @@ public:
 
 
     // Create buffers and set kernel arguments.
-    void set_kernel_args(
-        const cl_float * matrix_A,
-        const cl_float * matrix_B,
-              cl_float * matrix_C,
-        cl_float alpha, cl_float beta, cl_uint n)
+    template<typename T> void set_kernel_args(const dataset<T>& data)
     {
         cl_int err = CL_SUCCESS;
 
         // Create buffers.
-        buffer_A = clCreateBuffer(context, CL_MEM_READ_ONLY, n * n * sizeof(cl_float), (cl_float*) matrix_A, &err);
+        buffer_A = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+            data.n * data.n * sizeof(T), (T*) data.matrix_A, &err);
         assert(CL_SUCCESS == err && "clCreateBuffer() failed.");
-        // TODO: Add mem flag CL_COPY_HOST_PTR when matrix_A != NULL.
 
-        buffer_B = clCreateBuffer(context, CL_MEM_READ_ONLY, n * n * sizeof(cl_float), (cl_float*) matrix_B, &err);
+        buffer_B = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
+            data.n * data.n * sizeof(T), (T*) data.matrix_B, &err);
         assert(CL_SUCCESS == err && "clCreateBuffer() failed.");
-        // TODO: Add mem flag CL_COPY_HOST_PTR when matrix_B != NULL.
 
-        buffer_C = clCreateBuffer(context, CL_MEM_WRITE_ONLY, n * n * sizeof(cl_float), (cl_float*) matrix_C, &err);
+        buffer_C = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
+            data.n * data.n * sizeof(T), (T*) data.matrix_C, &err);
         assert(CL_SUCCESS == err && "clCreateBuffer() failed.");
 
         // Set kernel arguments.
@@ -457,13 +521,13 @@ public:
         err = clSetKernelArg(kernel, arg_count++, sizeof(cl_mem), &buffer_C);
         assert(CL_SUCCESS == err && "clSetKernelArg() failed.");
 
-        err = clSetKernelArg(kernel, arg_count++, sizeof(cl_float), &alpha);
+        err = clSetKernelArg(kernel, arg_count++, sizeof(T), &data.alpha);
         assert(CL_SUCCESS == err && "clSetKernelArg() failed.");
 
-        err = clSetKernelArg(kernel, arg_count++, sizeof(cl_float), &beta);
+        err = clSetKernelArg(kernel, arg_count++, sizeof(T), &data.beta);
         assert(CL_SUCCESS == err && "clSetKernelArg() failed.");
 
-        err = clSetKernelArg(kernel, arg_count++, sizeof(cl_uint), &n);
+        err = clSetKernelArg(kernel, arg_count++, sizeof(cl_uint), &data.n);
         assert(CL_SUCCESS == err && "clSetKernelArg() failed.");
     }
 
