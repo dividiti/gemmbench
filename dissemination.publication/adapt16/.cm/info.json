@@ -1,0 +1,20 @@
+{
+  "backup_data_uid": "e8a37da45a4a89b9",
+  "backup_module_uid": "29db2248aba45e59",
+  "backup_module_uoa": "dissemination.publication",
+  "control": {
+    "author": "Anton Lokhmotov",
+    "author_email": "anton@dividiti.com",
+    "author_webpage": "http://dividiti.com",
+    "copyright": "See CK COPYRIGHT.txt for copyright details",
+    "engine": "CK",
+    "iso_datetime": "2015-11-01T16:49:15.386196",
+    "license": "See CK LICENSE.txt for licensing details",
+    "version": [
+      "1",
+      "6",
+      "12"
+    ]
+  },
+  "data_name": "adapt16"
+}
