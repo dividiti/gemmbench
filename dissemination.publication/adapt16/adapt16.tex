@@ -1,0 +1,160 @@
+% http://www.acm.org/sigs/publications/proceedings-templates
+\documentclass{acm_proc_article-sp} % Tested with v3.2SP (April 2009)
+
+\usepackage[hyphens]{url}
+
+\begin{document}
+
+\title{{GEMMbench}: a framework for reproducible and collaborative benchmarking
+of matrix multiplication} 
+%
+\subtitle{\LARGE \url{https://github.com/dividiti/gemmbench}}
+
+%\subtitle{Software demonstration\titlenote{The GEMMbench software is available
+%at \url{https://github.com/dividiti/gemmbench}.}}
+
+\numberofauthors{1}
+\author{
+\alignauthor
+  Anton Lokhmotov, {\Large \tt dividiti}\\
+  \email{\Large \url{anton@dividiti.com}}\\
+  \affaddr{ideaSpace West}\\
+  \affaddr{3 Charles Babbage Road}\\
+  \affaddr{Cambridge, CB3 0GT}\\
+  \affaddr{United Kingdom}\\
+}
+
+\maketitle
+
+\begin{abstract}
+
+The generic matrix-matrix multiplication (GEMM) is arguably the most popular
+computational kernel of the 20th century. 
+%
+Yet, surprisingly, no common methodology for evaluating GEMM performance 
+has been established over the many decades of using GEMM for comparing
+architectures, compilers and ninja-class programmers.
+
+We introduce GEMMbench, a framework and methodology for evaluating performance
+of GEMM implementations.
+%
+GEMMbench is implemented on top of Collective Knowledge (CK), a lightweight
+framework for reproducible and collaborative R\&D in computer systems.
+%
+Using CK allows the R\&D community to crowdsource hand-written and
+compiler-generated GEMM implementations and to study their performance across
+multiple platforms, data sizes and data types.
+%
+Our initial implementation supports hand-written OpenCL kernels operating on
+matrices consisting of single- and double-precision floating-point values, and
+producing single or multiple output elements per work-item (via thread
+coarsening and vectorization).
+
+
+\end{abstract}
+
+% A category with the (minimum) three required fields
+% \category{H.4}{Information Systems Applications}{Miscellaneous}
+%A category including the fourth, optional field follows...
+% \category{D.2.8}{Software Engineering}{Metrics}[complexity measures, performance measures]
+
+\terms{Software}
+
+%\keywords{ACM proceedings, \LaTeX, text tagging}
+
+\section{Introduction}
+
+The generic matrix-matrix multiplication (GEMM) is given by the equation:
+%
+\begin{displaymath} C = \alpha A \times B + \beta C \end{displaymath}
+%
+\noindent where $A$, $B$ and $C$ are matrices, and $\alpha$ and $\beta$ are
+scalars.
+
+GEMM is arguably the most popular computational kernel of the 20th century.
+%
+The apparent simplicity of GEMM has haunted generation after generation of
+researchers who have evaluated its performance on generation after generation
+of computer systems,\footnote{Conveniently, both for researchers and computer
+systems a generation means 3--4 years.} while uncovering layer after layer of
+its hidden complexity.
+%
+For example, discovering the beneficial effects of cache blocking on GEMM
+performance~\cite{Lam:1991} has fuelled research on locality optimizations in
+compilers for many years.
+
+%
+Yet, surprisingly, no common methodology for evaluating GEMM performance has
+been established over the many decades of using this kernel for comparing
+architectures, compilers and ninja-class programmers.
+%
+Consequently, the reader of a report presenting GEMM results is often left wondering:
+
+\begin{itemize}
+%
+\item Was the kernel specialized, for example, to $C = A \times B$? (In other
+words, $\alpha=1$ and $\beta=0$.) 
+%
+\item Which of the data types were used: single precision (SGEMM), double
+precision (DGEMM), complex single precision (CGEMM), or complex double
+precision (ZGEMM)?
+%
+\item Which data layouts were used: normal (N) or transposed (T)?\footnote{For
+matrices stored in row-major order, $C = \alpha A \times B^{T} + \beta C$
+typically results in better locality, because $B^{T}$ is read row-wise.} If
+transposed, did the execution time include the overhead for transposition?
+%
+\item Which data shapes were used: square or rectangular? If rectangular, did
+the execution time depend on the ratio between the dimensions? 
+%
+\item Which data sizes were used: small or large?
+%
+\item On a system with caches, did `large' result in cache thrashing; did
+`small' result in good locality (no thrashing)?
+%
+\item On a heterogeneous system equipped with a discrete accelerator, did the
+execution time include the overhead for copying the data to the accelerator and
+back, or only the kernel execution time?
+%
+\item Did the evaluation include power or energy measurements?
+%
+\item If a diesel generator was used to get the system running, how many
+megaflops per gallon were they
+getting?\footnote{\url{http://www.hpcwire.com/2006/06/30/the_new_limits_on_high_performance_computing-1/}}
+%
+\item More seriously, have we achieved significant improvements in energy
+efficiency of floating-point operations over the last decade?\footnote{For
+DGEMM, ClearSpeed's CSX600 processor provided 25 Gflops/s in under 10 Watts.}
+%
+\item How much human effort and ingenuity was involved in writing the kernel or
+implementing the compiler that generated the kernel?
+%
+\item Can we compare the generators in a fair way, across a range of
+architectures, data types, data sizes, etc., for example, based on polyhedral
+compilation~\cite{Beaugnon:2014} and functional expression
+rewriting~\cite{Steuwer:2015}?
+%
+\end{itemize}
+
+Given that are discussing something apparently as simple as GEMM, intended to
+give us insights for solving more complex `real-world' problems, it is
+essential to start getting some of the answers right to facilitate our learning
+and knowledge sharing.
+
+
+\section{Implementation}
+
+
+
+\section*{Acknowledgments}
+
+We thank Grigori Fursin, CTO of {\tt dividiti} and Chief Scientist of the
+cTuning foundation, for designing and implementing the Collective
+Knowledge framework, on top of which we implemented GEMMbench.
+
+\bibliographystyle{abbrv}
+\bibliography{adapt16}
+
+%\balancecolumns
+
+\end{document}
