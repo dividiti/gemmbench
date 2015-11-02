@@ -2,6 +2,8 @@
 \documentclass{acm_proc_article-sp} % Tested with v3.2SP (April 2009)
 
 \usepackage[hyphens]{url}
+%\usepackage{times}
+%\usepackage{listings}
 
 \begin{document}
 
@@ -127,12 +129,21 @@ efficiency of floating-point operations over the last decade?\footnote{For
 DGEMM, ClearSpeed's CSX600 processor provided 25 Gflops/s in under 10 Watts.}
 %
 \item How much human effort and ingenuity was involved in writing the kernel or
-implementing the compiler that generated the kernel?
+in implementing the compiler that generated the kernel?
 %
-\item Can we compare the generators in a fair way, across a range of
-architectures, data types, data sizes, etc., for example, based on polyhedral
+\item Can we compare the generators, for example, based on polyhedral
 compilation~\cite{Beaugnon:2014} and functional expression
-rewriting~\cite{Steuwer:2015}?
+rewriting~\cite{Steuwer:2015} in a fair way (including code quality, code generation
+time and robustness)?
+%
+\item Can we evaluate the generators against ninja-class
+programmers~\cite{Goto:2008}?
+%
+\item Have we used all the tricks up our sleeves to the produce the fastest
+GEMM implementation for our hardware and problem at hand?
+%
+\item Can we {\em adapt} our GEMM implementations to work well across a range of
+architectures, data types, data sizes, etc.?
 %
 \end{itemize}
 
@@ -141,9 +152,88 @@ give us insights for solving more complex `real-world' problems, it is
 essential to start getting some of the answers right to facilitate our learning
 and knowledge sharing.
 
+We introduce GEMMbench, a framework and methodology for evaluating performance
+of GEMM implementations.
+%
+GEMMbench is implemented on top of Collective Knowledge (CK), a lightweight
+framework for reproducible and collaborative R\&D in computer systems.%
+\footnote{\url{http://cknowledge.org}}
+%
+Our initial implementation supports hand-written OpenCL kernels operating on
+matrices consisting of single- and double-precision floating-point values, and
+producing single or multiple output elements per work-item (via thread
+coarsening and vectorization).
+%
+Over time, we plan to involve the community to add further hand-written and
+generated kernels (e.g. from \cite{Beaugnon:2014,Steuwer:2015}), and,
+importantly, to collectively study the GEMM performance across multiple
+platforms, data sizes and data types.
 
-\section{Implementation}
 
+\section{Details}
+
+%
+The GEMMbench framework reads from a JSON file the metadata describing a kernel.
+%
+The JSON file specifies the data type ({\tt S} or {\tt D}), the layout of the
+matrices ({\tt N} or {\tt T}), the thread-coarsening configuration ({\tt di}
+for the number of rows and {\tt dj} for the number of columns touched by a
+single work-item), and so on.
+
+For example, the SGEMM kernel that assumes that $A$ is non-transposed and $B$
+is transposed and outputs a single element per work-item: 
+%
+\begin{verbatim}
+kernel void gemm(
+    global float const * restrict A,
+    global float const * restrict B,
+    global float       * restrict C,
+    float alpha, float beta, uint n)
+{
+    const uint j = get_global_id(0);
+    const uint i = get_global_id(1);
+
+    float ABij = 0.0f;
+    for (uint k = 0; k < n; k += 1)
+    {
+        ABij += A[i*n + k] * B[j*n + k];
+    }
+    C[i*n + j] = alpha * ABij + beta * C[i*n + j];
+}
+\end{verbatim}
+%
+is described by the following metadata:
+%
+\begin{verbatim}
+{
+    "name"   : "SGEMM_NT_1x1",
+    "file"   : "SGEMM_NT_1x1.cl",
+    "type"   : "S",
+    "transA" : "N",
+    "transB" : "T",
+    "dj"     : 1,
+    "di"     : 1
+}
+\end{verbatim}
+
+See further examples in the {\tt dataset} part of the GEMMbench repository.%
+\footnote{\url{https://github.com/dividiti/gemmbench/tree/master/dataset}}
+
+
+\section{How to reproduce?}
+
+Briefly, install Collective Knowledge\footnote{\url{http://github.com/ctuning/ck}}
+and follow the steps:
+%
+\begin{verbatim}
+$ ck pull repo:gemmbench \
+    --url=https://github.com/dividiti/gemmbench
+$ cd `ck find repo:gemmbench`
+$ ck compile
+$ ck run
+\end{verbatim}
+%
+More information will appear on the GEMMbench page during the period of public discussions.
 
 
 \section*{Acknowledgments}
