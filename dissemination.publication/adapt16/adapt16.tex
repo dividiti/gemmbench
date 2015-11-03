@@ -137,9 +137,9 @@ rewriting~\cite{Steuwer:2015} in a fair way (including code quality, code genera
 time and robustness)?
 %
 \item Can we evaluate the generators against ninja-class
-programmers~\cite{Goto:2008}?
+programmers~\cite{Goto:2008} or vendor libraries?
 %
-\item Have we used all the tricks up our sleeves to the produce the fastest
+\item Have we used all the tricks up our sleeves to get the fastest
 GEMM implementation for our hardware and problem at hand?
 %
 \item Can we {\em adapt} our GEMM implementations to work well across a range of
@@ -173,12 +173,13 @@ platforms, data sizes and data types.
 \section{Details}
 
 %
-The GEMMbench framework reads from a JSON file the metadata describing a kernel.
+The GEMMbench framework reads from a JSON file the metadata describing a
+kernel.
 %
 The JSON file specifies the data type ({\tt S} or {\tt D}), the layout of the
 matrices ({\tt N} or {\tt T}), the thread-coarsening configuration ({\tt di}
-for the number of rows and {\tt dj} for the number of columns touched by a
-single work-item), and so on.
+for the number of rows and {\tt dj} for the number of columns in a block
+computed by a single work-item), and so on.
 
 For example, the SGEMM kernel that assumes that $A$ is non-transposed and $B$
 is transposed and outputs a single element per work-item: 

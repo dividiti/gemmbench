@@ -60,6 +60,9 @@ void dataset<T>::verify_results(state & s, T eps)
     // Compute reference and compare the results against it.
     {
         T * matrix_C_ref = new T[n * n];
+        const bool transA = s.meta.transA;
+        const bool transB = s.meta.transB;
+        const bool transC = false;
 
         // Compute reference.
         for (cl_uint i = 0; i < n; ++i)
@@ -69,10 +72,10 @@ void dataset<T>::verify_results(state & s, T eps)
                 T ab = static_cast<T>(0);
                 for (cl_uint k = 0; k < n; ++k)
                 {
-                    ab += matrix_A[index(i, k, false)] * matrix_B[index(k, j, true)];
+                    ab += matrix_A[index(i, k, transA)] * matrix_B[index(k, j, transB)];
                 }
-                matrix_C_ref[index(i, j, false)] *= beta;
-                matrix_C_ref[index(i, j, false)] += alpha * ab;
+                matrix_C_ref[index(i, j, transC)] *= beta;
+                matrix_C_ref[index(i, j, transC)] += alpha * ab;
             }
         }
 

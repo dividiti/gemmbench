@@ -27,8 +27,8 @@ class xopenme
 {
 private:
     static const int max_str_len = 1000;
+    static const int max_var_count = 50;
     static const int max_tmr_count = 1;
-    static const int max_var_count = 40;
     static const int max_work_dims = 3;
 
 public:
@@ -72,7 +72,6 @@ private:
         // Print on one line.
         std::cout << "Usage: " << cmd ;
         std::cout << " -f <file name>";
-        std::cout << " -b <build options>";
         std::cout << " -p <platform index>";
         std::cout << " -d <device index>";
         std::cout << " -n <matrix order>";
@@ -83,14 +82,12 @@ private:
 
 public:
     std::string file_name;
-    std::string build_options;
     cl_uint platform_idx;
     cl_uint device_idx;
     cl_uint matrix_order;
 
     arguments() :
         file_name(""),
-        build_options(""),
         platform_idx(0),
         device_idx(0),
         matrix_order(128)
@@ -111,10 +108,6 @@ public:
             if ("-f" == this_arg)
             {
                 file_name = next_arg;
-            }
-            else if ("-b" == this_arg)
-            {
-                build_options = next_arg;
             }
             else if ("-p" == this_arg)
             {
@@ -140,11 +133,135 @@ public:
 }; // END OF gemmbench::arguments class
 
 
+class metadata
+{
+public:
+    // Program name.
+    std::string name;
+
+    // Program file name.
+    std::string file;
+
+    // Program build options.
+    std::string opts;
+
+    // Single precision real ("S") and complex ("C").
+    // Double precision real ("G") and complex ("Z").
+    std::string type;
+
+    // Transposed ('T'), if true; non-transposed ('N'), if false.
+    bool transA;
+    bool transB;
+
+    // Coarsening factors along rows ("di") and columns ("dj").
+    cl_uint di;
+    cl_uint dj;
+
+    // Constructor.
+    metadata() :
+        name(""),
+        file(""),
+        opts(""),
+        type(""),
+        transA(false),
+        transB(false),
+        di(1),
+        dj(1)
+    { }
+
+    // Destructor.
+    ~metadata()
+    { }
+
+    // Parse the metadata file specified with the "-f" command line argument.
+    // Example file:
+    //   {
+    //       "name"   : "DGEMM_NT_1x1",
+    //       "file"   : "DGEMM_NT_1x1.cl",
+    //       "type"   : "D",
+    //       "transA" : "N",
+    //       "transB" : "T",
+    //       "dj"     : 1,
+    //       "di"     : 1
+    //   }
+    void parse(const std::string& metadata_file)
+    {
+        // TODO: Load from file.
+        const char *raw_meta = "{\n"
+            "  \"name\" : \"DGEMM_NT_1x1\",\n"
+            "  \"file\" : \"DGEMM_NT_1x1.cl\",\n"
+            "  \"type\" : \"D\",\n"
+            "  \"transB\" : \"T\"\n"
+            "}\n";
+        std::cout << raw_meta << std::endl;
+
+        cJSON* meta = cJSON_Parse(raw_meta);
+        for (int i = 0; i < cJSON_GetArraySize(meta); ++i)
+        {
+            const cJSON *meta_i = cJSON_GetArrayItem(meta, i);
+            const int value_type = meta_i->type;
+            const std::string key(meta_i->string);
+            if ("name" == key)
+            {
+                assert(cJSON_String == value_type && "Unexpected value type.");
+                name = std::string(meta_i->valuestring);
+            }
+            else if ("file" == key)
+            {
+                assert(cJSON_String == value_type && "Unexpected value type.");
+                file = std::string(meta_i->valuestring);
+            }
+            else if ("opts" == key)
+            {
+                assert(cJSON_String == value_type && "Unexpected value type.");
+                opts = std::string(meta_i->valuestring);
+            }
+            else if ("type" == key)
+            {
+                assert(cJSON_String == value_type && "Unexpected value type.");
+                type = std::string(meta_i->valuestring);
+                assert(type == "S" || type == "C" || type == "D" || type == "Z");
+            }
+            else if ("transA" == key)
+            {
+                assert(cJSON_String == value_type && "Unexpected value type.");
+                transA = std::string(meta_i->valuestring) == "T" ? true : false;
+            }
+            else if ("transB" == key)
+            {
+                assert(cJSON_String == value_type && "Unexpected value type.");
+                transB = std::string(meta_i->valuestring) == "T" ? true : false;
+            }
+            else if ("di" == key)
+            {
+                assert(cJSON_Number == value_type && "Unexpected value type.");
+                di = meta_i->valueint;
+            }
+            else if ("dj" == key)
+            {
+                assert(cJSON_Number == value_type && "Unexpected value type.");
+                dj = meta_i->valueint;
+            }
+            else
+            {
+                std::cerr << "Unhandled key: " << key << std::endl;
+            }
+        } // END OF for each key:value pair
+        cJSON_Delete(meta);
+
+    } // END OF parse()
+
+}; // END OF gemmbench::metadata class
+
+
 class state
 {
 public:
     // Command line arguments (with defaults).
     arguments args;
+
+    // Kernel metadata (with defaults).
+    metadata meta;
 
     // xOpenME state.
     xopenme openme;
@@ -215,10 +332,6 @@ public:
             (char*) "  \"CMD_LINE_ARGS#file_name\":\"%s\"", (char*) args.file_name.c_str());
         assert(openme.var_count_below_max() && "xOpenME max var count reached.");
 
-        xopenme_add_var_s(openme.var_count++,
-            (char*) "  \"CMD_LINE_ARGS#build_options\":\"%s\"", (char*) args.build_options.c_str());
-        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
-
         xopenme_add_var_i(openme.var_count++,
             (char*) "  \"CMD_LINE_ARGS#platform_idx\":%u",  args.platform_idx);
         assert(openme.var_count_below_max() && "xOpenME max var count reached.");
@@ -232,21 +345,42 @@ public:
         assert(openme.var_count_below_max() && "xOpenME max var count reached.");
 #endif
 
-        // TODO: Parse the metadata file specified with the "-f" command line argument.
-        // Example file:
-        //  {
-        //      "name"   : "DGEMM_NT_1x1",
-        //      "file"   : "DGEMM_NT_1x1.cl",
-        //      "type"   : "D",
-        //      "transA" : "N",
-        //      "transB" : "T",
-        //      "dj"     : 1,
-        //      "di"     : 1
-        //  }
-        const char *raw_metadata = "{ \"name\" : \"DGEMM_NT_1x1.cl\" }";
-        cJSON* metadata = cJSON_Parse(raw_metadata);
-        cJSON_Print(metadata);
-        cJSON_Delete(metadata);
+        // Parse kernel metadata.
+        meta.parse(args.file_name);
+
+#if (1 == XOPENME)
+        xopenme_add_var_s(openme.var_count++,
+            (char*) "  \"METADATA#name\":\"%s\"", (char*) meta.name.c_str());
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_s(openme.var_count++,
+            (char*) "  \"METADATA#file\":\"%s\"", (char*) meta.file.c_str());
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_s(openme.var_count++,
+            (char*) "  \"METADATA#opts\":\"%s\"", (char*) meta.opts.c_str());
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_s(openme.var_count++,
+            (char*) "  \"METADATA#type\":\"%s\"", (char*) meta.type.c_str());
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_i(openme.var_count++,
+            (char*) "  \"METADATA#transA\":%u",    (int) meta.transA);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_i(openme.var_count++,
+            (char*) "  \"METADATA#transB\":%u",    (int) meta.transB);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_i(openme.var_count++,
+            (char*) "  \"METADATA#di\":%u",    (int) meta.di);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_i(openme.var_count++,
+            (char*) "  \"METADATA#dj\":%u",    (int) meta.dj);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+#endif
 
     } // END OF parse_arguments()
 
@@ -417,7 +551,6 @@ public:
         {
             std::cerr << "Warning: only " << file.gcount() << " characters could be read out of " << file_size << std::endl;
         }
-        //file_data[file_size] = '\0';
 
         // Create program from source.
         cl_int err = CL_SUCCESS;
@@ -434,7 +567,7 @@ public:
     void build_program()
     {
         cl_int err = CL_SUCCESS;
-        const char * build_options = args.build_options.c_str();
+        const char * build_options = meta.opts.c_str();
         err = clBuildProgram(program, /* num_devices */ 1, /* device_list */ &device,
             /* options */ build_options, /* callback fn */ NULL, /* callback data */ NULL);
         assert(CL_SUCCESS == err && "clBuildProgram() failed.");
@@ -501,8 +634,8 @@ public:
             const size_t n = (size_t) args.matrix_order;
             const size_t work_dim = 2; assert(0 < work_dim && work_dim <= 3);
             const size_t global_work_offset[work_dim] = { 0, 0 };
-            const size_t global_work_size[work_dim]   = { n, n };
-            const size_t local_work_size[work_dim]    = { 8, 8 };
+            const size_t global_work_size[work_dim]   = { n / meta.dj, n / meta.di };
+            const size_t local_work_size[work_dim]    = { 8, 8 }; // FIXME: safe for Mali.
             cl_uint num_events_in_wait_list = 0;
             const cl_event *event_wait_list = NULL;
 
