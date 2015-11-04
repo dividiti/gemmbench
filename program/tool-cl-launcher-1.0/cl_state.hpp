@@ -23,6 +23,42 @@ namespace gemmbench
 
 template<typename T> class dataset;
 
+
+class file
+{
+public:
+    struct buffer
+    {
+        char * data;
+        size_t size;
+
+        // Default constructor.
+        buffer() : data(NULL), size(0) { }
+
+        // Initializing constructor.
+        buffer(char * _data, size_t _size) :
+            data(_data), size(_size) { }
+
+        // Initializing constructor with pointer cast.
+        buffer(const char * _data, size_t _size) :
+            data((char*) _data), size(_size) { }
+
+        // Destructor.
+        ~buffer() { delete [] data; }
+
+    }; // END OF buffer struct
+
+    // Read file into buffer. Return true on success.
+    static bool read(const std::string & path, buffer & buff);
+
+    // Write file from buffer. Return true on success.
+    static bool write(const std::string & path, const buffer & buff);
+
+    virtual ~file();
+
+}; // END OF file class
+
+
 class xopenme
 {
 private:
@@ -528,37 +564,18 @@ public:
         //FIXME: For now, just assume the OpenCL file thas the same base name and the ".cl" extension.
         const size_t index_of_last_dot = args.file_name.find_last_of(".");
         const std::string file_name = args.file_name.substr(0, index_of_last_dot).append(".cl");
+        std::cout << "Reading an OpenCL kernel from \'" << file_name << "\'..." << std::endl;
 
         // Open file for reading. Close file on function exit.
-        std::cout << "Reading an OpenCL kernel from \'" << file_name << "\'..." << std::endl;
-        std::ifstream file(file_name.c_str(), std::ifstream::binary);
-        if (!file)
-        {
-            std::cerr << "Fatal error: cannot open file \'" << file_name << "\' for reading!" << std::endl;
-            exit(EXIT_FAILURE);
-        }
-
-        // Get file size.
-        size_t file_size = 0;
-        file.seekg(0, file.end);
-        file_size = file.tellg();
-        file.seekg(0, file.beg);
-
-        // Read file into new buffer.
-        char * file_data = new char[file_size];
-        file.read(file_data, file_size);
-        if (!file)
-        {
-            std::cerr << "Warning: only " << file.gcount() << " characters could be read out of " << file_size << std::endl;
-        }
+        file::buffer buffer;
+        bool read_success = file::read(file_name, buffer);
+        assert(read_success && "file::read() failed.");
 
         // Create program from source.
         cl_int err = CL_SUCCESS;
         program = clCreateProgramWithSource(context,
-            /* num_strings */ 1, /* strings */ (const char**) &file_data, /* lengths */ &file_size, &err);
+            /* num_strings */ 1, /* strings */ (const char**) &buffer.data, /* lengths */ &buffer.size, &err);
         assert(CL_SUCCESS == err && "clCreateProgramWithSource() failed.");
-
-        delete [] file_data;
 
     } // END OF create_program()
 

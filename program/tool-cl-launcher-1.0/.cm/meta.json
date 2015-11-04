@@ -61,6 +61,7 @@
     "PLATFORM_ID": 0
   }, 
   "source_files": [
+    "cl_state.cpp", 
     "cl_dataset.cpp", 
     "cl_launcher.cpp"
   ], 
