@@ -54,6 +54,7 @@ public:
     // Write file from buffer. Return true on success.
     static bool write(const std::string & path, const buffer & buff);
 
+    // Prevent instantiating this class.
     virtual ~file();
 
 }; // END OF file class
@@ -222,13 +223,19 @@ public:
     //   }
     void parse(const std::string& metadata_file)
     {
-        // TODO: Load from file.
+        file::buffer buffer;
+        file::read(metadata_file, buffer);
+#if 1
+        const char * raw_meta = buffer.data;
+#else
         const char *raw_meta = "{\n"
             "  \"name\" : \"DGEMM_NT_1x1\",\n"
             "  \"file\" : \"DGEMM_NT_1x1.cl\",\n"
             "  \"type\" : \"D\",\n"
             "  \"transB\" : \"T\"\n"
             "}\n";
+#endif
+        assert(raw_meta && "No metadata.");
         std::cout << raw_meta << std::endl;
 
         cJSON* meta = cJSON_Parse(raw_meta);
