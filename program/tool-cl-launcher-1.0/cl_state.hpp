@@ -213,29 +213,33 @@ public:
     // Parse the metadata file specified with the "-f" command line argument.
     // Example file:
     //   {
-    //       "name"   : "DGEMM_NT_1x1",
-    //       "file"   : "DGEMM_NT_1x1.cl",
-    //       "type"   : "D",
-    //       "transA" : "N",
-    //       "transB" : "T",
-    //       "dj"     : 1,
-    //       "di"     : 1
+    //     "name"   : "DGEMM_NT_1x1",
+    //     "file"   : "DGEMM_NT_1x1.cl",
+    //     "type"   : "D",
+    //     "transA" : "N",
+    //     "transB" : "T",
+    //     "dj"     : 1,
+    //     "di"     : 1
     //   }
-    void parse(const std::string& metadata_file)
+    void parse(const std::string & path)
     {
-        file::buffer buffer;
-        file::read(metadata_file, buffer);
-#if 1
-        const char * raw_meta = buffer.data;
-#else
+#if (1 == TEST_METADATA)
+        std::cout << "Reading OpenCL kernel metadata from string:" << std::endl;
         const char *raw_meta = "{\n"
-            "  \"name\" : \"DGEMM_NT_1x1\",\n"
-            "  \"file\" : \"DGEMM_NT_1x1.cl\",\n"
-            "  \"type\" : \"D\",\n"
+            "  \"name\"   : \"DGEMM_NT_1x1\",\n"
+            "  \"file\"   : \"DGEMM_NT_1x1.cl\",\n"
+            "  \"type\"   : \"D\",\n"
             "  \"transB\" : \"T\"\n"
             "}\n";
+#else
+        std::cout << "Reading OpenCL kernel metadata from \'" << path << "\'..." << std::endl;
+        file::buffer buffer;
+        bool read_success = file::read(path, buffer);
+        assert(read_success && "file::read() failed.");
+        assert(buffer.data && buffer.size > 0 && "No metadata.");
+        buffer.data[buffer.size-1] = '\0'; // null-terminate
+        const char * raw_meta = buffer.data;
 #endif
-        assert(raw_meta && "No metadata.");
         std::cout << raw_meta << std::endl;
 
         cJSON* meta = cJSON_Parse(raw_meta);
@@ -365,7 +369,7 @@ public:
         assert(CL_SUCCESS == err && "clReleaseContext() failed.");
     }
 
-    void parse_arguments(int argc, char* argv[])
+    void init(int argc, char* argv[])
     {
         // Parse command line arguments.
         args.parse(argc, argv);
@@ -607,7 +611,7 @@ public:
         assert(CL_SUCCESS == err && "clCreateKernel() failed.");
     } // END OF create_kernel()
 
-
+private:
     // Create buffers and set kernel arguments.
     template<typename T> void set_kernel_args(const dataset<T>& data)
     {
@@ -723,6 +727,46 @@ public:
         assert(openme.var_count_below_max() && "xOpenME max var count reached.");
 #endif
     } // END OF profile_execution()
+
+
+    template<typename T> void _execute_kernel()
+    {
+        gemmbench::dataset<T> data(args.matrix_order);
+        assert(data.matrix_A && "No data.");
+        assert(data.matrix_B && "No data.");
+        assert(data.matrix_C && "No data.");
+        data.init_random();
+
+        set_kernel_args<T>(data);
+        assert(buffer_A && "No buffer.");
+        assert(buffer_B && "No buffer.");
+        assert(buffer_C && "No buffer.");
+
+        enqueue_kernel();
+
+        profile_execution();
+
+        data.verify_results(*this);
+
+    } // END OF _execute_kernel()
+
+public:
+    // Run the kernel on random data, profile and verify.
+    void execute_kernel()
+    {
+        if (meta.type == "S")
+        {
+            _execute_kernel<cl_float>();
+        }
+        else if (meta.type == "D")
+        {
+            _execute_kernel<cl_double>();
+        }
+        else
+        {
+            assert(false && "Unsupported data type.");
+        }
+    } // END OF execute_kernel()
 
 }; // END OF gemmbench::state class
 
