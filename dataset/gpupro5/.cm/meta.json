@@ -3,7 +3,10 @@
     "SGEMM_NN_1x1.json",
     "SGEMM_NT_1x1.json",
     "DGEMM_NN_1x1.json",
-    "DGEMM_NT_1x1.json"
+    "DGEMM_NN_2x1.json",
+    "DGEMM_NT_1x1.json",
+    "DGEMM_NT_2x1.json",
+    "DGEMM_NT_2x1_barrier.json"
   ], 
   "tags": [
     "dataset", 
