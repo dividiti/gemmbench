@@ -127,7 +127,7 @@ public:
         file_name(""),
         platform_idx(0),
         device_idx(0),
-        matrix_order(128)
+        matrix_order(256)
     { }
 
     void parse(int argc, char* argv[])
