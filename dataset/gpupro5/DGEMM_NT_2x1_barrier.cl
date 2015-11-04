@@ -15,8 +15,8 @@ kernel void gemm(
     global double2       * restrict C,
     double alpha, double beta, uint n)
 {
-    uint j = get_global_id(0);
-    uint i = get_global_id(1);
+    const uint j = get_global_id(0);
+    const uint i = get_global_id(1);
 
     global double2 const *pA = &A[nv*di*i];
     global double2 const *pB = &B[nv*dj*j];
