@@ -57,7 +57,7 @@ if exists:
 # Read stdout.
 exists=True
 try:
-  f=open('tmp-stdout.tmp', 'r')
+  f=open('run.stdout', 'r')
 except Exception as e:
   exists=False
   pass
@@ -76,7 +76,7 @@ if exists:
 # Read stderr.
 exists=True
 try:
-  f=open('tmp-stderr.tmp', 'r')
+  f=open('run.stderr', 'r')
 except Exception as e:
   exists=False
   pass
