@@ -1,0 +1,13 @@
+{
+  "dataset_files": [
+    "SGEMM_NT_1x1.json",
+    "SGEMM_NT_4x1.json",
+    "SGEMM_NT_4x1_barrier.json"
+  ],
+  "tags": [
+    "dataset",
+    "gemmbench",
+    "opencl",
+    "SGEMM_NT"
+  ]
+}

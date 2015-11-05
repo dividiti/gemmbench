@@ -36,7 +36,7 @@
       "dataset_tags": [
         "dataset", 
         "gemmbench", 
-        "opencl kernel"
+        "opencl"
       ], 
       "ignore_return_code": "no", 
       "run_time": {
@@ -69,9 +69,9 @@
   ], 
   "species": [], 
   "tags": [
-    "opencl", 
     "program", 
     "gemmbench", 
+    "opencl", 
     "v1.0", 
     "v1", 
     "lang-cpp"

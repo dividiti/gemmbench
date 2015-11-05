@@ -1,0 +1,12 @@
+{
+  "dataset_files": [
+    "DGEMM_NN_1x1.json",
+    "DGEMM_NN_2x1.json"
+  ],
+  "tags": [
+    "dataset",
+    "gemmbench",
+    "opencl",
+    "DGEMM_NN"
+  ]
+}
