@@ -1,0 +1,13 @@
+{
+  "prepare":"yes",
+
+  "save_to_file":"_setup_program_pipeline_tmp.json",
+
+  "data_uoa":"gemmbench-cl-launcher-1.0",
+
+  "energy":"no",
+  "speed":"yes",
+
+  "cpu_freq":"max",
+  "gpu_freq":"max"
+}
