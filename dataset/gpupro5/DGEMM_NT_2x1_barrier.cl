@@ -27,13 +27,13 @@ kernel void gemm(
         for (uint kk = 0; kk < dk; kk += 1, pA += 1, pB += 1)
         {
             double2 a  = pA[nv*0];
-    
+
             double2 b0 = pB[nv*0];
             double2 b1 = pB[nv*1];
-    
+
             double2 ab0 = a*b0;
             double2 ab1 = a*b1;
-    
+
             ab += (double2)(ab0.s0 + ab0.s1, ab1.s0 + ab1.s1);
         }
         // Wait for all work-items to finish the current tile.

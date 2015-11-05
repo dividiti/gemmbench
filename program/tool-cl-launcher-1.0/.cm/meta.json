@@ -44,7 +44,7 @@
         "post_process_cmds": [
           "python $#src_path_local#$ck_postprocess.py"
         ], 
-        "run_cmd_main": "$#BIN_FILE#$ -f $#dataset_path#$$#dataset_filename#$ -p $<<PLATFORM_ID>>$ -d $<<DEVICE_ID>>$", 
+        "run_cmd_main": "$#BIN_FILE#$ -f $#dataset_path#$$#dataset_filename#$ -p $<<PLATFORM_ID>>$ -d $<<DEVICE_ID>>$ -lws $<<LWS_J>>$,$<<LWS_I>>$", 
         "run_cmd_out1": "", 
         "run_cmd_out2": "", 
         "run_correctness_output_files": [], 
@@ -58,7 +58,9 @@
   }, 
   "run_vars": {
     "DEVICE_ID": 0, 
-    "PLATFORM_ID": 0
+    "PLATFORM_ID": 0, 
+    "LWS_J" : 0, 
+    "LWS_I" : 0
   }, 
   "source_files": [
     "cl_state.cpp", 

@@ -53,7 +53,7 @@ file::write(const std::string & path, const buffer & buff)
     std::ofstream file(path.c_str(), std::ofstream::binary);
     if (!file)
     {
-        std::cerr << "Fatal error: cannot open file \'" << path << '\'' << std::endl;
+        std::cerr << "Fatal error: cannot open file \'" << path << "\' for writing!" << std::endl;
         success = false;
     }
     else

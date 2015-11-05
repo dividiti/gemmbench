@@ -109,9 +109,10 @@ private:
         // Print on one line.
         std::cout << "Usage: " << cmd ;
         std::cout << " -f <file name>";
+        std::cout << " -n <matrix order>";
         std::cout << " -p <platform index>";
         std::cout << " -d <device index>";
-        std::cout << " -n <matrix order>";
+        std::cout << " -lws <lws_j,lws_i>";
         std::cout << std::endl;
 
         exit(EXIT_SUCCESS);
@@ -122,12 +123,14 @@ public:
     cl_uint platform_idx;
     cl_uint device_idx;
     cl_uint matrix_order;
+    cl_uint lws_j, lws_i;
 
     arguments() :
         file_name(""),
         platform_idx(0),
         device_idx(0),
-        matrix_order(256)
+        matrix_order(256),
+        lws_j(0), lws_i(0)
     { }
 
     void parse(int argc, char* argv[])
@@ -146,6 +149,10 @@ public:
             {
                 file_name = next_arg;
             }
+            else if ("-n" == this_arg)
+            {
+                std::istringstream ss(next_arg); ss >> matrix_order;
+            }
             else if ("-p" == this_arg)
             {
                 std::istringstream ss(next_arg); ss >> platform_idx;
@@ -154,9 +161,12 @@ public:
             {
                 std::istringstream ss(next_arg); ss >> device_idx;
             }
-            else if ("-n" == this_arg)
+            else if ("-lws" == this_arg)
             {
-                std::istringstream ss(next_arg); ss >> matrix_order;
+                const std::string::size_type pos = next_arg.find(',');
+                assert(std::string::npos != pos);
+                std::istringstream lws_j_ss(next_arg.substr(0, pos)); lws_j_ss >> lws_j;
+                std::istringstream lws_i_ss(next_arg.substr(pos+1));  lws_i_ss >> lws_i;
             }
             else
             {
@@ -662,8 +672,56 @@ private:
             const size_t n = (size_t) args.matrix_order;
             const size_t work_dim = 2; assert(0 < work_dim && work_dim <= 3);
             const size_t global_work_offset[work_dim] = { 0, 0 };
+
+            // Global work size.
             const size_t global_work_size[work_dim]   = { n / meta.dj, n / meta.di };
-            const size_t local_work_size[work_dim]    = { 8, 8 }; // FIXME: safe for Mali.
+            assert((n % meta.dj == 0) && (n % meta.di == 0) && "Matrix order not divisible by coarsening factors.");
+#if (1 == XOPENME)
+            xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#gws_j\":%u", global_work_size[0]);
+            assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+            xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#gws_i\":%u", global_work_size[1]);
+            assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+#endif
+
+            // Local work size.
+            const size_t * local_work_size;
+
+            size_t max_lws;
+            err = clGetKernelWorkGroupInfo(kernel, device, CL_KERNEL_WORK_GROUP_SIZE,
+                sizeof(max_lws), &max_lws, NULL);
+            assert(CL_SUCCESS == err && "clGetKernelWorkGroupInfo() failed.");
+#if (1 == XOPENME)
+            xopenme_add_var_i(openme.var_count++, (char*) "  \"CL_KERNEL_WORK_GROUP_SIZE\":%u", max_lws);
+            assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+#endif
+            const size_t _local_work_size[work_dim] = { args.lws_j, args.lws_i };
+            const size_t lws = _local_work_size[0] * _local_work_size[1];
+            if ((0 < lws) && (lws <= max_lws) &&
+                (global_work_size[0] % _local_work_size[0] == 0) &&
+                (global_work_size[1] % _local_work_size[1] == 0))
+            {
+                local_work_size = _local_work_size;
+#if (1 == XOPENME)
+                xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#lws_j\":%u", local_work_size[0]);
+                assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+                xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#lws_i\":%u", local_work_size[1]);
+                assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+#endif
+            }
+            else
+            {
+                local_work_size = NULL;
+#if (1 == XOPENME)
+                xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#lws_j\":%u", 0);
+                assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+                xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#lws_i\":%u", 0);
+                assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+#endif
+            }
+
             cl_uint num_events_in_wait_list = 0;
             const cl_event *event_wait_list = NULL;
 
