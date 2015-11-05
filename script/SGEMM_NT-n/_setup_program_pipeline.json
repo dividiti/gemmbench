@@ -5,9 +5,14 @@
 
   "data_uoa":"gemmbench-cl-launcher-1.0",
 
-  "energy":"no",
+  "cmd_key":"SGEMM_NT",
+
   "speed":"yes",
+  "energy":"no",
 
   "cpu_freq":"max",
-  "gpu_freq":"max"
+  "gpu_freq":"max",
+
+  "compile_only_once":"yes",
+  "skip_calibration":"yes"
 }
