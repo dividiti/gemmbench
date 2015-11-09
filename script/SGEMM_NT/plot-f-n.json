@@ -5,8 +5,8 @@
 
   "flat_keys_list":[
     "##choices#run_cmd_key_n#min",
-    "##characteristics#run#run_time_state#EXECUTION#Gflops#center",
-    "##characteristics#run#run_time_state#EXECUTION#Gflops#halfrange"
+    "##characteristics#run#run_time_state#EXECUTION#Gflops/s#center",
+    "##characteristics#run#run_time_state#EXECUTION#Gflops/s#halfrange"
   ],
 
   "ignore_point_if_empty_string":"yes",
@@ -15,10 +15,13 @@
   "display_x_error_bar":"no",
   "display_y_error_bar":"yes",
 
-  "title":"Powered by Collective Knowledge",
+  "ymin" : 0,
+  "ymax" : 10,
 
-  "axis_x_desc":"matrix order N",
-  "axis_y_desc":"Gflops",
+  "title":"GEMMbench: SGEMM NT",
+
+  "axis_x_desc":"Matrix order (-n)",
+  "axis_y_desc":"Gflops/s",
 
   "plot_grid":"yes",
 
@@ -29,5 +32,5 @@
   "point_style":{"1":{"elinewidth":"5", "color":"#dc3912"},
                  "0":{"color":"#3366cc"}},
 
-  "out_to_file":"plot-f-n-tmp.png"
+  "out_to_file":"plot-f-n_tmp.png"
 }
