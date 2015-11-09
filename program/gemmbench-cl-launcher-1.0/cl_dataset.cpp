@@ -67,6 +67,9 @@ void dataset<T>::verify_results(state & s)
         const bool transC = false;
 
         // Compute reference.
+#if (1 == XOPENME)
+        xopenme_clock_start(1);
+#endif
         for (cl_uint i = 0; i < n; ++i)
         {
             for (cl_uint j = 0; j < n; ++j)
@@ -80,6 +83,9 @@ void dataset<T>::verify_results(state & s)
                 matrix_C_ref[index(i, j, transC)] += alpha * ab;
             }
         }
+#if (1 == XOPENME)
+        xopenme_clock_end(1);
+#endif
 
         // Compare the results against reference.
         std::cout << "Comparing the OpenCL and reference results... ";

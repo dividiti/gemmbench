@@ -65,7 +65,7 @@ class xopenme
 private:
     static const int max_str_len = 1000;
     static const int max_var_count = 50;
-    static const int max_tmr_count = 1;
+    static const int max_tmr_count = 2;
     static const int max_work_dims = 3;
 
 public:
@@ -812,7 +812,13 @@ private:
         assert(buffer_B && "No buffer.");
         assert(buffer_C && "No buffer.");
 
+#if (1 == XOPENME)
+        xopenme_clock_start(0);
+#endif
         enqueue_kernel();
+#if (1 == XOPENME)
+        xopenme_clock_end(0);
+#endif
 
         profile_execution();
 
