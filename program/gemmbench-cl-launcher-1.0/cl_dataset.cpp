@@ -92,7 +92,8 @@ void dataset<T>::verify_results(state & s, T eps)
                 max_abs_diff = std::max<T>(max_abs_diff, abs_diff);
                 if (abs_diff > eps)
                 {
-                    std::cerr << "MISMATCH! (first at C[" << i << "][" << j << "])" << std::endl;
+                    std::cerr << "MISMATCH! (first at C[" << i << "][" << j << "])"; 
+                    std::cerr << " : " << matrix_C[index(i, j, transC)] << " vs " << matrix_C_ref[index(i, j, transC)] << std::endl;
  #if (1 == XOPENME)
                     xopenme_add_var_i(s.openme.var_count++, (char*) "  \"RESULTS#match\":%u", 0);
                     assert(s.openme.var_count_below_max() && "xOpenME max var count reached.");
