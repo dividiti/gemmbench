@@ -17,7 +17,7 @@
   ],
 
   "iterations":11,
-  "repetitions":3,
+  "repetitions":4,
 
   "pipeline_update":{
     "cpu_freq":"max",

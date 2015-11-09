@@ -12,12 +12,12 @@
   ],
   "choices_selection":[
     {"type":"loop"},
-    {"type":"loop", "choice":["256"], "default":"256"},
-    {"type":"loop", "choice":["4,4", "2,16","16,2","4,8","8,4", "8,8", "4,16","16,4","2,32","32,2", "4,32","32,4","8,16","16,8"],"default":"8,8"}
+    {"type":"loop", "choice":["256"]},
+    {"type":"loop", "choice":["4,4", "2,16","16,2","4,8","8,4", "8,8", "4,16","16,4","2,32","32,2", "4,32","32,4","8,16","16,8"]}
   ],
 
-  "iterations":45,
-  "repetitions":3,
+  "iterations":-1,
+  "repetitions":4,
 
   "pipeline_update":{
     "cpu_freq":"max",

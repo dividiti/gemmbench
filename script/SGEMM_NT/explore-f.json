@@ -12,11 +12,11 @@
   ],
   "choices_selection":[
     {"type":"loop"},
-    {"type":"loop", "choice":["256"], "default":"256"},
-    {"type":"loop", "choice":["8,8"], "default":"8,8"}
+    {"type":"loop", "choice":["256"]},
+    {"type":"loop", "choice":["8,8"]}
   ],
 
-  "iterations":3,
+  "iterations":-1,
   "repetitions":4,
 
   "pipeline_update":{
