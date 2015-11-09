@@ -712,6 +712,8 @@ private:
                 (global_work_size[1] % _local_work_size[1] == 0))
             {
                 local_work_size = _local_work_size;
+                assert((n % (local_work_size[0] * meta.dj) == 0) && (n % (local_work_size[1] * meta.di) == 0) &&
+                    "Matrix order not divisible by product of local work size and coarsening factor");
 #if (1 == XOPENME)
                 xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#lws_j\":%u", local_work_size[0]);
                 assert(openme.var_count_below_max() && "xOpenME max var count reached.");
