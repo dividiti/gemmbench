@@ -14,7 +14,7 @@ namespace gemmbench
 
 // Initialize the data in a random way.
 template<typename T>
-void dataset<T>::init_random()
+void dataset<T>::init_random(unsigned int seed, bool zero_matrix_C)
 {
     srand(seed);
 
@@ -118,10 +118,10 @@ void dataset<T>::verify_results(state & s, T eps)
 
 
 // Instantiate templates to GEMM types.
-template void dataset<cl_float>::init_random();
+template void dataset<cl_float>::init_random(unsigned int seed, bool zero_matrix_C);
 template void dataset<cl_float>::verify_results(state& s, cl_float eps);
 
-template void dataset<cl_double>::init_random();
+template void dataset<cl_double>::init_random(unsigned int seed, bool zero_matrix_C);
 template void dataset<cl_double>::verify_results(state& s, cl_double eps);
 
 

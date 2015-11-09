@@ -52,18 +52,14 @@ public:
     }
 
     // Initialize the data in a random way.
-    void init_random();
+    void init_random(unsigned int seed = 12345, bool zero_matrix_C = false);
 
     // Compare the results against reference implementation.
     void verify_results(gemmbench::state & s, T eps = static_cast<T>(1e-5));
 
 private:
-    const static bool zero_matrix_C = false;
-    const static unsigned int seed = 12345;
-    const static T range = static_cast<T>(1);
-
     // Generate random number in [-range/2; +range/2].
-    T symmetric_rand()
+    T symmetric_rand(T range = static_cast<T>(1))
     {
         T zero_to_one = static_cast<T>(rand()) / static_cast<T>(RAND_MAX);
         T minus_half_to_plus_half = zero_to_one - static_cast<T>(.5);
