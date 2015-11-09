@@ -124,13 +124,15 @@ public:
     cl_uint device_idx;
     cl_uint matrix_order;
     cl_uint lws_j, lws_i;
+    cl_double eps;
 
     arguments() :
         file_name(""),
         platform_idx(0),
         device_idx(0),
         matrix_order(256),
-        lws_j(0), lws_i(0)
+        lws_j(0), lws_i(0),
+        eps(1e-5)
     { }
 
     void parse(int argc, char* argv[])
@@ -167,6 +169,10 @@ public:
                 assert(std::string::npos != pos);
                 std::istringstream lws_j_ss(next_arg.substr(0, pos)); lws_j_ss >> lws_j;
                 std::istringstream lws_i_ss(next_arg.substr(pos+1));  lws_i_ss >> lws_i;
+            }
+            else if ("-eps" == this_arg)
+            {
+                std::istringstream ss(next_arg); ss >> eps;
             }
             else
             {
@@ -399,6 +405,10 @@ public:
 
         xopenme_add_var_i(openme.var_count++,
             (char*) "  \"CMD_LINE_ARGS#matrix_order\":%u",  args.matrix_order);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_d(openme.var_count++,
+            (char*) "  \"CMD_LINE_ARGS#eps\":%.8lf", args.eps);
         assert(openme.var_count_below_max() && "xOpenME max var count reached.");
 #endif
 
@@ -702,6 +712,8 @@ private:
                 (global_work_size[1] % _local_work_size[1] == 0))
             {
                 local_work_size = _local_work_size;
+                assert((n % (local_work_size[0] * meta.dj) == 0) && (n % (local_work_size[1] * meta.di) == 0) &&
+                    "Matrix order not divisible by product of local work size and coarsening factor");
 #if (1 == XOPENME)
                 xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#lws_j\":%u", local_work_size[0]);
                 assert(openme.var_count_below_max() && "xOpenME max var count reached.");
