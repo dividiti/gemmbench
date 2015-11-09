@@ -8,5 +8,8 @@ Prerequisites
 Installation
 ============
 
-> ck pull repo:gemmbench --url=git@github.com:dividiti/gemmbench.git
+> ck pull repo:gemmbench --url=https://github.com/dividiti/gemmbench
 
+or
+
+> ck pull repo:gemmbench --url=git@github.com:dividiti/gemmbench.git
