@@ -16,7 +16,7 @@
   "display_y_error_bar":"yes",
 
   "ymin" : 0,
-  "ymax" : 10,
+  "ymax" : 14,
 
   "title":"GEMMbench: SGEMM NT",
 
