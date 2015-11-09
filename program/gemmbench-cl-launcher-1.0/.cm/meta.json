@@ -8,26 +8,34 @@
       "sort": 10, 
       "tags": "compiler,lang-cpp"
     }, 
+    "lib.cjson": {
+      "local": "yes", 
+      "sort": 20, 
+      "tags": "lib,cjson"
+    }, 
     "lib.xopenme": {
       "local": "yes", 
       "sort": 30, 
       "tags": "lib,xopenme"
     }, 
-    "lib.cjson": {
-      "local": "yes",
-      "sort": 20,
-      "tags": "lib,cjson"
-    },
     "lib_opencl": {
       "local": "yes", 
       "sort": 15, 
       "tags": "lib,opencl"
     }
   }, 
-  "data_name": "gemmbench-cl-launcher-1.0", 
+  "compiler_add_include_as_env_from_deps": [
+    "CK_ENV_LIB_STDCPP_INCLUDE", 
+    "CK_ENV_LIB_STDCPP_INCLUDE_EXTRA"
+  ], 
   "compiler_env": "CK_CXX", 
   "compiler_flags_as_env": "$<<CK_COMPILER_FLAG_MFLOAT_ABI_HARD>>$", 
+  "data_name": "gemmbench-cl-launcher-1.0", 
   "extra_ld_vars": "$<<CK_EXTRA_LIB_M>>$", 
+  "linker_add_lib_as_env": [
+    "CK_CXX_EXTRA", 
+    "CK_ENV_LIB_STDCPP_STATIC"
+  ], 
   "main_language": "cpp", 
   "process_in_tmp": "yes", 
   "program": "yes", 
@@ -53,35 +61,35 @@
           "tmp-ck-timer.json"
         ]
       }
-    },
+    }, 
     "sgemm_nt": {
       "dataset_tags": [
-        "dataset",
-        "gemmbench",
-        "opencl",
+        "dataset", 
+        "gemmbench", 
+        "opencl", 
         "SGEMM_NT"
-      ],
-      "ignore_return_code": "no",
+      ], 
+      "ignore_return_code": "no", 
       "run_time": {
-        "fine_grain_timer_file": "tmp-ck-timer.json",
+        "fine_grain_timer_file": "tmp-ck-timer.json", 
         "post_process_cmds": [
           "python $#src_path_local#$ck_postprocess.py"
-        ],
-        "run_cmd_main": "$#BIN_FILE#$ -f $#dataset_path#$$#dataset_filename#$ -p $<<PLATFORM_ID>>$ -d $<<DEVICE_ID>>$ -n $#run_cmd_key_n#$ -lws $#run_cmd_key_lws#$",
-        "run_cmd_out1": "run.stdout",
-        "run_cmd_out2": "run.stderr",
-        "run_correctness_output_files": [],
-        "run_input_files": [],
+        ], 
+        "run_cmd_main": "$#BIN_FILE#$ -f $#dataset_path#$$#dataset_filename#$ -p $<<PLATFORM_ID>>$ -d $<<DEVICE_ID>>$ -n $#run_cmd_key_n#$ -lws $#run_cmd_key_lws#$", 
+        "run_cmd_out1": "run.stdout", 
+        "run_cmd_out2": "run.stderr", 
+        "run_correctness_output_files": [], 
+        "run_input_files": [], 
         "run_output_files": [
-          "run.stdout",
-          "run.stderr",
+          "run.stdout", 
+          "run.stderr", 
           "tmp-ck-timer.json"
         ]
       }
     }
   }, 
   "run_vars": {
-    "DEVICE_ID": 0,
+    "DEVICE_ID": 0, 
     "PLATFORM_ID": 0
   }, 
   "source_files": [
