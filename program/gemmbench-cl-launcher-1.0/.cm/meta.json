@@ -54,7 +54,7 @@
         ]
       }
     },
-    "SGEMM_NT": {
+    "sgemm_nt": {
       "dataset_tags": [
         "dataset",
         "gemmbench",
