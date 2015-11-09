@@ -2,6 +2,11 @@
   "data_uid": "1e884df489890fa1", 
   "data_name": "gemmbench", 
   "dict": {
+    "repo_deps": [
+      {
+        "repo_uoa": "ck-autotuning"
+      }
+    ], 
     "url": "git@github.com:dividiti/gemmbench.git", 
     "shared": "git"
   }, 
