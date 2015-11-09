@@ -1,0 +1,35 @@
+{
+  "experiment_module_uoa":"experiment",
+
+  "data_uoa_list":["SGEMM_NT-explore-f-n-ds1", "SGEMM_NT-explore-f-n-ds2", "SGEMM_NT-explore-f-n-ds3"],
+
+  "flat_keys_list":[
+    "##choices#run_cmd_key_n#min",
+    "##characteristics#run#run_time_state#EXECUTION#Gflops/s#center",
+    "##characteristics#run#run_time_state#EXECUTION#Gflops/s#halfrange"
+  ],
+
+  "ignore_point_if_empty_string":"yes",
+
+  "plot_type":"mpl_2d_scatter",
+  "display_x_error_bar":"no",
+  "display_y_error_bar":"yes",
+
+  "ymin" : 0,
+  "ymax" : 10,
+
+  "title":"GEMMbench: SGEMM NT",
+
+  "axis_x_desc":"Matrix order (-n)",
+  "axis_y_desc":"Gflops/s",
+
+  "plot_grid":"yes",
+
+  "mpl_image_size_x":"12",
+  "mpl_image_size_y":"6",
+  "mpl_image_dpi":"100",
+
+  "point_style":{},
+
+  "out_to_file":"plot-f-n_tmp.png"
+}
