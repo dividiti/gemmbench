@@ -4,6 +4,8 @@
 #include "cl_dataset.hpp"
 #include "cl_state.hpp"
 
+#include <algorithm>
+
 #include <cassert>
 #include <cmath>
 
