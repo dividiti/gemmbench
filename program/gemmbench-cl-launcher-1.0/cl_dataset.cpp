@@ -37,7 +37,7 @@ void dataset<T>::init_random(unsigned int seed, bool zero_matrix_C)
 
 // Compare the results against a reference implementation.
 template<typename T>
-void dataset<T>::verify_results(state & s, T eps)
+void dataset<T>::verify_results(state & s)
 {
     // Read results from buffer_C.
     {
@@ -83,6 +83,7 @@ void dataset<T>::verify_results(state & s, T eps)
 
         // Compare the results against reference.
         std::cout << "Comparing the OpenCL and reference results... ";
+        const T eps = static_cast<T>(s.args.eps);
         T max_abs_diff = static_cast<T>(0);
         for (cl_uint i = 0; i < n; ++i)
         {
@@ -106,9 +107,6 @@ void dataset<T>::verify_results(state & s, T eps)
         xopenme_add_var_i(s.openme.var_count++, (char*) "  \"RESULTS#match\":%u", 1);
         assert(s.openme.var_count_below_max() && "xOpenME max var count reached.");
 
-        xopenme_add_var_d(s.openme.var_count++, (char*) "  \"RESULTS#eps\":%.8lf", eps);
-        assert(s.openme.var_count_below_max() && "xOpenME max var count reached.");
-
         xopenme_add_var_d(s.openme.var_count++, (char*) "  \"RESULTS#max_abs_diff\":%.8lf", max_abs_diff);
         assert(s.openme.var_count_below_max() && "xOpenME max var count reached.");
 #endif
@@ -121,10 +119,10 @@ void dataset<T>::verify_results(state & s, T eps)
 
 // Instantiate templates to GEMM types.
 template void dataset<cl_float>::init_random(unsigned int seed, bool zero_matrix_C);
-template void dataset<cl_float>::verify_results(state& s, cl_float eps);
+template void dataset<cl_float>::verify_results(state& s);
 
 template void dataset<cl_double>::init_random(unsigned int seed, bool zero_matrix_C);
-template void dataset<cl_double>::verify_results(state& s, cl_double eps);
+template void dataset<cl_double>::verify_results(state& s);
 
 
 } // END OF gemmbench namespace

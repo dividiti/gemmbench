@@ -55,7 +55,7 @@ public:
     void init_random(unsigned int seed = 12345, bool zero_matrix_C = false);
 
     // Compare the results against reference implementation.
-    void verify_results(gemmbench::state & s, T eps = static_cast<T>(1e-5));
+    void verify_results(gemmbench::state & s);
 
 private:
     // Generate random number in [-range/2; +range/2].
