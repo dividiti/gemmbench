@@ -32,5 +32,5 @@
   "point_style":{"1":{"elinewidth":"5", "color":"#dc3912"},
                  "0":{"color":"#3366cc"}},
 
-  "out_to_file":"plot-f-n_tmp.png"
+  "out_to_file":"plot-f-n-tmp.png"
 }

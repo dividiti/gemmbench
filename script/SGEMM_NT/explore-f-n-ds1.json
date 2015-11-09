@@ -16,7 +16,7 @@
     {"type":"loop", "choice":["8,8"], "default":"8,8"}
   ],
 
-  "iterations":11,
+  "iterations":-1,
   "repetitions":4,
 
   "pipeline_update":{

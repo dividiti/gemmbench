@@ -8,7 +8,7 @@
   "cmd_key":"sgemm_nt",
 
   "speed":"yes",
-  "energy":"no",
+  "energy":"yes",
 
   "cpu_freq":"max",
   "gpu_freq":"max",
