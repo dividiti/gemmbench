@@ -701,79 +701,81 @@ private:
 
         cl_int err = CL_SUCCESS;
 
-        // Enqueue kernel.
+        // Prepare kernel.
+        const size_t n = (size_t) args.matrix_order;
+        const size_t work_dim = 2; assert(0 < work_dim && work_dim <= 3);
+        const size_t global_work_offset[work_dim] = { 0, 0 };
+
+        // Global work size.
+        const size_t global_work_size[work_dim]   = { n / meta.dj, n / meta.di };
+        assert((n % meta.dj == 0) && (n % meta.di == 0) && "Matrix order not divisible by coarsening factors.");
+#if (1 == XOPENME)
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#gws_j\":%u", global_work_size[0]);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#gws_i\":%u", global_work_size[1]);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+#endif
+
+        // Local work size.
+        const size_t * local_work_size = NULL;
+
+        size_t max_lws = 0;
+        err = clGetKernelWorkGroupInfo(kernel, device, CL_KERNEL_WORK_GROUP_SIZE,
+            sizeof(max_lws), &max_lws, NULL);
+        assert(CL_SUCCESS == err && "clGetKernelWorkGroupInfo() failed.");
+#if (1 == XOPENME)
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"CL_KERNEL_WORK_GROUP_SIZE\":%u", max_lws);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+#endif
+        const size_t _local_work_size[work_dim] = { args.lws_j, args.lws_i };
+        const size_t lws = _local_work_size[0] * _local_work_size[1];
+        if ((0 < lws) && (lws <= max_lws) &&
+            (global_work_size[0] % _local_work_size[0] == 0) &&
+            (global_work_size[1] % _local_work_size[1] == 0))
         {
-            const size_t n = (size_t) args.matrix_order;
-            const size_t work_dim = 2; assert(0 < work_dim && work_dim <= 3);
-            const size_t global_work_offset[work_dim] = { 0, 0 };
-
-            // Global work size.
-            const size_t global_work_size[work_dim]   = { n / meta.dj, n / meta.di };
-            assert((n % meta.dj == 0) && (n % meta.di == 0) && "Matrix order not divisible by coarsening factors.");
+            local_work_size = _local_work_size;
+            assert((n % (local_work_size[0] * meta.dj) == 0) && (n % (local_work_size[1] * meta.di) == 0) &&
+                "Matrix order not divisible by product of local work size and coarsening factor");
 #if (1 == XOPENME)
-            xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#gws_j\":%u", global_work_size[0]);
+            xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#lws_j\":%u", local_work_size[0]);
             assert(openme.var_count_below_max() && "xOpenME max var count reached.");
 
-            xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#gws_i\":%u", global_work_size[1]);
+            xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#lws_i\":%u", local_work_size[1]);
             assert(openme.var_count_below_max() && "xOpenME max var count reached.");
 #endif
-
-            // Local work size.
-            const size_t * local_work_size;
-
-            size_t max_lws;
-            err = clGetKernelWorkGroupInfo(kernel, device, CL_KERNEL_WORK_GROUP_SIZE,
-                sizeof(max_lws), &max_lws, NULL);
-            assert(CL_SUCCESS == err && "clGetKernelWorkGroupInfo() failed.");
-#if (1 == XOPENME)
-            xopenme_add_var_i(openme.var_count++, (char*) "  \"CL_KERNEL_WORK_GROUP_SIZE\":%u", max_lws);
-            assert(openme.var_count_below_max() && "xOpenME max var count reached.");
-#endif
-            const size_t _local_work_size[work_dim] = { args.lws_j, args.lws_i };
-            const size_t lws = _local_work_size[0] * _local_work_size[1];
-            if ((0 < lws) && (lws <= max_lws) &&
-                (global_work_size[0] % _local_work_size[0] == 0) &&
-                (global_work_size[1] % _local_work_size[1] == 0))
-            {
-                local_work_size = _local_work_size;
-                assert((n % (local_work_size[0] * meta.dj) == 0) && (n % (local_work_size[1] * meta.di) == 0) &&
-                    "Matrix order not divisible by product of local work size and coarsening factor");
-#if (1 == XOPENME)
-                xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#lws_j\":%u", local_work_size[0]);
-                assert(openme.var_count_below_max() && "xOpenME max var count reached.");
-
-                xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#lws_i\":%u", local_work_size[1]);
-                assert(openme.var_count_below_max() && "xOpenME max var count reached.");
-#endif
-            }
-            else
-            {
-                local_work_size = NULL;
-#if (1 == XOPENME)
-                xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#lws_j\":%u", 0);
-                assert(openme.var_count_below_max() && "xOpenME max var count reached.");
-
-                xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#lws_i\":%u", 0);
-                assert(openme.var_count_below_max() && "xOpenME max var count reached.");
-#endif
-            }
-
-            cl_uint num_events_in_wait_list = 0;
-            const cl_event *event_wait_list = NULL;
-
-            err = clEnqueueNDRangeKernel(queue, kernel,
-                work_dim, global_work_offset, global_work_size, local_work_size,
-                num_events_in_wait_list, event_wait_list, &enqueue);
-            assert(CL_SUCCESS == err && "clEnqueueNDRangeKernel() failed.");
         }
+        else
+        {
+            local_work_size = NULL;
+#if (1 == XOPENME)
+            xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#lws_j\":%u", 0);
+            assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+            xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#lws_i\":%u", 0);
+            assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+#endif
+        }
+
+#if (1 == XOPENME)
+        xopenme_clock_start(0);
+#endif
+        // Enqueue kernel.
+        cl_uint num_events_in_wait_list = 0;
+        const cl_event *event_wait_list = NULL;
+        err = clEnqueueNDRangeKernel(queue, kernel,
+            work_dim, global_work_offset, global_work_size, local_work_size,
+            num_events_in_wait_list, event_wait_list, &enqueue);
+        assert(CL_SUCCESS == err && "clEnqueueNDRangeKernel() failed.");
 
         // Wait for kernel completion.
-        {
-            const cl_uint num_events = 1;
-            const cl_event event_list[num_events] = { enqueue };
-            err = clWaitForEvents(num_events, event_list);
-            assert(CL_SUCCESS == err && "clWaitForEvents() failed.");
-        }
+        const cl_uint num_events = 1;
+        const cl_event event_list[num_events] = { enqueue };
+        err = clWaitForEvents(num_events, event_list);
+        assert(CL_SUCCESS == err && "clWaitForEvents() failed.");
+#if (1 == XOPENME)
+        xopenme_clock_end(0);
+#endif
     } // END OF enqueue_kernel()
 
 
@@ -838,13 +840,7 @@ private:
         assert(buffer_B && "No buffer.");
         assert(buffer_C && "No buffer.");
 
-#if (1 == XOPENME)
-        xopenme_clock_start(0);
-#endif
         enqueue_kernel();
-#if (1 == XOPENME)
-        xopenme_clock_end(0);
-#endif
 
         profile_execution();
 
