@@ -3,6 +3,10 @@
     "SGEMM_NN_1x1.json",
     "SGEMM_NN_4x1.json"
   ],
+  "extra_dataset_files": {
+    "SGEMM_NN_1x1.json":["SGEMM_NN_1x1.cl"],
+    "SGEMM_NN_4x1.json":["SGEMM_NN_4x1.cl"]
+  },
   "tags": [
     "dataset",
     "gemmbench",
