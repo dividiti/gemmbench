@@ -2,8 +2,7 @@
 \documentclass{acm_proc_article-sp} % Tested with v3.2SP (April 2009)
 
 \usepackage[hyphens]{url}
-%\usepackage{times}
-%\usepackage{listings}
+\usepackage{booktabs}
 
 \begin{document}
 
@@ -11,9 +10,6 @@
 of matrix multiplication} 
 %
 \subtitle{\LARGE \url{https://github.com/dividiti/gemmbench}}
-
-%\subtitle{Software demonstration\titlenote{The GEMMbench software is available
-%at \url{https://github.com/dividiti/gemmbench}.}}
 
 \numberofauthors{1}
 \author{
@@ -217,7 +213,7 @@ is described by the following metadata:
 }
 \end{verbatim}
 
-See further examples in the {\tt dataset} part of the GEMMbench repository.%
+See further examples in the {\tt dataset} entries of the GEMMbench repository.%
 \footnote{\url{https://github.com/dividiti/gemmbench/tree/master/dataset}}
 
 
@@ -236,6 +232,14 @@ $ ck run
 %
 More information will appear on the GEMMbench page during the period of public discussions.
 
+Table~\ref{SGEMM_NT:table}.
+
+\begin{table*}
+\centering
+\caption{\label{SGEMM_NT:table}The execution time of 3 SGEMM NT kernels on an Odroid-XU3 board. 
+Chip: Samsung Exynos~5422. GPU: ARM Mali-T628 (4 cores). GPU frequency: 600 MHz. OpenCL driver: v4.0.}
+\input{SGEMM_NT-explore-f-n_modified.tex}
+\end{table*}
 
 \section*{Acknowledgments}
 
@@ -245,6 +249,7 @@ Knowledge framework, on top of which we implemented GEMMbench.
 
 \bibliographystyle{abbrv}
 \bibliography{adapt16}
+
 
 %\balancecolumns
 
