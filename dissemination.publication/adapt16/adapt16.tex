@@ -122,25 +122,26 @@ megaflops per gallon were they
 getting?\footnote{\url{http://www.hpcwire.com/2006/06/30/the_new_limits_on_high_performance_computing-1/}}
 %
 \item More seriously, have we achieved significant improvements in energy
-efficiency of floating-point operations over the last decade?\footnote{For
-DGEMM, ClearSpeed's CSX600 processor provided 25 Gflops/s in under 10 Watts.}
+efficiency of floating-point operations over the last
+decade?\footnote{Manufactured in 2005 on a 130 nm process, ClearSpeed's CSX600
+processor provided 25 DGEMM Gflops/s in under 10 Watts.}
 %
 \item How much human effort and ingenuity was involved in writing the kernel or
 in implementing the compiler that generated the kernel?
 %
 \item Can we compare the generators, for example, based on polyhedral
 compilation~\cite{Beaugnon:2014} and functional expression
-rewriting~\cite{Steuwer:2015} in a fair way (including code quality, code generation
-time and robustness)?
+rewriting~\cite{Steuwer:2015} in a fair way (including code quality, code
+generation time and robustness)?
 %
 \item Can we evaluate the generators against ninja-class
 programmers~\cite{Goto:2008} or vendor libraries?
 %
-\item Have we used all the tricks up our sleeves to get the fastest
-GEMM implementation for our hardware and problem at hand?
+\item Have we used all the tricks up our sleeves to get the fastest GEMM
+implementation for our hardware and problem at hand?
 %
-\item Can we {\em adapt} our GEMM implementations to work well across a range of
-architectures, data types, data sizes, etc.?
+\item Can we {\em adapt} our GEMM implementations to work well across a range
+of architectures, data types, data sizes, etc.?
 %
 \end{itemize}
 
@@ -168,6 +169,7 @@ platforms, data sizes and data types.
 
 
 \section{Details}
+\label{sec:details}
 
 %
 The GEMMbench framework reads from a JSON file the metadata describing a
@@ -233,31 +235,139 @@ $ ck run
 %
 More information will appear on the GEMMbench page during the period of public discussions.
 
-Table~\ref{SGEMM_NT:table}.
 
-Figure~\ref{SGEMM_NT:barplot}.
+\section{Experimental evaluation}
 
-\begin{figure*}
-\includegraphics[width=\textwidth]{SGEMM_NT-explore-f-n_tmp.pdf}
-\caption{The execution time of 3 SGEMM NT kernels on an Odroid-XU3 board.
-Chip: Samsung Exynos~5422.
-GPU: ARM Mali-T628 (4 cores).
-GPU frequency: 600 MHz.
-OpenCL driver: v4.0.
-Local work size: $(8,8)$.}
-\label{SGEMM_NT:barplot}
-\end{figure*}
+We demonstrate using the GEMMbench framework for evaluating three SGEMM NT
+OpenCL kernels on a Hardkernel Odroid~XU3 board (Table~\ref{Odroid}).%
+\footnote{\url{http://www.hardkernel.com/main/products/prdt_info.php?g_code=G140448267127}}
+
+\subsection{Evaluation platform}
+
+The Odroid XU3 board has 4 integrated power consumption sensors: 
+%
+\begin{itemize}
+
+  \item for the LPDDR3 RAM;
+  
+  \item for the CPU cluster 0 comprised of 4 ARM Cortex-A7 (``LITTLE'') cores;
+
+  \item for the CPU cluster 1 comprised of 4 ARM Cortex-A15 (``big'') cores; 
+
+  \item for both the GPU cluster 0 and the GPU cluster 1 comprised respectively
+  of 4 and 2 ARM Mali-T628 cores.
+
+\end{itemize}
+%
+We reused the {\em pipeline} functionality of the underlying Collective
+Knowledge framework to conduct experiments under controlled conditions.
+%
+We ran the SGEMM kernels on the GPU cluster 0 (OpenCL device 0); we disabled
+dynamic voltage and frequency scaling (DVFS) and set the frequency to the
+maximum of 600 MHz. 
+%
+Likewise, we set the CPU governors to the performance mode and the CPU
+frequencies to the maximum.
+%
+
+\subsection{OpenCL kernels}
+
+The SGEMM NT kernels are contained in three separate files:
+%
+\begin{itemize}
+
+  \item \verb|SGEMM_NT_1x1.cl|: a na\"ive version shown in
+  Section~\ref{sec:details} which computes a single element of matrix $C$ per
+  work-item;
+
+  \item \verb|SGEMM_NT_4x1.cl|: a vectorised version which computes a vector of
+  four adjacent elements of matrix $C$ per work-item;
+
+  \item \verb|SGEMM_NT_4x1_barrier.cl|: a similarly vectorised version which
+  synchronises work-items in a work-group with a barrier to improve cache
+  utilisation~\cite{Gronqvist:2014}.\footnote{\url{http://malideveloper.arm.com/downloads/GPU_Pro_5/GronqvistLokhmotov_white_paper.pdf}}
+
+\end{itemize}
+%
 
 \begin{table*}
 \centering
-\caption{\label{SGEMM_NT:table}The execution time of 3 SGEMM NT kernels on an Odroid-XU3 board. 
-Chip: Samsung Exynos~5422.
-GPU: ARM Mali-T628 (4 cores).
-GPU frequency: 600 MHz.
-OpenCL driver: v4.0.
-Local work size: $(8,8)$.}
+\caption{\label{Odroid}Experimental platform: Hardkernel Odroid~XU3 board.}
+\begin{tabular}{ll}
+\toprule
+{\bf Hardware}   &\\
+\midrule
+System-on-chip (SoC)         & Samsung Exynos 5422                     \\
+GPU cluster 0 (``device 0'') & ARM Mali-T628,  4 cores, $\le$ 600 MHz  \\
+GPU cluster 1 (``device 1'') & ARM Mali-T628,  2 cores, $\le$ 600 MHz  \\
+CPU cluster 0 (``LITTLE'')   & ARM Cortex-A7,  4 cores, $\le$ 1400 MHz \\
+CPU cluster 1 (``big'')      & ARM Cortex-A15, 4 cores, $\le$ 2000 MHz \\
+LPDDR3 RAM                   & 2 GiB, $\le$ 14.9 Gbytes/s              \\
+\midrule
+{\bf Software}   &\\
+\midrule
+Board support package (BSP)  & 2015-02-25                    \\ 
+Ubuntu Linux                 & 14.04.1 (updated to 14.04.3)  \\
+Linux kernel                 & 3.10.69                       \\
+OpenCL version               & 1.1 Full Profile              \\
+OpenCL driver                & 4.0 (BSP default)             \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Varying the matrix order}
+
+
+For the first set of experiments, we varied the matrix order from 64 to 1024
+({\em i.e.\ } performed experiments for the matrix dimensions ranging from $11
+\times 11$ to $1024 \times 1024$).
+%
+We fixed the OpenCL work-group size to $(8,8)$, which depending on register
+usage supports up to four concurrently executing work-groups per Mali-T628
+core~\cite{Gronqvist:2014}.
+
+Columns 0--3 of Table~\ref{SGEMM_NT:dataframe} shows the raw results in
+Gflops/s from 4 statistical repetitions (under the same experimental
+conditions); column 4 shows the mean for each experiment (computed using {\tt
+pandas.mean()}); column 5 shows the standard deviation (computed using {\tt
+pandas.std()}).
+%
+Figure~\ref{SGEMM_NT:plot} shows the means as a bar plot with the error bars
+taken from the standard deviations.
+
+Across the matrix orders, the program in \verb|SGEMM_NT_1x1.cl| achieved
+low but stable performance up to 3 Gflops/s. 
+%
+The program in \verb|SGEMM_NT_4x1.cl| achieved up to 12 Gflops/s but its
+performance dropped dramatically for the matrix orders that were a multiple of
+256: 256, 512, 768 and 1024.
+%
+In addition, it exhibited high performance variation for the matrix orders of
+256 and 896.
+%
+The program in \verb|SGEMM_NT_4x1_barrier.cl| achieved up to 11.5
+Gflops/s. Importantly, it maintained high performance of 9--10 Gflops/s
+for the matrix orders above 256.
+
+
+\begin{table*}
+\centering
+\caption{\label{SGEMM_NT:dataframe}The performance of 3 SGEMM NT kernels: {\tt pandas} DataFrame with raw results.}
 \input{SGEMM_NT-explore-f-n_tmp.tex}
 \end{table*}
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{SGEMM_NT-explore-f-n_tmp.pdf}
+\caption{The performance of 3 SGEMM NT kernels: {\tt matplotlib} bar plot with error bars.}
+\label{SGEMM_NT:plot}
+\end{figure*}
+
+\subsection{Varying the local work size}
+
+
+\section{Conclusion}
+
+
 
 
 \section*{Acknowledgments}
