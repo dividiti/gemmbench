@@ -2,6 +2,7 @@
 \documentclass{acm_proc_article-sp} % Tested with v3.2SP (April 2009)
 
 \usepackage[hyphens]{url}
+\usepackage{graphicx}
 \usepackage{booktabs}
 
 \begin{document}
@@ -234,12 +235,30 @@ More information will appear on the GEMMbench page during the period of public d
 
 Table~\ref{SGEMM_NT:table}.
 
+Figure~\ref{SGEMM_NT:barplot}.
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{SGEMM_NT-explore-f-n_tmp.pdf}
+\caption{The execution time of 3 SGEMM NT kernels on an Odroid-XU3 board.
+Chip: Samsung Exynos~5422.
+GPU: ARM Mali-T628 (4 cores).
+GPU frequency: 600 MHz.
+OpenCL driver: v4.0.
+Local work size: $(8,8)$.}
+\label{SGEMM_NT:barplot}
+\end{figure*}
+
 \begin{table*}
 \centering
 \caption{\label{SGEMM_NT:table}The execution time of 3 SGEMM NT kernels on an Odroid-XU3 board. 
-Chip: Samsung Exynos~5422. GPU: ARM Mali-T628 (4 cores). GPU frequency: 600 MHz. OpenCL driver: v4.0.}
-\input{SGEMM_NT-explore-f-n_modified.tex}
+Chip: Samsung Exynos~5422.
+GPU: ARM Mali-T628 (4 cores).
+GPU frequency: 600 MHz.
+OpenCL driver: v4.0.
+Local work size: $(8,8)$.}
+\input{SGEMM_NT-explore-f-n_tmp.tex}
 \end{table*}
+
 
 \section*{Acknowledgments}
 
