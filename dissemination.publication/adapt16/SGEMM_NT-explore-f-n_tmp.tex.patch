@@ -1,11 +1,11 @@
 1c1
-< \begin{tabular}{lllrrrr}
+< \begin{tabular}{lllrrrrrr}
 ---
-> \begin{tabular}{l|l|l|rrrr}
+> \begin{tabular}{l|l|l|rrrrrr}
 3c3
-<                 &        &      &       0 &       1 &       2 &       3 \\
+<                 &        &      &       0 &       1 &       2 &       3 &      mean &       std \\
 ---
-> {\bf OpenCL program} & {\bf Local work size} & {\bf Matrix order}      &       0 &       1 &       2 &       3 \\
+> {\bf OpenCL program} & {\bf Local work size} & {\bf Matrix order} &       0 &       1 &       2 &       3 &      mean &       std \\
 15a16
 > \midrule
 26a28
