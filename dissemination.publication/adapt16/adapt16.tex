@@ -311,6 +311,7 @@ Ubuntu Linux                 & 14.04.1 (updated to 14.04.3)  \\
 Linux kernel                 & 3.10.69                       \\
 OpenCL version               & 1.1 Full Profile              \\
 OpenCL driver                & 4.0 (BSP default)             \\
+Host compiler                & Clang++ 3.6                   \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -360,6 +361,24 @@ for the matrix orders above 256.
 \caption{The performance of 3 SGEMM NT kernels: {\tt matplotlib} bar plot with error bars.}
 \label{SGEMM_NT:plot}
 \end{figure*}
+
+\subsection{Comparing energy consumption}
+
+
+
+\begin{table*}
+\centering
+\caption{\label{SGEMM_NT:dataframe:energy}The GPU and memory energy consumption of 3 SGEMM NT kernels: {\tt pandas} DataFrame with raw results.}
+\input{SGEMM_NT-explore-f-n-energy-gpu-mem_tmp.tex}
+\end{table*}
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{SGEMM_NT-explore-f-n-energy-gpu-mem_tmp.pdf}
+\caption{The GPU and memory energy consumption of 3 SGEMM NT kernels: {\tt matplotlib} bar plot.}
+\label{SGEMM_NT:plot:energy}
+\end{figure*}
+
+
 
 \subsection{Varying the local work size}
 
