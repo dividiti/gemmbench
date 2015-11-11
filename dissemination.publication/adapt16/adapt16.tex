@@ -376,14 +376,14 @@ Table~\ref{SGEMM_NT:dataframe:energy} shows the estimated GPU and memory energy
 consumption in Joules across the 3 kernels and 11 matrix orders.
 %
 Figure~\ref{SGEMM_NT:plot:energy} focusses on the energy consumption for the
-orders 896 and 1024.
+order of 1024.
 
-For the order of 896, when the vectorised kernels match in performance, they
+For the order of 128, when the vectorised kernels match in performance, they
 also match in energy consumption.
 %
 For the order of 1024, however, the non-cache optimised kernel is a disaster:
 %
-the cache-optimised vectorised kernel is $6$ times faster and $48$ times more
+the cache-optimised vectorised kernel is $6$ times faster and $40$ times more
 energy efficient both for the GPU and the RAM;
 %
 even the non-vectorised kernel is $75\%$ faster, $10\%$ more energy efficient
