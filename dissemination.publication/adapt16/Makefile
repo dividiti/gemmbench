@@ -11,12 +11,17 @@ PATCH  := patch
 
 PAPER  := adapt16
 
-FILES := $(addprefix ${HERE}/, ${PAPER}.tex SGEMM_NT-explore-f-n_tmp.pdf SGEMM_NT-explore-f-n_tmp.tex SGEMM_NT-explore-f-n-energy-gpu-mem_tmp.pdf SGEMM_NT-explore-f-n-energy-gpu-mem_tmp.tex)
+FILES := $(addprefix ${HERE}/, ${PAPER}.tex \
+    SGEMM_NT-explore-f-n_tmp.pdf \
+	SGEMM_NT-explore-f-n_tmp.tex \
+	SGEMM_NT-explore-f-n-energy-gpu-mem_tmp.pdf \
+	SGEMM_NT-explore-f-n-energy-gpu-mem_tmp.tex \
+	SGEMM_NT-explore-f-n-match_tmp.tex)
 
 all: ${FILES}
 	${LATEX} ${PAPER} && ${BIBTEX} ${PAPER} && ${LATEX} ${PAPER} && ${LATEX} ${PAPER}
 
-# SGEMM_NT-explore-f-n_
+# SGEMM_NT-explore-f-n
 ${HERE}/SGEMM_NT-explore-f-n_tmp.pdf: ${THERE}/SGEMM_NT-explore-f-n_tmp.pdf
 	${CP} $< $@
 ${HERE}/SGEMM_NT-explore-f-n_tmp.tex: ${THERE}/SGEMM_NT-explore-f-n_tmp.tex ${HERE}/SGEMM_NT-explore-f-n_tmp.tex.patch
@@ -30,6 +35,11 @@ ${HERE}/SGEMM_NT-explore-f-n-energy-gpu-mem_tmp.tex: ${THERE}/SGEMM_NT-explore-f
 	${CP} $< $@
 	${PATCH} $@ $@.patch
 
+# SGEMM_NT-explore-f-n-match
+${HERE}/SGEMM_NT-explore-f-n-match_tmp.tex: ${THERE}/SGEMM_NT-explore-f-n-match_tmp.tex
+	${CP} $< $@
+	${PATCH} $@ $@.patch
+
 nobib: ${FILES}
 	${LATEX} ${PAPER}
 
@@ -37,4 +47,5 @@ clean:
 	${RM} $(addprefix ${PAPER}, .pdf .log .aux .blg .bbl .out)
 	${RM} $(addprefix ${HERE}/SGEMM_NT-explore-f-n_tmp, .tex .pdf)
 	${RM} $(addprefix ${HERE}/SGEMM_NT-explore-f-n-energy-gpu-mem_tmp, .tex .pdf)
+	${RM} $(addprefix ${HERE}/SGEMM_NT-explore-f-n-match_tmp, .tex)
 	${RM} *.orig *.rej

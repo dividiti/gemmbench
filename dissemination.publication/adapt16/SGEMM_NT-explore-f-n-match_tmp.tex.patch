@@ -1,0 +1,8 @@
+1c1
+< \begin{tabular}{llrrrrrrrr}
+---
+> \begin{tabular}{l|l|rr|rr|rr|rr}
+15a16
+> \midrule
+26a28
+> \midrule
