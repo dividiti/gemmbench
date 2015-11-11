@@ -238,7 +238,7 @@ More information will appear on the GEMMbench page during the period of public d
 
 \section{Experimental evaluation}
 
-We demonstrate using the GEMMbench framework for evaluating three SGEMM NT
+We demonstrate using the GEMMbench framework for evaluating 3 SGEMM NT
 OpenCL kernels on a Hardkernel Odroid~XU3 board (Table~\ref{Odroid}).%
 \footnote{\url{http://www.hardkernel.com/main/products/prdt_info.php?g_code=G140448267127}}
 
@@ -272,7 +272,7 @@ frequencies to the maximum.
 
 \subsection{OpenCL kernels}
 
-The SGEMM NT kernels are contained in three separate files:
+The SGEMM NT kernels are contained in 3 separate files:
 %
 \begin{itemize}
 
@@ -318,9 +318,11 @@ Host compiler                & Clang++ 3.6                   \\
 
 \subsection{Varying the matrix order}
 
-For the first set of experiments, we varied the matrix order from 64 to 1024
-({\em i.e.}\ performed experiments for the matrix dimensions ranging from $64
-\times 64$ to $1024 \times 1024$).
+% For the first set of experiments...
+
+In our evaluation, we varied the matrix order from 64 to 1024,
+{\em i.e.}\ performed experiments for the matrix dimensions ranging from $64
+\times 64$ to $1024 \times 1024$.
 %
 We fixed the OpenCL local work size (work-group size) to $(8,8)$, which,
 depending on the register usage, supports up to four concurrently executing
@@ -364,28 +366,53 @@ for the matrix orders above 256.
 
 \subsection{Comparing energy consumption}
 
+Using the integrated sensors on the Odroid XU3 board, we estimated energy
+consumption for the program region that launches a kernel and waits for its
+completion.\footnote{We used a rather crude method of averaging the power
+consumption measurements at the start and end of the region and multiplying the
+average by the execution time.}
 
+Table~\ref{SGEMM_NT:dataframe:energy} shows the estimated GPU and memory energy
+consumption in Joules across the 3 kernels and 11 matrix orders.
+%
+Figure~\ref{SGEMM_NT:plot:energy} focusses on the energy consumption for the
+orders 896 and 1024.
+
+For the order of 896, when the vectorised kernels match in performance, they
+also match in energy consumption.
+%
+For the order of 1024, however, the non-cache optimised kernel is a disaster:
+%
+the cache-optimised vectorised kernel is $6$ times faster and $48$ times more
+energy efficient both for the GPU and the RAM;
+%
+even the non-vectorised kernel is $75\%$ faster, $10\%$ more energy efficient
+for the GPU and $5$ times for the RAM.
 
 \begin{table*}
 \centering
-\caption{\label{SGEMM_NT:dataframe:energy}The GPU and memory energy consumption of 3 SGEMM NT kernels: {\tt pandas} DataFrame with raw results.}
+\caption{\label{SGEMM_NT:dataframe:energy}The GPU \& memory energy consumption of 3 SGEMM NT kernels: {\tt pandas} DataFrame with raw results.}
 \input{SGEMM_NT-explore-f-n-energy-gpu-mem_tmp.tex}
 \end{table*}
 
 \begin{figure*}
 \includegraphics[width=\textwidth]{SGEMM_NT-explore-f-n-energy-gpu-mem_tmp.pdf}
-\caption{The GPU and memory energy consumption of 3 SGEMM NT kernels: {\tt matplotlib} bar plot.}
+\caption{The GPU \& memory energy consumption of 3 SGEMM NT kernels: {\tt matplotlib} bar plot.}
 \label{SGEMM_NT:plot:energy}
 \end{figure*}
 
 
 
-\subsection{Varying the local work size}
+\subsection{Validating the results}
 
-For the second set of experiments, we varied the local work size (work-group
-size) for the \verb|SGEMM_NT_4x1_barrier.cl| program and four values of the
-matrix order.
+
+
+%\subsection{Varying the local work size}
 %
+%For the second set of experiments, we varied the local work size (work-group
+%size) for the \verb|SGEMM_NT_4x1_barrier.cl| program and four values of the
+%matrix order.
+%%
 
 %\begin{figure*}
 %\includegraphics[width=\textwidth]{SGEMM_NT-explore-n-lws_tmp.pdf}

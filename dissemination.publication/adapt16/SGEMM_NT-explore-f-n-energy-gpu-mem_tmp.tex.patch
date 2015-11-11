@@ -3,10 +3,10 @@
 ---
 > \begin{tabular}{l|rr|rr|rr}
 3,4c3
-< OpenCL file & SGEMM\_NT\_1x1.cl &                & SGEMM\_NT\_4x1.cl &                & SGEMM\_NT\_4x1\_barrier.cl &                \\
+< OpenCL program & SGEMM\_NT\_1x1.cl &                & SGEMM\_NT\_4x1.cl &                & SGEMM\_NT\_4x1\_barrier.cl &                \\
 < Metric &     GPU, Joules & Memory, Joules &     GPU, Joules & Memory, Joules &             GPU, Joules & Memory, Joules \\
 ---
-> {\bf OpenCL program} & \multicolumn{2}{c}{SGEMM\_NT\_1x1.cl} & \multicolumn{2}{c}{SGEMM\_NT\_4x1.cl} & \multicolumn{2}{c}{SGEMM\_NT\_4x1.cl} \\
+> {\bf OpenCL program} & \multicolumn{2}{c}{SGEMM\_NT\_1x1.cl} & \multicolumn{2}{c}{SGEMM\_NT\_4x1.cl} & \multicolumn{2}{c}{SGEMM\_NT\_4x1\_barrier.cl} \\
 6c5,7
 < Matrix order &                 &                &                 &                &                         &                \\
 ---

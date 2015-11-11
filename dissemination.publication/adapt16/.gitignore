@@ -5,3 +5,5 @@ adapt16.log
 adapt16.pdf
 SGEMM_NT-explore-f-n_tmp.pdf
 SGEMM_NT-explore-f-n_tmp.tex
+SGEMM_NT-explore-f-n-energy-gpu-mem_tmp.pdf
+SGEMM_NT-explore-f-n-energy-gpu-mem_tmp.tex
