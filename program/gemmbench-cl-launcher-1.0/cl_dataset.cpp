@@ -95,7 +95,7 @@ void dataset<T>::verify_results(state & s)
         {
             for (cl_uint j = 0; j < n; ++j)
             {
-                T abs_diff = abs(matrix_C[index(i, j, transC)] - matrix_C_ref[index(i, j, transC)]);
+                T abs_diff = fabs(matrix_C[index(i, j, transC)] - matrix_C_ref[index(i, j, transC)]);
                 max_abs_diff = std::max<T>(max_abs_diff, abs_diff);
                 if (abs_diff > eps)
                 {
