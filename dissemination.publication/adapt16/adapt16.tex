@@ -8,7 +8,7 @@
 \begin{document}
 
 \title{{GEMMbench}: a framework for reproducible and collaborative benchmarking
-of matrix multiplication} 
+of matrix multiplication}
 %
 \subtitle{\LARGE \url{https://github.com/dividiti/gemmbench}}
 
@@ -28,9 +28,9 @@ of matrix multiplication}
 \begin{abstract}
 
 The generic matrix-matrix multiplication (GEMM) is arguably the most popular
-computational kernel of the 20th century. 
+computational kernel of the 20th century.
 %
-Yet, surprisingly, no common methodology for evaluating GEMM performance 
+Yet, surprisingly, no common methodology for evaluating GEMM performance
 has been established over the many decades of using GEMM for comparing
 architectures, compilers and ninja-class programmers.
 
@@ -92,7 +92,7 @@ Consequently, the reader of a report presenting GEMM results is often left wonde
 \begin{itemize}
 %
 \item Was the kernel specialized, for example, to $C = A \times B$? (In other
-words, $\alpha=1$ and $\beta=0$.) 
+words, $\alpha=1$ and $\beta=0$.)
 %
 \item Which of the data types were used: single precision (SGEMM), double
 precision (DGEMM), complex single precision (CGEMM), or complex double
@@ -104,7 +104,7 @@ typically results in better locality, because $B^{T}$ is read row-wise.} If
 transposed, did the execution time include the overhead for transposition?
 %
 \item Which data shapes were used: square or rectangular? If rectangular, did
-the execution time depend on the ratio between the dimensions? 
+the execution time depend on the ratio between the dimensions?
 %
 \item Which data sizes were used: small or large?
 %
@@ -181,7 +181,7 @@ for the number of rows and {\tt dj} for the number of columns in a block
 computed by a single work-item), and so on.
 
 For example, the SGEMM kernel that assumes that $A$ is non-transposed and $B$
-is transposed and outputs a single element per work-item: 
+is transposed and outputs a single element per work-item:
 %
 \begin{verbatim}
 kernel void gemm(
@@ -244,15 +244,15 @@ OpenCL kernels on a Hardkernel Odroid~XU3 board (Table~\ref{Odroid}).%
 
 \subsection{Evaluation platform}
 
-The Odroid XU3 board has 4 integrated power consumption sensors: 
+The Odroid XU3 board has 4 integrated power consumption sensors:
 %
 \begin{itemize}
 
   \item for the LPDDR3 RAM;
-  
+
   \item for the CPU cluster 0 comprised of 4 ARM Cortex-A7 (``LITTLE'') cores;
 
-  \item for the CPU cluster 1 comprised of 4 ARM Cortex-A15 (``big'') cores; 
+  \item for the CPU cluster 1 comprised of 4 ARM Cortex-A15 (``big'') cores;
 
   \item for both the GPU cluster 0 and the GPU cluster 1 comprised respectively
   of 4 and 2 ARM Mali-T628 cores.
@@ -264,7 +264,7 @@ Knowledge framework to conduct experiments under controlled conditions.
 %
 We ran the SGEMM kernels on the GPU cluster 0 (OpenCL device 0); we disabled
 dynamic voltage and frequency scaling (DVFS) and set the frequency to the
-maximum of 600 MHz. 
+maximum of 600 MHz.
 %
 Likewise, we set the CPU governors to the performance mode and the CPU
 frequencies to the maximum.
@@ -306,7 +306,7 @@ LPDDR3 RAM                   & 2 GiB, $\le$ 14.9 Gbytes/s              \\
 \midrule
 {\bf Software}   &\\
 \midrule
-Board support package (BSP)  & 2015-02-25                    \\ 
+Board support package (BSP)  & 2015-02-25                    \\
 Ubuntu Linux                 & 14.04.1 (updated to 14.04.3)  \\
 Linux kernel                 & 3.10.69                       \\
 OpenCL version               & 1.1 Full Profile              \\
@@ -317,14 +317,13 @@ OpenCL driver                & 4.0 (BSP default)             \\
 
 \subsection{Varying the matrix order}
 
-
 For the first set of experiments, we varied the matrix order from 64 to 1024
-({\em i.e.\ } performed experiments for the matrix dimensions ranging from $11
-\times 11$ to $1024 \times 1024$).
+({\em i.e.}\ performed experiments for the matrix dimensions ranging from $64
+\times 64$ to $1024 \times 1024$).
 %
-We fixed the OpenCL work-group size to $(8,8)$, which depending on register
-usage supports up to four concurrently executing work-groups per Mali-T628
-core~\cite{Gronqvist:2014}.
+We fixed the OpenCL local work size (work-group size) to $(8,8)$, which,
+depending on the register usage, supports up to four concurrently executing
+work-groups per Mali-T628 core~\cite{Gronqvist:2014}.
 
 Columns 0--3 of Table~\ref{SGEMM_NT:dataframe} shows the raw results in
 Gflops/s from 4 statistical repetitions (under the same experimental
@@ -336,7 +335,7 @@ Figure~\ref{SGEMM_NT:plot} shows the means as a bar plot with the error bars
 taken from the standard deviations.
 
 Across the matrix orders, the program in \verb|SGEMM_NT_1x1.cl| achieved
-low but stable performance up to 3 Gflops/s. 
+low but stable performance up to 3 Gflops/s.
 %
 The program in \verb|SGEMM_NT_4x1.cl| achieved up to 12 Gflops/s but its
 performance dropped dramatically for the matrix orders that were a multiple of
@@ -364,11 +363,36 @@ for the matrix orders above 256.
 
 \subsection{Varying the local work size}
 
+For the second set of experiments, we varied the local work size (work-group
+size) for the \verb|SGEMM_NT_4x1_barrier.cl| program and four values of the
+matrix order.
+%
+
+%\begin{figure*}
+%\includegraphics[width=\textwidth]{SGEMM_NT-explore-n-lws_tmp.pdf}
+%\caption{The performance of 3 SGEMM NT kernels: {\tt matplotlib} bar plot with error bars.}
+%\label{SGEMM_NT:plot}
+%\end{figure*}
 
 \section{Conclusion}
 
+We have presented GEMMbench, a framework and methodology for systematically
+evaluating performance of matrix multiplication implementations.
+%
+Our initial implementation supports hand-written OpenCL kernels, producing
+single or multiple output elements per work-item (via thread coarsening and
+vectorization).
+%
 
-
+Our goal is to involve the community to extend GEMMbench to evaluate
+performance of compiler-generated OpenCL kernels, non-OpenCL implementations,
+library implementations and so on, across many target platforms.
+%
+To this end, the underlying Collective Knowledge framework provides unique
+opportunities for the community to gradually gather and share valuable
+knowledge for optimizing performance of matrix multiplication and other
+programs, as well as of compilers and processors.
+%
 
 \section*{Acknowledgments}
 
