@@ -1,0 +1,12 @@
+1c1
+< \begin{tabular}{llllrrrrrr}
+---
+> \begin{tabular}{lll|l|rrrrrr}
+3c3
+<     &    &     &     &       0 &       1 &       2 &       3 &      mean &       std \\
+---
+> {\bf LWS} $j \times i$ & {\bf LWS} $j$ & {\bf LWS} $i$ & {\bf Order} &       0 &       1 &       2 &       3 &      mean &       std \\
+12a13
+> \midrule
+32a34
+> \midrule

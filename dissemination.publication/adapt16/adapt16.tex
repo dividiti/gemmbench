@@ -338,11 +338,10 @@ The SGEMM NT kernels are contained in 3 separate files:
 
 %------------------------------------------------------------------------------
 \subsection{Varying the matrix order}
+\label{sec:order}
 %------------------------------------------------------------------------------
 
-% For the first set of experiments...
-
-In our evaluation, we varied the matrix order from 64 to 1024,
+For the first set of experiments, we varied the matrix order from 64 to 1024,
 {\em i.e.}\ performed experiments for the matrix dimensions ranging from $64
 \times 64$ to $1024 \times 1024$.
 %
@@ -359,17 +358,17 @@ pandas.std()}).
 Figure~\ref{SGEMM_NT:plot} shows the means as a bar plot with the error bars
 taken from the standard deviations.
 
-Across the matrix orders, the program in \verb|SGEMM_NT_1x1.cl| achieved
+Across the matrix orders, the \verb|SGEMM_NT_1x1.cl| program achieved
 low but stable performance up to 3 Gflops/s.
 %
-The program in \verb|SGEMM_NT_4x1.cl| achieved over 12 Gflops/s but its
+The \verb|SGEMM_NT_4x1.cl| program achieved over 12 Gflops/s but its
 performance dropped dramatically for the matrix orders that were a multiple of
 256: 256, 512, 768 and 1024.
 %
 In addition, it exhibited high performance variation for the matrix orders of
 256 and 896.
 %
-The program in \verb|SGEMM_NT_4x1_barrier.cl| achieved up to 11.5
+The \verb|SGEMM_NT_4x1_barrier.cl| program achieved up to 11.5
 Gflops/s. Importantly, it maintained high performance of 9--10 Gflops/s
 for the matrix orders above 256.
 
@@ -388,19 +387,26 @@ for the matrix orders above 256.
 
 
 %------------------------------------------------------------------------------
-%\subsection{Varying the local work size}
+\subsection{Varying the local work size}
+\label{sec:lws}
 %------------------------------------------------------------------------------
-%
-%For the second set of experiments, we varied the local work size (work-group
-%size) for the \verb|SGEMM_NT_4x1_barrier.cl| program and four values of the
-%matrix order.
-%%
 
-%\begin{figure*}
-%  \includegraphics[width=\textwidth]{SGEMM_NT-explore-n-lws_tmp.pdf}
-%  \caption{The performance of 3 SGEMM NT kernels: {\tt matplotlib} bar plot with error bars.}
-%  \label{SGEMM_NT:plot}
-%\end{figure*}
+For the second set of experiments, we varied the local work size (work-group
+size) for the \verb|SGEMM_NT_4x1_barrier.cl| program and 4 values of the
+matrix order.
+%
+
+\begin{sidewaysfigure*}
+  \includegraphics[width=\textheight]{SGEMM_NT-explore-n-lws_tmp.pdf}
+  \caption{The performance of {\tt SGEMM\_NT\_4x1\_barrier.cl} across local work sizes: {\tt matplotlib} bar plot with error bars.}
+  \label{SGEMM_NT:plot:lws}
+\end{sidewaysfigure*}
+
+\begin{table*}
+  \centering
+  \caption{\label{SGEMM_NT:df:lws}The performance of {\tt SGEMM\_NT\_4x1\_barrier.cl} across local work sizes: {\tt pandas} DataFrame with raw results.}
+  \input{SGEMM_NT-explore-n-lws_tmp.tex}
+\end{table*}
 
 %-------------------------------------------------------------------------------
 \subsection{Comparing energy consumption}
@@ -413,7 +419,8 @@ consumption measurements at the start and end of the region and multiplying the
 average by the execution time.}
 
 Table~\ref{SGEMM_NT:df:energy} shows the estimated GPU and memory energy
-consumption in Joules across the 3 kernels and 11 matrix orders.
+consumption in Joules across the 3 kernels and 11 matrix orders in our first
+set of experiments (Section~\ref{sec:order}).
 %
 Figure~\ref{SGEMM_NT:plot:energy} focusses on the energy consumption for the
 orders from 384 to 1024.
@@ -476,8 +483,7 @@ the range $(-0.5, +0.5)$.
 
 Table~\ref{SGEMM_NT:df:match} shows the maximum absolute difference found via
 the element-wise comparison and whether the results match under the chosen
-$\epsilon = 0.1$ for 4 statistical repetitions (under the same experimental
-conditions).
+$\epsilon = 0.1$ for our first set of experiments (Section~\ref{sec:order}).
 
 \begin{sidewaystable*}
   \centering
@@ -524,19 +530,6 @@ the random distribution, we could look into defining representative datasets.
 Ideally, they would come from real-world problems along with precision
 requirements.
 %
-
-%\subsection{Varying the local work size}
-%
-%For the second set of experiments, we varied the local work size (work-group
-%size) for the \verb|SGEMM_NT_4x1_barrier.cl| program and four values of the
-%matrix order.
-%%
-
-%\begin{figure*}
-%\includegraphics[width=\textwidth]{SGEMM_NT-explore-n-lws_tmp.pdf}
-%\caption{The performance of 3 SGEMM NT kernels: {\tt matplotlib} bar plot with error bars.}
-%\label{SGEMM_NT:plot}
-%\end{figure*}
 
 
 %===============================================================================
@@ -628,7 +621,7 @@ representative workloads for use in performance evaluation and optimisation of
 computer systems.
 
 %===============================================================================
-\section*{Acknowledgments and more}
+\section{Acknowledgments and more}
 %===============================================================================
 
 We thank Grigori Fursin, CTO of {\tt dividiti} and Chief Scientist of the
