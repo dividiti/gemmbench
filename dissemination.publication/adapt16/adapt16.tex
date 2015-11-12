@@ -65,7 +65,7 @@ coarsening and vectorization).
 
 
 %==============================================================================
-\section{Introduction}
+\section{Motivation}
 %==============================================================================
 
 The generic matrix-matrix multiplication (GEMM) is given by the equation:
@@ -129,7 +129,8 @@ getting?\footnote{\url{http://www.hpcwire.com/2006/06/30/the_new_limits_on_high_
 \item More seriously, have we achieved significant improvements in energy
 efficiency of floating-point operations over the last
 decade?\footnote{Manufactured in 2005 on a 130 nm process, ClearSpeed's CSX600
-processor provided 25 DGEMM Gflops/s in under 10 Watts.}
+processor provided 25 DGEMM Gflops/s in under 10 Watts according to their
+marketing materials.}
 %
 \item How much human effort and ingenuity was involved in writing the kernel or
 in implementing the compiler that generated the kernel?
@@ -150,7 +151,7 @@ of architectures, data types, data sizes, etc.?
 %
 \end{itemize}
 
-Given that are discussing something apparently as simple as GEMM, intended to
+Given that we are discussing GEMM, a simple kernel intended to
 give us insights for solving more complex `real-world' problems, it is
 essential to start getting some of the answers right to facilitate our learning
 and knowledge sharing.
@@ -160,13 +161,16 @@ of GEMM implementations.
 %
 GEMMbench is implemented on top of Collective Knowledge (CK), a lightweight
 framework for reproducible and collaborative R\&D in computer systems.%
-\footnote{\url{http://cknowledge.org}}
-%
+\footnote{CK is the last in the lineage of frameworks designed by Grigori
+Fursin. See \url{http://cknowledge.org}. Its immediate predecessor, Collective
+Mind (CM), is described in the following articles~\cite{CollectiveMind,
+CollectiveMind2}.}
+
 Our initial implementation supports hand-written OpenCL kernels operating on
 matrices consisting of single- and double-precision floating-point values, and
 producing single or multiple output elements per work-item (via thread
 coarsening and vectorization).
-%
+
 Over time, we plan to involve the community to add further hand-written and
 generated kernels (e.g. from \cite{Beaugnon:2014,Steuwer:2015}), and,
 importantly, to collectively study the GEMM performance across multiple
@@ -228,8 +232,17 @@ See further examples in the {\tt dataset} entries of the GEMMbench repository.%
 
 
 %==============================================================================
-\section{How to reproduce?}
+\section{Experimental evaluation}
+\label{sec:evaluation}
 %==============================================================================
+
+We demonstrate using the GEMMbench framework for evaluating 3 SGEMM NT
+OpenCL kernels on a Hardkernel Odroid~XU3 board (Table~\ref{Odroid}).%
+\footnote{\url{http://www.hardkernel.com/main/products/prdt_info.php?g_code=G140448267127}}
+
+%------------------------------------------------------------------------------
+\subsection{Reproducibility}
+%------------------------------------------------------------------------------
 
 Briefly, install Collective Knowledge\footnote{\url{http://github.com/ctuning/ck}}
 and follow the steps:
@@ -243,15 +256,6 @@ $ ck run
 \end{verbatim}
 %
 More information will appear on the GEMMbench page during the period of public discussions.
-
-
-%==============================================================================
-\section{Experimental evaluation}
-%==============================================================================
-
-We demonstrate using the GEMMbench framework for evaluating 3 SGEMM NT
-OpenCL kernels on a Hardkernel Odroid~XU3 board (Table~\ref{Odroid}).%
-\footnote{\url{http://www.hardkernel.com/main/products/prdt_info.php?g_code=G140448267127}}
 
 %------------------------------------------------------------------------------
 \subsection{Evaluation platform}
@@ -358,7 +362,7 @@ taken from the standard deviations.
 Across the matrix orders, the program in \verb|SGEMM_NT_1x1.cl| achieved
 low but stable performance up to 3 Gflops/s.
 %
-The program in \verb|SGEMM_NT_4x1.cl| achieved up to 12 Gflops/s but its
+The program in \verb|SGEMM_NT_4x1.cl| achieved over 12 Gflops/s but its
 performance dropped dramatically for the matrix orders that were a multiple of
 256: 256, 512, 768 and 1024.
 %
@@ -440,15 +444,86 @@ for the GPU and $5$ times for the RAM.
 
 %-------------------------------------------------------------------------------
 \subsection{Validating the results}
+\label{sec:validating}
 %-------------------------------------------------------------------------------
 
-Table~\ref{SGEMM_NT:df:match}.
+No benchmark should be complete without checking the results for correctness.
+%
+GEMMbench includes a reference CPU implementation that an OpenCL
+implementation's results are compared against.
+%
+Since GEMM operates on floating-point data, the results cannot be expected to be
+bit-exact.
+%
+Instead, the results are compared element-wise using a small {\em epsilon}
+value $\epsilon$.
+
+Initially, we chose $\epsilon = 10^{-5}$.
+%
+Early in the development, we accidentally used the integer \verb|abs()|
+function instead of the floating-point \verb|fabs()| function.
+%
+As a result, element-wise discrepancies not exceeding $1.0$ would frequently go
+unnoticed.
+%
+Once that issue was fixed, we realised that $\epsilon = 10^{-5}$ was too small
+a value when operating on single-precision floating-point data.
+%
+Empirically, we found that $\epsilon = 0.1$ worked well in practice when the
+elements of the input matrices were drawn from the uniform distribution over
+the range $(-0.5, +0.5)$.
+%
+
+Table~\ref{SGEMM_NT:df:match} shows the maximum absolute difference found via
+the element-wise comparison and whether the results match under the chosen
+$\epsilon = 0.1$ for 4 statistical repetitions (under the same experimental
+conditions).
 
 \begin{sidewaystable*}
   \centering
   \caption{\label{SGEMM_NT:df:match}The validation of 3 SGEMM NT kernels: {\tt pandas} DataFrame with raw results.}
   \input{SGEMM_NT-explore-f-n-match_tmp.tex}
 \end{sidewaystable*}
+
+For the \verb|SGEMM_NT_1x1.cl| program and the matrix order of 64, no results
+matched.
+%
+In fact, the maximum absolute differences suggest a possible bug in either the
+OpenCL or the reference implementation. (Neither has been around for long or
+code-reviewed.)
+
+For the \verb|SGEMM_NT_4x1.cl| program and the matrix order of 64, the results
+are mixed: they twice matched and twice did not.
+%
+The failures may be difficult to debug, since they are intermittent.
+%
+Luckily, replaying an experimental point under the Collective Knowledge framework is
+a matter of running a single command {\em e.g.}\:
+%
+\begin{verbatim}
+$ ck replay experiment:<UID> --point=<UID>
+\end{verbatim}
+%
+which would help investigate the failures and quickly test potential solutions.
+
+For the \verb|SGEMM_NT_4x1_barrier.cl| program the results show repeatable
+failures for the orders of 64, 96, 192.
+%
+This may give us a clue to what goes wrong here.
+
+Returning to choosing the value of $\epsilon$, we note that these results would pass
+under $\epsilon = 0.2$.
+%
+It is likely, however, that even this $\epsilon$ would need to be changed had
+the input values been drawn from a different distribution {\em e.g.}\ the
+uniform distribution over the range $(-5.0, +5.0)$.
+
+Rather than making an arbitrary choice of $\epsilon$ for an arbitrary choice of
+the random distribution, we could look into defining representative datasets.
+%
+Ideally, they would come from real-world problems along with precision
+requirements.
+%
 
 %\subsection{Varying the local work size}
 %
@@ -485,10 +560,72 @@ opportunities for the community to gradually gather and share valuable
 knowledge for optimizing performance of matrix multiplication and other
 programs, as well as of compilers and processors.
 %
-We will build upon other strengths of the Collective Knowledge framework such
-as support for multiple operating systems (Windows, Linux, Android and MacOS),
+We will build upon other strengths of the Collective Knowledge framework including
+support for multiple operating systems (Windows, Linux, Android and MacOS),
 compilers (LLVM, GCC, ICC, MSVC, {\em etc.}) and interfaces to packages for
 data mining and predictive analytics.
+
+Where do we start?
+%
+First, we encourage the interested reader help us investigate the failures
+reported in Section~\ref{sec:validating}.
+%
+Eric S.\ Raymond's proposition that ``given enough eyeballs, all bugs are
+shallow''\footnote{\url{https://en.wikipedia.org/wiki/The_Cathedral_and_the_Bazaar}}
+should apply well in this case.
+%
+Indeed, some of the failures may have nothing to do with numerical
+(in)stability. 
+%
+Programming errors (such as tacit assumptions) may be detected with static and
+dynamic analysis tools such as GPUVerify~\cite{GPUVerify} and
+Oclgrind~\cite{Oclgrind}.
+%
+In the final version of this article, we will acknowledge those who help us
+explain the existing failures and perhaps find new ones, and of course fix them.
+
+Second, we welcome contributions in the form of experimental data in the
+Collective Knowledge format.
+%
+The contributors should acknowledge their compliance with the terms of use of
+their systems, specifically that they do not breach confidentiality.%
+\footnote{Note that such terms are easy to overlook. For example, from a
+vendor's click-through end-user license agreement: ``BENCHMARKING: This Licence
+does not prevent you from using the Software for internal benchmarking
+purposes. However, you shall treat any and all benchmarking data relating to
+the Software, and any other results of your use or testing of the Software
+which are indicative of its performance, efficacy, reliability or quality, as
+confidential information and you shall not disclose such information to any
+third party without the express written permission of VENDOR.'' Similar terms
+have prevented us from sharing results from other platforms in
+Section~\ref{sec:evaluation}. As far as we are aware, the standard Hardkernel
+BSP is distributed without such limitations.}
+%
+
+Third, we welcome contributions in the form of improvements for the core
+GEMMbench code {\em e.g.}\ support for rectangular matrices and complex
+floating-point numbers.
+
+Fourth, we welcome contributions in the form of OpenCL kernels or other
+implementations.
+%
+The initial set of kernels optimised for the ARM Mali-T600 architecture is
+intentionally small.
+%
+We would like to see contributed kernels optimised for different architectures.
+%
+The contributors should acknowledge their copyright in the source
+code\footnote{No direct copying from vendors' SDKs or programming guides
+please.} and specify the licensing terms.\footnote{The standard Collective
+Knowledge license (3-clause BSD) is preferred.}
+%
+
+Fifth, we welcome contributions in the form of representative datasets or
+their descriptions.
+
+We envision GEMMbench to inspire community-driven development of other
+representative workloads for use in performance evaluation and optimisation of
+computer systems.
 
 %===============================================================================
 \section*{Acknowledgments and more}
@@ -498,8 +635,9 @@ We thank Grigori Fursin, CTO of {\tt dividiti} and Chief Scientist of the
 cTuning foundation, for designing and implementing the Collective
 Knowledge framework, on top of which we implemented GEMMbench.
 
-We look forward to the public discussion of this article and hope to get
-useful feedback and contributions from the community.
+We look forward to the public discussion of this draft and hope to get useful
+feedback and contributions from the community, which will be acknowledged in
+the final version of this article.
 
 %-------------------------------------------------------------------------------
 
