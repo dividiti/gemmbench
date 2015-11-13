@@ -2,12 +2,18 @@
   "dataset_files": [
     "SGEMM_NT_1x1.json",
     "SGEMM_NT_4x1.json",
-    "SGEMM_NT_4x1_barrier.json"
+    "SGEMM_NT_4x2.json",
+    "SGEMM_NT_4x1_unroll2.json",
+    "SGEMM_NT_4x1_barrier.json",
+    "SGEMM_NT_4x2_barrier.json"
   ],
   "extra_dataset_files": {
     "SGEMM_NT_1x1.json":["SGEMM_NT_1x1.cl"],
     "SGEMM_NT_4x1.json":["SGEMM_NT_4x1.cl"],
-    "SGEMM_NT_4x1_barrier.json":["SGEMM_NT_4x1_barrier.cl"]
+    "SGEMM_NT_4x2.json":["SGEMM_NT_4x2.cl"],
+    "SGEMM_NT_4x1_unroll2.json":["SGEMM_NT_4x1_unroll2.cl"],
+    "SGEMM_NT_4x1_barrier.json":["SGEMM_NT_4x1_barrier.cl"],
+    "SGEMM_NT_4x2_barrier.json":["SGEMM_NT_4x2_barrier.cl"]
   },
   "tags": [
     "dataset",

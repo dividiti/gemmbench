@@ -1,0 +1,9 @@
+{
+    "name"   : "SGEMM_NT_4x2_barrier",
+    "file"   : "SGEMM_NT_4x2_barrier.cl",
+    "type"   : "S",
+    "transA" : "N",
+    "transB" : "T",
+    "dj"     : 4,
+    "di"     : 2
+}

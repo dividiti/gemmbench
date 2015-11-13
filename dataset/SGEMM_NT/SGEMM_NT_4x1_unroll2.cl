@@ -18,16 +18,17 @@ kernel void gemm(
     global float4 const *pB = &B[nv*dj*j];
 
     float4 ab = (float4) 0.0f;
-    for (uint k = 0; k < nv; k += 1, pA += 1, pB += 1)
+    for (uint k = 0; k < nv; k += 2, pA += 2, pB += 2)
     {
-        float4  a = pA[nv*0];
+        float4  a_0 = pA[nv*0+0]; float4  a_1 = pA[nv*0+1];
 
-        float4 b0 = pB[nv*0];
-        float4 b1 = pB[nv*1];
-        float4 b2 = pB[nv*2];
-        float4 b3 = pB[nv*3];
+        float4 b0_0 = pB[nv*0+0]; float4 b0_1 = pB[nv*0+1];
+        float4 b1_0 = pB[nv*1+0]; float4 b1_1 = pB[nv*1+1];
+        float4 b2_0 = pB[nv*2+0]; float4 b2_1 = pB[nv*2+1];
+        float4 b3_0 = pB[nv*3+0]; float4 b3_1 = pB[nv*3+1];
 
-        ab += (float4)(dot(a, b0), dot(a, b1), dot(a, b2), dot(a, b3));
+        ab += (float4)(dot(a_0, b0_0), dot(a_0, b1_0), dot(a_0, b2_0), dot(a_0, b3_0));
+        ab += (float4)(dot(a_1, b0_1), dot(a_1, b1_1), dot(a_1, b2_1), dot(a_1, b3_1));
     }
 
     global float4 *pC = &C[nv*di*i + j];
