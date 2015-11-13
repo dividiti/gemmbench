@@ -132,7 +132,7 @@ public:
         device_idx(0),
         matrix_order(256),
         lws_j(0), lws_i(0),
-        eps(1e-5)
+        eps(0.1)
     { }
 
     void parse(int argc, char* argv[])
