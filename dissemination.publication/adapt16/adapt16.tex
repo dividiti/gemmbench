@@ -349,11 +349,10 @@ We fixed the OpenCL local work size (work-group size) to $(8,8)$, which,
 depending on the register usage, supports up to four concurrently executing
 work-groups per Mali-T628 core~\cite{Gronqvist:2014}.
 
-Columns 0--3 of Table~\ref{SGEMM_NT:df} shows the raw results in
-Gflops/s from 4 statistical repetitions (under the same experimental
-conditions); column 4 shows the mean for each experiment (computed using {\tt
-pandas.mean()}); column 5 shows the standard deviation (computed using {\tt
-pandas.std()}).
+Columns 0--3 of Table~\ref{SGEMM_NT:df} show the raw results in Gflops/s from 4
+statistical repetitions (under the same experimental conditions); column 4
+shows the mean for each experiment (computed using {\tt pandas.mean()}); column
+5 shows the standard deviation (computed using {\tt pandas.std()}).
 %
 Figure~\ref{SGEMM_NT:plot} shows the means as a bar plot with the error bars
 taken from the standard deviations.
@@ -375,13 +374,13 @@ for the matrix orders above 256.
 
 \begin{table*}
   \centering
-  \caption{\label{SGEMM_NT:df}The performance of 3 SGEMM NT kernels: {\tt pandas} DataFrame with raw results.}
+  \caption{\label{SGEMM_NT:df}The performance of 3 SGEMM NT kernels.}
   \input{SGEMM_NT-explore-f-n_tmp.tex}
 \end{table*}
 
 \begin{figure*}
   \includegraphics[width=\textwidth]{SGEMM_NT-explore-f-n_tmp.pdf}
-  \caption{The performance of 3 SGEMM NT kernels: {\tt matplotlib} bar plot with error bars.}
+  \caption{The performance of 3 SGEMM NT kernels.}
   \label{SGEMM_NT:plot}
 \end{figure*}
 
@@ -395,16 +394,46 @@ For the second set of experiments, we varied the local work size (work-group
 size) for the \verb|SGEMM_NT_4x1_barrier.cl| program and 4 values of the
 matrix order.
 %
+Table~\ref{SGEMM_NT:plot:lws} shows a bar plot with the local work size varied
+from 16 to 128 work-items per work-group.
+%
+For page size limits, Figure~\ref{SGEMM_NT:df:lws} shows the raw data only for the
+local work size of up to 64 work-items per work-group.
+
+Overall, by exploring the local work size space we were able to achieve up to
+$20\%$ performance improvement over our default of $(8,8)$.
+%
+But rather than using exhaustive search we could guide it from a small number
+of experiments, as motivated by the following observations.
+
+Initially, we started exploring the local work size space with the first
+dimension $j \ge 2$.
+%
+We then noticed that using the local work size of $(s_l, s_h)$, where $s_l <
+s_h$, was faster than using $(s_h, s_l)$.
+%
+For example, using $(2, 16)$ was $1.5--3$ times faster than using $(16, 2)$;
+using $(1, 16)$ even resulted in the record $11.9$ Gflops/s for this program.
+%
+We run more experiments with $s_l = 1, 2$ and discerned an interesting pattern:
+for small local work sizes (16 and 32), we got the best performance with $s_l =
+1$; for larger local work sizes (64 and 128), we got the best performance with
+$s_l = 4$.
+%
+We could use ``predictive analytics'' to discern at least the ``first-order''
+effect of the preference for using $(s_l, s_h)$, where $s_l < s_h$, but perhaps
+also the ``second-order'' effect.\footnote{This is left as an exercise for the
+reader.}
 
 \begin{sidewaysfigure*}
   \includegraphics[width=\textheight]{SGEMM_NT-explore-n-lws_tmp.pdf}
-  \caption{The performance of {\tt SGEMM\_NT\_4x1\_barrier.cl} across local work sizes: {\tt matplotlib} bar plot with error bars.}
+  \caption{The performance of {\tt SGEMM\_NT\_4x1\_barrier.cl} across work-group sizes with up to 64 work-items.}
   \label{SGEMM_NT:plot:lws}
 \end{sidewaysfigure*}
 
 \begin{table*}
   \centering
-  \caption{\label{SGEMM_NT:df:lws}The performance of {\tt SGEMM\_NT\_4x1\_barrier.cl} across local work sizes: {\tt pandas} DataFrame with raw results.}
+  \caption{\label{SGEMM_NT:df:lws}The performance of {\tt SGEMM\_NT\_4x1\_barrier.cl} work-group sizes with up to 64 work-items.}
   \input{SGEMM_NT-explore-n-lws_tmp.tex}
 \end{table*}
 
@@ -438,13 +467,13 @@ for the GPU and $5$ times for the RAM.
 
 \begin{table*}
   \centering
-  \caption{\label{SGEMM_NT:df:energy}The GPU \& memory energy consumption of 3 SGEMM NT kernels: {\tt pandas} DataFrame with raw results.}
+  \caption{\label{SGEMM_NT:df:energy}The GPU \& memory energy consumption of 3 SGEMM NT kernels.}
   \input{SGEMM_NT-explore-f-n-energy-gpu-mem_tmp.tex}
 \end{table*}
 
 \begin{figure*}
   \includegraphics[width=\textwidth]{SGEMM_NT-explore-f-n-energy-gpu-mem_tmp.pdf}
-  \caption{The GPU \& memory energy consumption of 3 SGEMM NT kernels: {\tt matplotlib} bar plot.}
+  \caption{The GPU \& memory energy consumption of 3 SGEMM NT kernels.}
   \label{SGEMM_NT:plot:energy}
 \end{figure*}
 
