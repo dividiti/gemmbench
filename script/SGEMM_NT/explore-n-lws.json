@@ -1,6 +1,9 @@
 {
   "choices_order":[
     [
+      "##dataset_file"
+    ],
+    [
       "##choices#run_cmd_key_n"
     ],
     [
@@ -8,8 +11,15 @@
     ]
   ],
   "choices_selection":[
+    {"type":"loop", "choice":["SGEMM_NT_4x1_barrier.json"]},
     {"type":"loop", "choice":["128","256","384","512"], "default":"256"},
-    {"type":"loop", "choice":["4,4", "2,16","16,2","4,8","8,4", "8,8", "4,16","16,4","2,32","32,2", "4,32","32,4","8,16","16,8"], "default":"8,8"}
+    {"type":"loop", "choice":
+        [
+        "1,16", "2,8", "4,4", "8,2",
+        "1,32", "2,16", "4,8", "8,4",
+        "1,64", "2,32", "4,16", "8,8", "16,4",
+        "1,128", "2,64", "4,32", "8,16", "16,8", "32,4"
+        ], "default":"8,8"}
   ],
 
   "iterations":-1,
@@ -18,7 +28,8 @@
   "pipeline_update":{
     "cpu_freq":"max",
     "gpu_freq":"max",
-    "compiler_vars": {}
+    "compiler_vars": {},
+    "dataset_uoa":"SGEMM_NT"
   },
 
   "record":"yes",

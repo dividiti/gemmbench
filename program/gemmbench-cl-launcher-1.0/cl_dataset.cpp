@@ -104,6 +104,9 @@ void dataset<T>::verify_results(state & s)
  #if (1 == XOPENME)
                     xopenme_add_var_i(s.openme.var_count++, (char*) "  \"RESULTS#match\":%u", 0);
                     assert(s.openme.var_count_below_max() && "xOpenME max var count reached.");
+
+                    xopenme_add_var_d(s.openme.var_count++, (char*) "  \"RESULTS#max_abs_diff\":%.8lf", max_abs_diff);
+                    assert(s.openme.var_count_below_max() && "xOpenME max var count reached.");
  #endif
                     exit(EXIT_FAILURE);
                 }
