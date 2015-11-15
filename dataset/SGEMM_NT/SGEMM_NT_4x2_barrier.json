@@ -1,6 +1,7 @@
 {
     "name"   : "SGEMM_NT_4x2_barrier",
     "file"   : "SGEMM_NT_4x2_barrier.cl",
+    "opts"   : "-DKERNEL_ATTRIBUTES=__attribute__((work_group_size_hint(4,32,1)))",
     "type"   : "S",
     "transA" : "N",
     "transB" : "T",

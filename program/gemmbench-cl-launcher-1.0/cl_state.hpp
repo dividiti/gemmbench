@@ -615,29 +615,53 @@ public:
     void build_program()
     {
         cl_int err = CL_SUCCESS;
+
         const char * build_options = meta.opts.c_str();
 
-        std::cout << "Building program (" << build_options << ") ... " << std::endl;
+        std::cout << "Building program (with options: \'" << build_options << "\') ..." << std::endl;
 
         err = clBuildProgram(program, /* num_devices */ 1, /* device_list */ &device,
             /* options */ build_options, /* callback fn */ NULL, /* callback data */ NULL);
 
-	size_t ls = 0;
-	clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG, 0, NULL, &ls);
+        if (CL_SUCCESS != err)
+        {
+            cl_build_status status = CL_BUILD_NONE;
+            cl_int err = CL_SUCCESS;
+            err = clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_STATUS, sizeof(status), &status, NULL);
+            assert(CL_SUCCESS == err && "clGetProgramBuildInfo() failed.");
+            std::cerr << "Build status: ";
+            switch(status)
+            {
+                case CL_BUILD_NONE:
+                    std::cerr << "CL_BUILD_NONE" << std::endl;
+                    break;
+                case CL_BUILD_ERROR:
+                    std::cerr << "CL_BUILD_ERROR" << std::endl;
+                    break;
+                case CL_BUILD_SUCCESS:
+                    std::cerr << "CL_BUILD_SUCCESS" << std::endl;
+                    break;
+                case CL_BUILD_IN_PROGRESS:
+                    std::cerr << "CL_BUILD_IN_PROGRESS" << std::endl;
+                    break;
+                default:
+                    assert(0 && "Unknown build status.");
+            }
+            assert(CL_BUILD_ERROR == status && "Expected CL_BUILD_ERROR status.");
 
-	if (CL_SUCCESS!=err) {
-           if (ls>0) {
-		std::cerr << "Build problem: " << std::endl;
-
-		char* lg = new char[1024];
-		clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG, ls, lg, NULL);
-
-		std::cerr << lg << std::endl;
-
-		delete[] lg;
-           }
+            const size_t max_log_size = 2048;
+            char log[max_log_size];
+            size_t log_size = 0;
+            cl_int build_info_err = clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG, max_log_size, &log, &log_size);
+            std::cout << err << std::endl;
+            assert(CL_SUCCESS == build_info_err && "clGetProgramBuildInfo() failed.");
+            assert((0 <= log_size && log_size < max_log_size) && "Invalid log size.");
+            if (0 < log_size)
+            {
+                std::cerr << "Build log:" << std::endl;
+                std::cerr << log << std::endl;
+            }
         }
-
         assert(CL_SUCCESS == err && "clBuildProgram() failed.");
     } // END OF build_program()
 
@@ -645,8 +669,6 @@ public:
     // Create kernel called "gemm".
     void create_kernel()
     {
-        std::cout << "Creating kernel ... " << std::endl;
-
         cl_int err = CL_SUCCESS;
         const char * kernel_name = "gemm";
         kernel = clCreateKernel(program, kernel_name, &err);

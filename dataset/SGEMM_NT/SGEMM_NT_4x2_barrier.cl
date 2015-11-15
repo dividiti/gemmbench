@@ -2,11 +2,18 @@
 #define dj ((uint)4)
 // Each work-item reads di rows of matrix A.
 #define di ((uint)2)
-// Each work-item reaches the barrier after dk accumulations.
-#define dk ((uint)32)
 // Each row contains (n/4) vectors.
 #define nv (n >> 2)
+// Each work-item reaches the barrier after dk accumulations.
+#ifndef dk
+#define dk ((uint)32)
+#endif
+// Kernel attributes such as local work size hint.
+#ifndef KERNEL_ATTRIBUTES
+#define KERNEL_ATTRIBUTES
+#endif
 
+KERNEL_ATTRIBUTES
 kernel void gemm(
     global float4 const * restrict A,
     global float4 const * restrict B,
