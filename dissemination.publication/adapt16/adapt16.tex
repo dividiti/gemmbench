@@ -244,16 +244,58 @@ OpenCL kernels on a Hardkernel Odroid~XU3 board (Table~\ref{Odroid}).%
 \subsection{Reproducibility}
 %------------------------------------------------------------------------------
 
-Briefly, install Collective Knowledge\footnote{\url{http://github.com/ctuning/ck}}
-and follow the steps:
+To reproduce experiments in this paper, install Collective Knowledge {\em e.g.} on Linux:\footnote{See \url{http://github.com/ctuning/ck} for alternative instructions.}
+%
+\begin{verbatim}
+$ mkdir ~/CK && cd ~/CK
+$ git clone https://github.com/ctuning/ck.git
+$ export CK_ROOT=~/CK/ck
+$ export PATH=$CK_ROOT/bin:$PATH
+$ ck status
+Your version is up-to-date: V1.6.12
+\end{verbatim}
+%
+
+Install GEMMbench and experimental data for this paper:
 %
 \begin{verbatim}
 $ ck pull repo:gemmbench \
-    --url=https://github.com/dividiti/gemmbench
-$ cd `ck find repo:gemmbench`
-$ ck compile
-$ ck run
+  --url=https://github.com/dividiti/gemmbench
+$ ck pull repo:gemmbench-adapt16 \
+  --url=https://github.com/dividiti/gemmbench-adapt16
 \end{verbatim}
+%
+This will pull the CK repositories GEMMbench depends upon: {\tt ck-autotuning}, {\tt
+ck-env}, {\em etc.} 
+
+Verify the installation:
+%
+\begin{verbatim}
+$ ck find repo:gemmbench
+~/CK/gemmbench
+$ ck find experiment:SGEMM_NT*
+~/CK/gemmbench-adapt16/experiment/SGEMM_NT-explore-n-lws
+~/CK/gemmbench-adapt16/experiment/SGEMM_NT-explore-f-n
+\end{verbatim}
+%
+
+Register the installed OpenCL driver {\em e.g.}:
+\begin{verbatim}
+$ ck find soft:lib.opencl*
+~/CK/ck-env/soft/lib.opencl.linux
+...
+$ ck setup soft:lib.opencl.linux
+\end{verbatim}
+(Enter the OpenCL driver version and the path {\em e.g.} \verb|/usr|.)
+
+Compile and run GEMMbench:
+\begin{verbatim}
+$ ck compile program:gemmbench-cl-launcher-1.0
+$ ck run program:gemmbench-cl-launcher-1.0
+\end{verbatim}
+(cJSON and xOpenME should be installed automatically.)
+
+
 %
 More information will appear on the GEMMbench page during the period of public discussions.
 
