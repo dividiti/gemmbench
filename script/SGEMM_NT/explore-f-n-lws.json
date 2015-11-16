@@ -12,7 +12,7 @@
   ],
   "choices_selection":[
     {"type":"random-with-next"},
-    {"type":"random-with-next", "choice":["64", "96", "128", "192", "256", "384", "512", "640", "768", "896", "1024"], "default":"256"},
+    {"type":"random-with-next", "choice":["128", "256", "384", "512", "640", "768", "896", "1024"], "default":"256"},
     {"type":"random-with-next", "choice":
         [
         "1,16", "2,8", "4,4", "8,2", "16,1",
@@ -23,8 +23,8 @@
   ],
 
   "seed":12345,
-  "iterations":50,
-  "repetitions":3,
+  "iterations":100,
+  "repetitions":4,
 
   "pipeline_update":{
     "cpu_freq":"max",
