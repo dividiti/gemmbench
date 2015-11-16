@@ -1,0 +1,68 @@
+{
+  "flat_keys": [
+    "##choices#host_os",
+    "##choices#target_os",
+    "##features#platform.cpu#cpu#name",
+    "##characteristics#run#run_time_state#CL_DEVICE_NAME",
+    "##choices#cpu_freq",
+    "##choices#gpu_freq",
+    "##choices#dataset_uoa",
+    "##choices#dataset_file",
+    "##choices#run_cmd_key_lws",
+    "##choices#run_cmd_key_n",
+    "##characteristics#run#run_time_state#EXECUTION#Gflops/s",
+    "##characteristics#run#run_time_state#RESULTS#match",
+    "##characteristics#run#run_time_state#RESULTS#max_abs_diff",
+    "##characteristics#run#run_time_state#CMD_LINE_ARGS#eps"
+  ],
+  "flat_keys_desc": [
+    {
+      "desc": "Host OS",
+      "module_uoa": "0440cb72c2bc5cc6",
+      "type": "uoa"
+    },
+    {
+      "desc": "Target OS",
+      "module_uoa": "0440cb72c2bc5cc6",
+      "type": "uoa"
+    },
+    {
+      "desc": "CPU"
+    },
+    {
+      "desc": "OpenCL device"
+    },
+    {
+      "desc": "CPU frequency (MHz)"
+    },
+    {
+      "desc": "OpenCL device frequency (MHz)"
+    },
+    {
+      "desc": "Dataset UOA",
+      "module_uoa": "8a7141c59cd335f5",
+      "type": "uoa"
+    },
+    {
+      "desc": "Dataset file"
+    },
+    {
+      "desc": "Local work size"
+    },
+    {
+      "desc": "Matrix order"
+    },
+    {
+      "desc": "Performance (Gflops/s)"
+    },
+    {
+      "desc": "CPU and OpenCL device results match?"
+    },
+    {
+      "desc": "Maximum absolute difference"
+    },
+    {
+      "desc": "Epsilon"
+    }
+  ]
+}
