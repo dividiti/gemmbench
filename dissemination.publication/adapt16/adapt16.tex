@@ -252,6 +252,14 @@ $ export PATH=$CK_ROOT/bin:$PATH
 $ ck status
 Your version is up-to-date: V1.6.12
 \end{verbatim}
+
+For using CK in Python scripts ({\em e.g.}\ with IPython Notebook):
+\begin{verbatim}
+$ cd $CK_ROOT && sudo python setup.py install
+$ python -c "import ck.kernel as ck;
+             print ck.version({})['version_str']"
+1.6.12
+\end{verbatim}
 %
 
 %------------------------------------------------------------------------------
