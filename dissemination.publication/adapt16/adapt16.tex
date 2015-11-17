@@ -361,7 +361,7 @@ the local work size of {\tt (4,16)}.
 
 \begin{verbatim}
 $ ck find script:SGEMM*
-~/CK/gemmbench/script/SGEMM_NT 
+~/CK/gemmbench/script/SGEMM_NT
 $ cd ~/CK/gemmbench/script/SGEMM_NT
 $ ./_clean_program_pipeline.sh
 $ ./_setup_program_pipeline.sh
@@ -418,7 +418,7 @@ Section~\ref{sec:validating}, run:
 %
 \begin{verbatim}
 $ ck replay \
-  experiment:8bcbe025bd8803c2 --point=ca4a5dbe25613c7d 
+  experiment:8bcbe025bd8803c2 --point=ca4a5dbe25613c7d
 \end{verbatim}
 %
 
@@ -836,6 +836,53 @@ the final version of this article.
 
 \bibliographystyle{abbrv}
 \bibliography{adapt16}
+
+\appendix
+
+%===============================================================================
+\section{Sharing experimental results}
+%===============================================================================
+
+Sharing GEMMbench experimental results is easy!
+
+First, run a GEMMbench script {\em e.g.}\ {\tt explore-f-n}, creating locally
+an experiment entry in \verb|~/CK/local/experiment| {\em e.g.} {\tt
+SGEMM\_NT\_explore-f-n}.
+
+Second, create an empty Git repository on GitHub or elsewhere, and pull from
+its URL {\em e.g.}\
+%
+\begin{verbatim}
+$ ck pull repo:gemmbench-new \
+  --url=<new repository's URL>
+\end{verbatim}
+%
+
+Third, move or copy your experiments from the local repository to the new repository {\em e.g.}\
+%
+\begin{verbatim}
+$ ck mv experiment:SGEMM_NT_explore-f-n \
+  gemmbench-new:experiment:SGEMM_NT_explore-f-n
+\end{verbatim}
+%
+
+Optionally, provide a license file and update further details in {\tt
+.cm/info.json} and {\tt .cm/meta.json} in your experimental entries.
+%
+(If not provided, the standard CK license and copyright details will apply.)
+
+Finally, commit all the files:
+%
+\begin{verbatim}
+$ cd `ck find repo:gemmbench-new`
+$ git add -A
+$ git commit -m "New GEMMbench experiments."
+\end{verbatim}
+%
+
+Please do not forget to send us a link to your new repository! We will maintain a list
+of such repositories for the community to access, similarly to this paper's
+repository (Section~\ref{sec:reproduce}).
 
 \balancecolumns
 
