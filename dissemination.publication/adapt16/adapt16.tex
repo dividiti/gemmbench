@@ -178,8 +178,8 @@ platforms, data sizes and data types.
 
 
 %==============================================================================
-\section{Implementation details}
-\label{sec:details}
+\section{Implementation}
+\label{sec:implementation}
 %==============================================================================
 
 %
@@ -232,72 +232,171 @@ See further examples in the {\tt dataset} entries of the GEMMbench repository.%
 
 
 %==============================================================================
-\section{Experimental evaluation}
-\label{sec:evaluation}
+\section{Installation}
+\label{sec:installation}
 %==============================================================================
 
-We demonstrate using the GEMMbench framework for evaluating 3 SGEMM NT
-OpenCL kernels on a Hardkernel Odroid~XU3 board (Table~\ref{Odroid}).%
-\footnote{\url{http://www.hardkernel.com/main/products/prdt_info.php?g_code=G140448267127}}
-
 %------------------------------------------------------------------------------
-\subsection{Reproducibility}
+\subsection{Install Collective Knowledge}
 %------------------------------------------------------------------------------
 
-To reproduce experiments in this paper, install Collective Knowledge {\em e.g.} on Linux:\footnote{See \url{http://github.com/ctuning/ck} for alternative instructions.}
+Install Collective Knowledge (CK) {\em e.g.}:\footnote{See
+\url{http://github.com/ctuning/ck} for alternative instructions.}
 %
 \begin{verbatim}
-$ mkdir ~/CK && cd ~/CK
-$ git clone https://github.com/ctuning/ck.git
-$ export CK_ROOT=~/CK/ck
+$ export CK_REPOS=~/CK
+$ mkdir $CK_REPOS
+$ export CK_ROOT=$CK_REPOS/ck
+$ git clone https://github.com/ctuning/ck.git $CK_ROOT
 $ export PATH=$CK_ROOT/bin:$PATH
 $ ck status
 Your version is up-to-date: V1.6.12
 \end{verbatim}
 %
 
-Install GEMMbench and experimental data for this paper:
+%------------------------------------------------------------------------------
+\subsection{Install GEMMbench}
+%------------------------------------------------------------------------------
+
+Install GEMMbench along with other CK repositories it depends upon: {\tt
+ck-autotuning}, {\tt ck-env}, {\em etc.}
 %
 \begin{verbatim}
 $ ck pull repo:gemmbench \
   --url=https://github.com/dividiti/gemmbench
-$ ck pull repo:gemmbench-adapt16 \
-  --url=https://github.com/dividiti/gemmbench-adapt16
-\end{verbatim}
-%
-This will pull the CK repositories GEMMbench depends upon: {\tt ck-autotuning}, {\tt
-ck-env}, {\em etc.} 
-
-Verify the installation:
-%
-\begin{verbatim}
-$ ck find repo:gemmbench
-~/CK/gemmbench
-$ ck find experiment:SGEMM_NT*
-~/CK/gemmbench-adapt16/experiment/SGEMM_NT-explore-n-lws
-~/CK/gemmbench-adapt16/experiment/SGEMM_NT-explore-f-n
 \end{verbatim}
 %
 
-Register the installed OpenCL driver {\em e.g.}:
+%------------------------------------------------------------------------------
+\subsection{Register OpenCL driver}
+%------------------------------------------------------------------------------
+
+Register an (already installed) OpenCL driver {\em e.g.}:
+%
 \begin{verbatim}
 $ ck find soft:lib.opencl*
 ~/CK/ck-env/soft/lib.opencl.linux
 ...
 $ ck setup soft:lib.opencl.linux
 \end{verbatim}
-(Enter the OpenCL driver version and the path {\em e.g.} \verb|/usr|.)
 
-Compile and run GEMMbench:
+Enter the OpenCL driver version (a string to identify it later). Enter the path
+to \verb|libOpenCL.so| without \verb|lib| {\em e.g.} \verb|/usr| for
+\verb|libOpenCL.so| in \verb|/usr/lib|.
+
+%------------------------------------------------------------------------------
+\subsection{Customize platform scripts}
+%------------------------------------------------------------------------------
+
+Take a look at one of the available scripts for disabling frequency and voltage
+scaling (DVFS) and fixing the frequencies:
+%
+\begin{verbatim}
+$ ck find platform.init:*
+~/CK/ck-autotuning/platform.init/generic-android
+~/CK/ck-autotuning/platform.init/chromebook-ubuntu
+~/CK/ck-autotuning/platform.init/generic-odroid
+~/CK/ck-autotuning/platform.init/generic-linux
+\end{verbatim}
+
+Customize the scripts called from {\tt ck-set-performance} (you may leave them
+blank initially) and add them to the system path {\em e.g.}:
+\begin{verbatim}
+$ cp ~/CK/ck-autotuning/platform.init/generic-linux \
+  ~/CK/ck-autotuning/platform.init/my-linux-platform
+...
+$ export PATH=$PATH:\
+  ~/CK/ck-autotuning/platform.init/my-linux-platform
+\end{verbatim}
+(Ensure the scripts are executable.)
+
+%------------------------------------------------------------------------------
+\subsection{Compile and run GEMMbench}
+%------------------------------------------------------------------------------
+
 \begin{verbatim}
 $ ck compile program:gemmbench-cl-launcher-1.0
 $ ck run program:gemmbench-cl-launcher-1.0
 \end{verbatim}
-(cJSON and xOpenME should be installed automatically.)
 
+(The cJSON and xOpenME libraries should be installed automatically the first
+time you compile GEMMbench.)
 
+%------------------------------------------------------------------------------
+\subsection{Run SGEMM experiments}
+%------------------------------------------------------------------------------
+
+\begin{verbatim}
+$ ck find script:SGEMM*
+~/CK/gemmbench/script/SGEMM_NT 
+$ cd ~/CK/gemmbench/script/SGEMM_NT
+$ ./_clean_program_pipeline.sh
+$ ./_setup_program_pipeline.sh
+...
+Pipeline is ready!
+$ ./explore-f-n.sh
+$ ./explore-n-lws.sh
+\end{verbatim}
+
+%------------------------------------------------------------------------------
+\subsection{How to reproduce?}
+\label{sec:reproduce}
+%------------------------------------------------------------------------------
+
+To replay our experiments, obtain our experimental data for this paper:
+
+\begin{verbatim}
+$ ck pull repo:gemmbench-adapt16 \
+  --url=https://github.com/dividiti/gemmbench-adapt16
+$ ck find experiment:SGEMM_NT*
+~/CK/gemmbench-adapt16/experiment/SGEMM_NT-explore-f-n
+~/CK/gemmbench-adapt16/experiment/SGEMM_NT-explore-n-lws
+\end{verbatim}
+
+Start the CK web server:
+\begin{verbatim}
+$ ck start web
+\end{verbatim}
+
+Open \url{http://localhost:3344} in a web browser.
 %
-More information will appear on the GEMMbench page during the period of public discussions.
+Select {\tt gemmbench-adapt16} in the ``Repository'' dropdown menu.
+%
+Open {\tt SGEMM\_NT-explore-f-n} or {\tt SGEMM\_NT-explore-n-lws}.%
+%
+\footnote{You can also go directly to
+\url{http://localhost:3344/?wcid=bc0409fb61f0aa82:8bcbe025bd8803c2} or
+\url{http://localhost:3344/?wcid=bc0409fb61f0aa82:a697f73cf4392f23}.}
+%
+Select {\tt gemmbench-view} in the ``Select experiment view'' menu under a QR
+code.
+%
+
+The table shows one experiment (with a number of statistical repetitions) per
+row.
+%
+Click on a ``Copy to clipboard'' button in the rightmost column to obtain a
+command to replay the corresponding experiment.%
+\footnote{Section~\ref{sec:evaluation} explains the meaning of most other
+columns.}
+%
+For example, to replay the intermittently failing experiment mentioned in
+Section~\ref{sec:validating}, run:
+%
+\begin{verbatim}
+$ ck replay \
+  experiment:8bcbe025bd8803c2 --point=ca4a5dbe25613c7d 
+\end{verbatim}
+%
+
+%==============================================================================
+\section{Evaluation}
+\label{sec:evaluation}
+%==============================================================================
+
+We demonstrate using the GEMMbench framework for evaluating 3 SGEMM NT
+OpenCL kernels on a Hardkernel Odroid~XU3 board (Table~\ref{Odroid}).%
+\footnote{\url{http://www.hardkernel.com/main/products/prdt_info.php?g_code=G140448267127}}
 
 %------------------------------------------------------------------------------
 \subsection{Evaluation platform}
@@ -338,7 +437,7 @@ The SGEMM NT kernels are contained in 3 separate files:
 \begin{itemize}
 
   \item \verb|SGEMM_NT_1x1.cl|: a na\"ive version shown in
-  Section~\ref{sec:details} which computes a single element of matrix $C$ per
+  Section~\ref{sec:implementation} which computes a single element of matrix $C$ per
   work-item;
 
   \item \verb|SGEMM_NT_4x1.cl|: a vectorised version which computes a vector of
@@ -346,7 +445,8 @@ The SGEMM NT kernels are contained in 3 separate files:
 
   \item \verb|SGEMM_NT_4x1_barrier.cl|: a similarly vectorised version which
   synchronises work-items in a work-group with a barrier to improve cache
-  utilisation~\cite{Gronqvist:2014}.\footnote{\url{http://malideveloper.arm.com/downloads/GPU_Pro_5/GronqvistLokhmotov_white_paper.pdf}}
+  utilisation~\cite{Gronqvist:2014}.%
+  \footnote{\url{http://malideveloper.arm.com/downloads/GPU_Pro_5/GronqvistLokhmotov_white_paper.pdf}}
 
 \end{itemize}
 %
@@ -574,16 +674,12 @@ are mixed: they twice matched and twice did not.
 %
 The failures may be difficult to debug, since they are intermittent.
 %
-Luckily, replaying an experimental point under the Collective Knowledge framework is
-a matter of running a single command {\em e.g.}\:
-%
-\begin{verbatim}
-$ ck replay experiment:<UID> --point=<UID>
-\end{verbatim}
-%
+Luckily, replaying an experimental point under the Collective Knowledge
+framework is a matter of running a single command\footnote{See the end of
+Section~\ref{sec:reproduce} for the command to replay this very experiment.}
 which would help investigate the failures and quickly test potential solutions.
 
-For the \verb|SGEMM_NT_4x1_barrier.cl| program the results show repeatable
+For the \verb|SGEMM_NT_4x1_barrier.cl| program, the results show repeatable
 failures for the orders of 64, 96, 192.
 %
 This may give us a clue to what goes wrong here.
@@ -639,7 +735,7 @@ shallow''\footnote{\url{https://en.wikipedia.org/wiki/The_Cathedral_and_the_Baza
 should apply well in this case.
 %
 Indeed, some of the failures may have nothing to do with numerical
-(in)stability. 
+(in)stability.
 %
 Programming errors (such as tacit assumptions) may be detected with static and
 dynamic analysis tools such as GPUVerify~\cite{GPUVerify} and
