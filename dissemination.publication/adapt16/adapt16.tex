@@ -311,16 +311,41 @@ $ export PATH=$PATH:\
 (Ensure the scripts are executable.)
 
 %------------------------------------------------------------------------------
-\subsection{Compile and run GEMMbench}
+\subsection{Compile GEMMbench}
 %------------------------------------------------------------------------------
 
+To compile GEMMbench:
+%
 \begin{verbatim}
 $ ck compile program:gemmbench-cl-launcher-1.0
+\end{verbatim}
+%
+(The cJSON and xOpenME libraries should be installed automatically the first
+time you compile GEMMbench.)
+
+%------------------------------------------------------------------------------
+\subsection{Run GEMMbench}
+%------------------------------------------------------------------------------
+
+To run GEMMbench with the default parameters:
+%
+\begin{verbatim}
 $ ck run program:gemmbench-cl-launcher-1.0
 \end{verbatim}
 
-(The cJSON and xOpenME libraries should be installed automatically the first
-time you compile GEMMbench.)
+Select the default command (press ``Enter''), one of the four currently
+supported ``flavours'' (SGEMM NN, SGEMM NT, DGEMM NN, DGEMM NT), and finally
+one of the kernel variants.
+
+To override the default parameters, use {\em e.g.}
+%
+\begin{verbatim}
+$ ck run program:gemmbench-cl-launcher-1.0 \
+  --extra_run_cmd="-p 1 -d 1 -n 512 -lws 4,16"
+\end{verbatim}
+%
+to run on platform 1, device 1, with the matrix order of 512 and
+the local work size of {\tt (4,16)}.
 
 %------------------------------------------------------------------------------
 \subsection{Run SGEMM experiments}
@@ -483,9 +508,9 @@ The SGEMM NT kernels are contained in 3 separate files:
 \label{sec:order}
 %------------------------------------------------------------------------------
 
-For the first set of experiments, we varied the matrix order from 64 to 1024,
-{\em i.e.}\ performed experiments for the matrix dimensions ranging from $64
-\times 64$ to $1024 \times 1024$.
+For the first set of experiments (using the {\tt explore-f-n} script), we
+varied the matrix order from 64 to 1024, {\em i.e.}\ performed experiments for
+the matrix dimensions ranging from $64 \times 64$ to $1024 \times 1024$.
 %
 We fixed the OpenCL local work size (work-group size) to $(8,8)$, which,
 depending on the register usage, supports up to four concurrently executing
@@ -532,15 +557,15 @@ for the matrix orders above 256.
 \label{sec:lws}
 %------------------------------------------------------------------------------
 
-For the second set of experiments, we varied the local work size (work-group
-size) for the \verb|SGEMM_NT_4x1_barrier.cl| program and 4 values of the
-matrix order.
+For the second set of experiments (using the {\tt explore-n-lws} script), we
+varied the local work size (work-group size) for the
+\verb|SGEMM_NT_4x1_barrier.cl| program and 4 values of the matrix order.
 %
 Table~\ref{SGEMM_NT:plot:lws} shows a bar plot with the local work size varied
 from 16 to 128 work-items per work-group.
 %
-For page size limits, Figure~\ref{SGEMM_NT:df:lws} shows the raw data only for the
-local work size of up to 64 work-items per work-group.
+For page size limits, Figure~\ref{SGEMM_NT:df:lws} shows the raw data only for
+the local work size of up to 64 work-items per work-group.
 
 Overall, by exploring the local work size space we were able to achieve up to
 $20\%$ performance improvement over our default of $(8,8)$.
