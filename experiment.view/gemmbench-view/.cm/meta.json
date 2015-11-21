@@ -1,0 +1,64 @@
+{
+  "flat_keys": [
+    "##choices#host_os",
+    "##choices#target_os",
+    "##features#platform.cpu#cpu#name",
+    "##characteristics#run#run_time_state#CL_DEVICE_NAME",
+    "##choices#gpu_freq",
+    "##choices#dataset_uoa",
+    "##choices#dataset_file",
+    "##choices#run_cmd_key_lws",
+    "##choices#run_cmd_key_n",
+    "##characteristics#run#run_time_state#EXECUTION#Gflops/s",
+    "##characteristics#run#run_time_state#CMD_LINE_ARGS#eps",
+    "##characteristics#run#run_time_state#RESULTS#match",
+    "##characteristics#run#run_time_state#RESULTS#max_abs_diff"
+  ],
+  "flat_keys_desc": [
+    {
+      "desc": "Host OS",
+      "module_uoa": "0440cb72c2bc5cc6",
+      "type": "uoa"
+    },
+    {
+      "desc": "Target OS",
+      "module_uoa": "0440cb72c2bc5cc6",
+      "type": "uoa"
+    },
+    {
+      "desc": "Platform"
+    },
+    {
+      "desc": "OpenCL device"
+    },
+    {
+      "desc": "OpenCL device frequency (MHz)"
+    },
+    {
+      "desc": "Dataset UOA",
+      "module_uoa": "8a7141c59cd335f5",
+      "type": "uoa"
+    },
+    {
+      "desc": "Dataset file"
+    },
+    {
+      "desc": "Local work size"
+    },
+    {
+      "desc": "Matrix order"
+    },
+    {
+      "desc": "Performance (Gflops/s)"
+    },
+    {
+      "desc": "Epsilon (error threshold)"
+    },
+    {
+      "desc": "Do OpenCL results match reference under epsilon?"
+    },
+    {
+      "desc": "Maximum observed absolute difference (error)"
+    }
+  ]
+}

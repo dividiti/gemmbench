@@ -1,7 +1,7 @@
 {
   "experiment_module_uoa":"experiment",
 
-  "data_uoa_list":["SGEMM_NT-explore-f-n"],
+  "data_uoa_list":["SGEMM_NT-explore-f-n-lws"],
 
   "flat_keys_list":[
     "##choices#run_cmd_key_n#min",
@@ -16,7 +16,7 @@
   "display_y_error_bar":"yes",
 
   "ymin" : 0,
-  "ymax" : 10,
+  "ymax" : 13,
 
   "title":"GEMMbench: SGEMM NT",
 
@@ -32,5 +32,5 @@
   "point_style":{"1":{"elinewidth":"5", "color":"#dc3912"},
                  "0":{"color":"#3366cc"}},
 
-  "out_to_file":"plot-f-n_tmp.png"
+  "out_to_file":"plot-f-n-lws_tmp.png"
 }

@@ -40,7 +40,7 @@
   "process_in_tmp": "yes", 
   "program": "yes", 
   "run_cmds": {
-    "Default": {
+    "default": {
       "dataset_tags": [
         "dataset", 
         "gemmbench", 
@@ -62,7 +62,7 @@
         ]
       }
     }, 
-    "SGEMM_NT": {
+    "sgemm_nt": {
       "dataset_tags": [
         "dataset", 
         "gemmbench", 
