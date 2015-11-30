@@ -5,7 +5,7 @@
 
   "data_uoa":"gemmbench-cl-launcher-1.0",
 
-  "cmd_key":"SGEMM_NT",
+  "cmd_key":"sgemm_nt",
 
   "speed":"yes",
   "energy":"no",
