@@ -1,18 +1,25 @@
 {
   "dataset_files": [
-    "DGEMM_NT_1x1.json",
-    "DGEMM_NT_2x1.json",
+    "DGEMM_NT_1x1.json", 
+    "DGEMM_NT_2x1.json", 
     "DGEMM_NT_2x1_barrier.json"
-  ],
+  ], 
   "extra_dataset_files": {
-    "DGEMM_NT_1x1.json":["DGEMM_NT_1x1.cl"],
-    "DGEMM_NT_2x1.json":["DGEMM_NT_2x1.cl"],
-    "DGEMM_NT_2x1_barrier.json":["DGEMM_NT_2x1_barrier.cl"]
-  },
+    "DGEMM_NT_1x1.json": [
+      "DGEMM_NT_1x1.cl"
+    ], 
+    "DGEMM_NT_2x1.json": [
+      "DGEMM_NT_2x1.cl"
+    ], 
+    "DGEMM_NT_2x1_barrier.json": [
+      "DGEMM_NT_2x1_barrier.cl"
+    ]
+  }, 
   "tags": [
-    "dataset",
-    "gemmbench",
-    "opencl",
-    "DGEMM_NT"
+    "dataset", 
+    "gemmbench", 
+    "opencl", 
+    "DGEMM_NT", 
+    "small"
   ]
 }

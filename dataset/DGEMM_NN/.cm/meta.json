@@ -1,16 +1,21 @@
 {
   "dataset_files": [
-    "DGEMM_NN_1x1.json",
+    "DGEMM_NN_1x1.json", 
     "DGEMM_NN_2x1.json"
-  ],
+  ], 
   "extra_dataset_files": {
-    "DGEMM_NN_1x1.json":["DGEMM_NN_1x1.cl"],
-    "DGEMM_NN_2x1.json":["DGEMM_NN_2x1.cl"]
-  },
+    "DGEMM_NN_1x1.json": [
+      "DGEMM_NN_1x1.cl"
+    ], 
+    "DGEMM_NN_2x1.json": [
+      "DGEMM_NN_2x1.cl"
+    ]
+  }, 
   "tags": [
-    "dataset",
-    "gemmbench",
-    "opencl",
-    "DGEMM_NN"
+    "dataset", 
+    "gemmbench", 
+    "opencl", 
+    "DGEMM_NN", 
+    "small"
   ]
 }
