@@ -1,1 +1,84 @@
-{}
+{
+  "build_compiler_vars": {
+    "XOPENME": "1"
+  }, 
+  "compile_deps": {
+    "compiler": {
+      "local": "yes", 
+      "sort": 10, 
+      "tags": "compiler,lang-cpp"
+    }, 
+    "lib.cjson": {
+      "local": "yes", 
+      "sort": 20, 
+      "tags": "lib,cjson"
+    }, 
+    "lib.xopenme": {
+      "local": "yes", 
+      "sort": 30, 
+      "tags": "lib,xopenme"
+    }, 
+    "lib_opencl": {
+      "local": "yes", 
+      "sort": 15, 
+      "tags": "lib,opencl"
+    }
+  }, 
+  "compiler_add_include_as_env_from_deps": [
+    "CK_ENV_LIB_STDCPP_INCLUDE", 
+    "CK_ENV_LIB_STDCPP_INCLUDE_EXTRA"
+  ], 
+  "compiler_env": "CK_CXX", 
+  "compiler_flags_as_env": "$<<CK_COMPILER_FLAG_MFLOAT_ABI_HARD>>$", 
+  "data_name": "arm-mali-sgemm", 
+  "extra_ld_vars": "$<<CK_EXTRA_LIB_M>>$", 
+  "linker_add_lib_as_env": [
+    "CK_CXX_EXTRA", 
+    "CK_ENV_LIB_STDCPP_STATIC"
+  ], 
+  "main_language": "cpp", 
+  "process_in_tmp": "yes", 
+  "program": "yes", 
+  "run_cmds": {
+    "default": {
+      "dataset_tags": [
+        "dataset", 
+        "opencl"
+      ], 
+      "ignore_return_code": "no", 
+      "run_time": {
+        "fine_grain_timer_file": "tmp-ck-timer.json", 
+        "post_process_cmds": [
+          "python $#src_path_local#$ck_postprocess.py"
+        ], 
+        "run_cmd_main": "$#BIN_FILE#$", 
+        "run_cmd_out1": "run.stdout", 
+        "run_cmd_out2": "run.stderr", 
+        "run_correctness_output_files": [], 
+        "run_input_files": [], 
+        "run_output_files": [
+          "run.stdout", 
+          "run.stderr", 
+          "tmp-ck-timer.json"
+        ]
+      }
+    }
+  }, 
+  "run_vars": {
+    "DEVICE_ID": 0, 
+    "PLATFORM_ID": 0
+  }, 
+  "source_files": [
+    "samples/sgemm.cpp"
+  ], 
+  "species": [], 
+  "tags": [
+    "program", 
+    "arm", 
+    "mali", 
+    "sgemm", 
+    "opencl", 
+    "lang-cpp"
+  ], 
+  "target_file": "sgemm"
+}
