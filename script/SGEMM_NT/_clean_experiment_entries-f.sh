@@ -1,2 +1,2 @@
 #!/bin/bash
-ck rm experiment:SGEMM_NT-explore-f
+ck rm local:experiment:SGEMM_NT-explore-f
