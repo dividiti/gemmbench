@@ -1,2 +1,2 @@
 #!/bin/bash
-ck rm experiment:SGEMM_NT-*
+ck rm local:experiment:SGEMM_NT-*
