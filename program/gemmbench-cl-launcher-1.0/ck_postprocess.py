@@ -38,6 +38,11 @@ d['post_processed']='yes'
 #if x!='':
 #   d['run_time_state']['RESULTS#max_abs_diff']=str(x)
 
+# Adding user to identify crowdtuning results
+user=os.environ.get('CK_CROWDTUNING_USER','')
+if user!='':
+   d['crowdtuning_user']=user
+
 # Read vector of values.
 exists=True
 try:
