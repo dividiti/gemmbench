@@ -32,6 +32,11 @@ if exists:
 
 d['post_processed']='yes'
 
+# Temporal hack to fix strange problem in serialization of JSON via internet
+#x=d.get('run_time_state',{}).get('RESULTS#max_abs_diff','')
+#if x!='':
+#   d['run_time_state']['RESULTS#max_abs_diff']=str(x)
+
 # Read vector of values.
 exists=True
 try:
