@@ -6,6 +6,7 @@
 #
 
 import json
+import os
 
 d={}
 
@@ -96,6 +97,9 @@ if exists:
   if exists:
     f.close()
     d['stderr']=s
+
+# Temporary workaround for when executing with "--sudo".
+os.system('sudo rm tmp-ck-timer.json')
 
 # Write CK json.
 f=open('tmp-ck-timer.json','wt')
