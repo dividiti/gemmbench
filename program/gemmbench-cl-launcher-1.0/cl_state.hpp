@@ -391,10 +391,14 @@ public:
         args.parse(argc, argv);
 
 #if (1 == XOPENME)
-        xopenme_add_var_s(openme.var_count++,
+/*        xopenme_add_var_s(openme.var_count++,
             (char*) "  \"CMD_LINE_ARGS#file_name\":\"%s\"", (char*) args.file_name.c_str());
         assert(openme.var_count_below_max() && "xOpenME max var count reached.");
 
+        FGG: on Windows should replace '\' with '/'
+             otherwise python can't load json
+
+*/
         xopenme_add_var_i(openme.var_count++,
             (char*) "  \"CMD_LINE_ARGS#platform_idx\":%u",  args.platform_idx);
         assert(openme.var_count_below_max() && "xOpenME max var count reached.");
