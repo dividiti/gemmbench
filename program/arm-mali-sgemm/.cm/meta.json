@@ -8,11 +8,6 @@
       "sort": 10, 
       "tags": "compiler,lang-cpp"
     }, 
-    "lib.cjson": {
-      "local": "yes", 
-      "sort": 20, 
-      "tags": "lib,cjson"
-    }, 
     "lib.xopenme": {
       "local": "yes", 
       "sort": 30, 
@@ -20,7 +15,7 @@
     }, 
     "lib_opencl": {
       "local": "yes", 
-      "sort": 15, 
+      "sort": 20, 
       "tags": "lib,opencl"
     }
   }, 

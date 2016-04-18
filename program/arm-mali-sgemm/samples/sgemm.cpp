@@ -305,7 +305,7 @@ void sgemm(int argc, const char **argv)
     if (mm_lws_x==0) mm_lws_x = cl_gemm[gemm_type_idx].default_mm_lws[0];
     if (mm_lws_y==0) mm_lws_y = cl_gemm[gemm_type_idx].default_mm_lws[1];
 
-    std::cout << "LWS [" << mm_lws_x << "," << mm_lws_y << "]" << std::endl;
+    std::cout << "LWS = [" << mm_lws_x << ", " << mm_lws_y << "]" << std::endl;
 
     /* Since we have a fixed LWS, we need to ensure that the dimensions of GWS[x,y] are multiples of the dimensions of LWS[x, y] */
     /* This kind of operation is done just for the rows of matrix A and columns of Matrix B */
@@ -375,7 +375,7 @@ void sgemm(int argc, const char **argv)
     cl::Kernel kernel_finalize  ( program, cl_gemm[gemm_type_idx].finalize.kernel_name );
 
     /* Create command queue */
-    cl::CommandQueue queue( cl::QueueProperties::None, NULL );
+    cl::CommandQueue queue( cl::QueueProperties::Profiling, NULL );
 
     /* Init input buffers */
     void *ptr_mtx_a     = NULL;
