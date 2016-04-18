@@ -1,0 +1,11 @@
+{
+  "experiment_repo_uoa":"remote-ck",
+  "remote_repo_uoa":"upload",
+
+  "data_uoa":"SGEMM_NT-explore-f-n-lws",
+
+  "dims_to_check":["##characteristics#run#run_time_state#*"],
+  "end_of_dims_to_check":["#min", "#mean", "#exp"],
+
+  "threshold_to_compare":8
+}
