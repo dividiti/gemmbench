@@ -170,5 +170,34 @@ def clean(i):
 
     """
 
+    import os
+
+    # Find experiment
+    r=ck.access({'action':'find',
+                 'module_uoa':cfg['module_deps']['experiment'],
+                 'data_uoa':duoa1})
+    if r['return']==0:
+       p=r['path']
+
+       rx=ck.list_all_files({'path':p, 'add_path':'yes'})
+       if rx['return']>0: return rx
+
+       lst=rx['list']
+
+       for q in lst:
+           qq=lst[q]
+
+           px=os.path.join(qq.get('path',''),q)
+           if os.path.isfile(px):
+              os.remove(px)
+
+       # update entry with empty dictionary
+       rx=ck.access({'action':'update',
+                     'module_uoa':cfg['module_deps']['experiment'],
+                     'data_uoa':duoa1,
+                     'dict':{},
+                     'substitute':'yes',
+                     'ignore_update':'yes'})
+       if rx['return']>0: return rx    
 
     return {'return':0}

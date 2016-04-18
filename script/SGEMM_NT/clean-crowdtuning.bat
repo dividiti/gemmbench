@@ -1,1 +1,1 @@
-ck clean gemmbench.crowdtuning
+ck clean remote-ck:gemmbench.crowdtuning:
