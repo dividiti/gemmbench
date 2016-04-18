@@ -30,6 +30,8 @@
   "record_repo":"local",
   "record_uoa":"SGEMM_NT-explore-f-n",
 
+  "record_dict":{"subview_uoa":"1a52139e549b4eeb"},
+
   "record_params":{
     "search_point_by_features":"yes"
   },

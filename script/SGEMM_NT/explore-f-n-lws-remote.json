@@ -36,6 +36,8 @@
   "record_failed":"no",
   "record_uoa":"SGEMM_NT-explore-f-n-lws",
 
+  "record_dict":{"subview_uoa":"1a52139e549b4eeb"},
+
   "record_repo":"remote-ck",
   "record_experiment_repo":"upload",
 
