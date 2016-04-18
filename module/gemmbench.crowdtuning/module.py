@@ -15,7 +15,6 @@ ck=None # Will be updated by CK (initialized CK kernel)
 line='****************************************************************'
 
 rep1='remote-ck'
-duoa1='SGEMM_NT-explore-f-n-lws'
 
 ##############################################################################
 # Initialize module
@@ -40,6 +39,8 @@ def init(i):
 def start(i):
     """
     Input:  {
+              data_uoa - entry to clean
+              file_in  - json file with experiment description
             }
 
     Output: {
@@ -52,6 +53,9 @@ def start(i):
 
     import copy
     import os
+
+    duoa=i['data_uoa']
+    fi=i['file_in']
 
     # Setting output
     o=i.get('out','')
@@ -80,7 +84,7 @@ def start(i):
     user=''
 
     ck.out(line)
-       
+
     r=ck.inp({'text':'Please, enter your email if you would like to identify your contributions as well as participate in monthly prize draws: '})
     user=r['string'].strip()
 
@@ -134,7 +138,7 @@ def start(i):
     os.chdir(curdir)
 
     # Load autotuning json
-    r=ck.load_json_file({'json_file':'explore-f-n-lws-remote.json'})
+    r=ck.load_json_file({'json_file':fi})
     if r['return']>0: return r
     d=r['dict']
 
@@ -147,6 +151,7 @@ def start(i):
     d['module_uoa']='pipeline'
     d['data_uoa']='program'
     d['pipeline_from_file']=x
+    d['record_uoa']=duoa
     d['out']='con'
 
     r=ck.access(d)
@@ -160,6 +165,7 @@ def start(i):
 def clean(i):
     """
     Input:  {
+              data_uoa - entry to clean
             }
 
     Output: {
@@ -172,10 +178,12 @@ def clean(i):
 
     import os
 
+    duoa=i['data_uoa']
+
     # Find experiment
     r=ck.access({'action':'find',
                  'module_uoa':cfg['module_deps']['experiment'],
-                 'data_uoa':duoa1})
+                 'data_uoa':duoa})
     if r['return']==0:
        p=r['path']
 
@@ -194,7 +202,7 @@ def clean(i):
        # update entry with empty dictionary
        rx=ck.access({'action':'update',
                      'module_uoa':cfg['module_deps']['experiment'],
-                     'data_uoa':duoa1,
+                     'data_uoa':duoa,
                      'dict':{},
                      'substitute':'yes',
                      'ignore_update':'yes'})
