@@ -29,7 +29,7 @@
     "CK_ENV_LIB_STDCPP_INCLUDE_EXTRA"
   ], 
   "compiler_env": "CK_CXX", 
-  "compiler_flags_as_env": "$<<CK_COMPILER_FLAG_MFLOAT_ABI_HARD>>$", 
+  "compiler_flags_as_env": "$<<CK_COMPILER_FLAG_MFLOAT_ABI_HARD>>$ $<<CK_COMPILER_FLAG_CPP11>>$", 
   "data_name": "arm-mali-sgemm", 
   "extra_ld_vars": "$<<CK_EXTRA_LIB_M>>$", 
   "linker_add_lib_as_env": [
