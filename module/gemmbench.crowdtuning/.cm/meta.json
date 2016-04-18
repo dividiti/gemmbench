@@ -1,12 +1,16 @@
 {
   "actions": {
     "clean": {
-      "desc": "clean results",
+      "desc": "clean results", 
+      "for_web": "yes"
+    }, 
+    "show": {
+      "desc": "show interactive results", 
       "for_web": "yes"
     }, 
     "start": {
       "desc": "start gemmbench crowdtuning"
-    } 
+    }
   }, 
   "copyright": "See CK COPYRIGHT.txt for copyright details", 
   "desc": "basic gemmbench crowdtuning", 

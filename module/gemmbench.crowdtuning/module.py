@@ -203,3 +203,44 @@ def clean(i):
        ck.out('Entry cleaned successfully!')
 
     return {'return':0}
+
+##############################################################################
+# show interactive results
+
+def show(i):
+    """
+    Input:  {
+            }
+
+    Output: {
+              return       - return code =  0, if successful
+                                         >  0, if error
+              (error)      - error text if return > 0
+
+              html         - generated HTML
+            }
+
+    """
+
+    import os
+
+    h='<center>'
+    h+='<h2>Crowd-tuning OpenCL-based GEMM</h2>\n'
+
+    h+='[ <a href="http://cknowledge.org/repo/web.php?subview=1a52139e549b4eeb&wcid=bc0409fb61f0aa82:bbc9067d72c117b8&reverse_table_sort=10"><b>Table with latest crowd-results</b></a> ], \n'
+    h+='[ <a href="http://github.com/dividiti/gemmbench"><b>GEMMBench in CK format</b></a> ], \n'
+    h+='[ <a href="http://arxiv.org/abs/1511.03742"><b>ADAPT\'16 paper about GEMMBench</b></a> ] \n<br><br>'
+    h+='[ <a href="https://github.com/ctuning/ck"><b>Open research SDK</b></a> ], \n'
+    h+='[ <a href="https://play.google.com/store/apps/details?id=openscience.crowdsource.experiments">Android app to crowdsource experiments using mobile devices</a> ], \n'
+    h+='[ <a href="http://cknowledge.org/repo/web.php?action=index&module_uoa=wfe&native_action=show&native_module_uoa=experiment.user">User timeline</a> ]<br> \n'
+    h+='[ A few concept papers: <a href="http://arxiv.org/abs/1506.06256">CPC\'15</a>, <a href="http://bit.ly/ck-date16">DATE\'16</a>, \n'
+    h+='  <a href="http://arxiv.org/abs/1406.4020">TRUST@PLDI\'14</a>, <a href="http://cknowledge.org/interactive-report">interactive</a>\n'
+    h+='  ], \n'
+    h+='[ <a href="http://cTuning.org/reproducibility-wiki">Reproducible experimentation initiative</a> ]\n'
+    h+='</center>\n'
+
+
+
+
+
+    return {'return':0, 'html':h}

@@ -1,0 +1,553 @@
+<script src="$#ck_root_url#$action=pull&common_func=yes&cid=module:graph&filename=third-party/d3/d3.v3.min.js"></script>
+
+<script>
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = 600 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+/* 
+ * value accessor - returns the value to encode for a given data object.
+ * scale - maps value to a visual display encoding, such as a pixel position.
+ * map function - maps from data value to display value
+ * axis - sets up axis
+ */ 
+
+var xdata={
+  "0": [
+    [
+      "384", 
+      7.918, 
+      0.0
+    ], 
+    [
+      "256", 
+      13.904, 
+      0.0
+    ], 
+    [
+      "128", 
+      20.448, 
+      0.0
+    ], 
+    [
+      "384", 
+      3.49, 
+      0.0
+    ], 
+    [
+      "128", 
+      13.154499999999999, 
+      0.3485000000000005
+    ], 
+    [
+      "256", 
+      6.305, 
+      0.0
+    ], 
+    [
+      "640", 
+      3.667, 
+      0.001000000000000112
+    ], 
+    [
+      "1024", 
+      10.0205, 
+      0.30850000000000044
+    ], 
+    [
+      "1024", 
+      10.437000000000001, 
+      0.16100000000000048
+    ], 
+    [
+      "384", 
+      13.3985, 
+      0.0045000000000001705
+    ]
+  ]
+};
+
+var xinfo={
+  "0": [
+    {
+      "repo_uoa": "9a3280b14a4285c9", 
+      "point_uid": "0abc5c42f432fbb9", 
+      "data_uoa": "c9d046c81455a8a9", 
+      "features": {
+        "##choices#run_cmd_key_n": "384", 
+        "##choices#dataset_file": "SGEMM_NT_1x1.json", 
+        "##choices#target_os": "windows-64", 
+        "##choices#target_os_bits": "64", 
+        "##choices#compile_type": "dynamic", 
+        "##choices#cmd_key": "sgemm_nt", 
+        "##choices#run_cmd_key_lws": "4,8", 
+        "##choices#energy": "no", 
+        "##choices#device_id": "", 
+        "##choices#skip_calibration": "yes", 
+        "##choices#gpu_freq": "max", 
+        "##choices#host_os": "windows-64", 
+        "##choices#dataset_uoa": "SGEMM_NT", 
+        "##choices#cpu_freq": "max", 
+        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
+        "##choices#compile_only_once": "yes", 
+        "##choices#repeat": 1, 
+        "##choices#module_uoa": "b0ac08fe1d3c2615"
+      }, 
+      "module_uoa": "bc0409fb61f0aa82"
+    }, 
+    {
+      "repo_uoa": "9a3280b14a4285c9", 
+      "point_uid": "108e05e3dfa2f481", 
+      "data_uoa": "c9d046c81455a8a9", 
+      "features": {
+        "##choices#run_cmd_key_n": "256", 
+        "##choices#dataset_file": "SGEMM_NT_4x1_barrier.json", 
+        "##choices#target_os": "windows-64", 
+        "##choices#target_os_bits": "64", 
+        "##choices#compile_type": "dynamic", 
+        "##choices#cmd_key": "sgemm_nt", 
+        "##choices#run_cmd_key_lws": "4,16", 
+        "##choices#energy": "no", 
+        "##choices#device_id": "", 
+        "##choices#skip_calibration": "yes", 
+        "##choices#gpu_freq": "max", 
+        "##choices#host_os": "windows-64", 
+        "##choices#dataset_uoa": "SGEMM_NT", 
+        "##choices#cpu_freq": "max", 
+        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
+        "##choices#compile_only_once": "yes", 
+        "##choices#repeat": 1, 
+        "##choices#module_uoa": "b0ac08fe1d3c2615"
+      }, 
+      "module_uoa": "bc0409fb61f0aa82"
+    }, 
+    {
+      "repo_uoa": "9a3280b14a4285c9", 
+      "point_uid": "1445689841e3f8b7", 
+      "data_uoa": "c9d046c81455a8a9", 
+      "features": {
+        "##choices#run_cmd_key_n": "128", 
+        "##choices#dataset_file": "SGEMM_NT_4x1_barrier.json", 
+        "##choices#target_os": "windows-64", 
+        "##choices#target_os_bits": "64", 
+        "##choices#compile_type": "dynamic", 
+        "##choices#cmd_key": "sgemm_nt", 
+        "##choices#run_cmd_key_lws": "2,64", 
+        "##choices#energy": "no", 
+        "##choices#device_id": "", 
+        "##choices#skip_calibration": "yes", 
+        "##choices#gpu_freq": "max", 
+        "##choices#host_os": "windows-64", 
+        "##choices#dataset_uoa": "SGEMM_NT", 
+        "##choices#cpu_freq": "max", 
+        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
+        "##choices#compile_only_once": "yes", 
+        "##choices#repeat": 1, 
+        "##choices#module_uoa": "b0ac08fe1d3c2615"
+      }, 
+      "module_uoa": "bc0409fb61f0aa82"
+    }, 
+    {
+      "repo_uoa": "9a3280b14a4285c9", 
+      "point_uid": "3a98acb57f362e94", 
+      "data_uoa": "c9d046c81455a8a9", 
+      "features": {
+        "##choices#run_cmd_key_n": "384", 
+        "##choices#dataset_file": "SGEMM_NT_1x1.json", 
+        "##choices#target_os": "windows-64", 
+        "##choices#target_os_bits": "64", 
+        "##choices#compile_type": "dynamic", 
+        "##choices#cmd_key": "sgemm_nt", 
+        "##choices#run_cmd_key_lws": "16,1", 
+        "##choices#energy": "no", 
+        "##choices#device_id": "", 
+        "##choices#skip_calibration": "yes", 
+        "##choices#gpu_freq": "max", 
+        "##choices#host_os": "windows-64", 
+        "##choices#dataset_uoa": "SGEMM_NT", 
+        "##choices#cpu_freq": "max", 
+        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
+        "##choices#compile_only_once": "yes", 
+        "##choices#repeat": 1, 
+        "##choices#module_uoa": "b0ac08fe1d3c2615"
+      }, 
+      "module_uoa": "bc0409fb61f0aa82"
+    }, 
+    {
+      "repo_uoa": "9a3280b14a4285c9", 
+      "point_uid": "4fe99e1474411910", 
+      "data_uoa": "c9d046c81455a8a9", 
+      "features": {
+        "##choices#run_cmd_key_n": "128", 
+        "##choices#dataset_file": "SGEMM_NT_4x1_barrier.json", 
+        "##choices#target_os": "windows-64", 
+        "##choices#target_os_bits": "64", 
+        "##choices#compile_type": "dynamic", 
+        "##choices#cmd_key": "sgemm_nt", 
+        "##choices#run_cmd_key_lws": "32,1", 
+        "##choices#energy": "no", 
+        "##choices#device_id": "", 
+        "##choices#skip_calibration": "yes", 
+        "##choices#gpu_freq": "max", 
+        "##choices#host_os": "windows-64", 
+        "##choices#dataset_uoa": "SGEMM_NT", 
+        "##choices#cpu_freq": "max", 
+        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
+        "##choices#compile_only_once": "yes", 
+        "##choices#repeat": 1, 
+        "##choices#module_uoa": "b0ac08fe1d3c2615"
+      }, 
+      "module_uoa": "bc0409fb61f0aa82"
+    }, 
+    {
+      "repo_uoa": "9a3280b14a4285c9", 
+      "point_uid": "683d377414f89f9e", 
+      "data_uoa": "c9d046c81455a8a9", 
+      "features": {
+        "##choices#run_cmd_key_n": "256", 
+        "##choices#dataset_file": "SGEMM_NT_1x1.json", 
+        "##choices#target_os": "windows-64", 
+        "##choices#target_os_bits": "64", 
+        "##choices#compile_type": "dynamic", 
+        "##choices#cmd_key": "sgemm_nt", 
+        "##choices#run_cmd_key_lws": "8,8", 
+        "##choices#energy": "no", 
+        "##choices#device_id": "", 
+        "##choices#skip_calibration": "yes", 
+        "##choices#gpu_freq": "max", 
+        "##choices#host_os": "windows-64", 
+        "##choices#dataset_uoa": "SGEMM_NT", 
+        "##choices#cpu_freq": "max", 
+        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
+        "##choices#compile_only_once": "yes", 
+        "##choices#repeat": 1, 
+        "##choices#module_uoa": "b0ac08fe1d3c2615"
+      }, 
+      "module_uoa": "bc0409fb61f0aa82"
+    }, 
+    {
+      "repo_uoa": "9a3280b14a4285c9", 
+      "point_uid": "6983bfc6b324e51a", 
+      "data_uoa": "c9d046c81455a8a9", 
+      "features": {
+        "##choices#run_cmd_key_n": "640", 
+        "##choices#dataset_file": "SGEMM_NT_1x1.json", 
+        "##choices#target_os": "windows-64", 
+        "##choices#target_os_bits": "64", 
+        "##choices#compile_type": "dynamic", 
+        "##choices#cmd_key": "sgemm_nt", 
+        "##choices#run_cmd_key_lws": "1,64", 
+        "##choices#energy": "no", 
+        "##choices#device_id": "", 
+        "##choices#skip_calibration": "yes", 
+        "##choices#gpu_freq": "max", 
+        "##choices#host_os": "windows-64", 
+        "##choices#dataset_uoa": "SGEMM_NT", 
+        "##choices#cpu_freq": "max", 
+        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
+        "##choices#compile_only_once": "yes", 
+        "##choices#repeat": 1, 
+        "##choices#module_uoa": "b0ac08fe1d3c2615"
+      }, 
+      "module_uoa": "bc0409fb61f0aa82"
+    }, 
+    {
+      "repo_uoa": "9a3280b14a4285c9", 
+      "point_uid": "c998d0bc1a111f4a", 
+      "data_uoa": "c9d046c81455a8a9", 
+      "features": {
+        "##choices#run_cmd_key_n": "1024", 
+        "##choices#dataset_file": "SGEMM_NT_4x1_barrier.json", 
+        "##choices#target_os": "windows-64", 
+        "##choices#target_os_bits": "64", 
+        "##choices#compile_type": "dynamic", 
+        "##choices#cmd_key": "sgemm_nt", 
+        "##choices#run_cmd_key_lws": "8,4", 
+        "##choices#energy": "no", 
+        "##choices#device_id": "", 
+        "##choices#skip_calibration": "yes", 
+        "##choices#gpu_freq": "max", 
+        "##choices#host_os": "windows-64", 
+        "##choices#dataset_uoa": "SGEMM_NT", 
+        "##choices#cpu_freq": "max", 
+        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
+        "##choices#compile_only_once": "yes", 
+        "##choices#repeat": 1, 
+        "##choices#module_uoa": "b0ac08fe1d3c2615"
+      }, 
+      "module_uoa": "bc0409fb61f0aa82"
+    }, 
+    {
+      "repo_uoa": "9a3280b14a4285c9", 
+      "point_uid": "e7a4418bac2da8aa", 
+      "data_uoa": "c9d046c81455a8a9", 
+      "features": {
+        "##choices#run_cmd_key_n": "1024", 
+        "##choices#dataset_file": "SGEMM_NT_4x1.json", 
+        "##choices#target_os": "windows-64", 
+        "##choices#target_os_bits": "64", 
+        "##choices#compile_type": "dynamic", 
+        "##choices#cmd_key": "sgemm_nt", 
+        "##choices#run_cmd_key_lws": "4,4", 
+        "##choices#energy": "no", 
+        "##choices#device_id": "", 
+        "##choices#skip_calibration": "yes", 
+        "##choices#gpu_freq": "max", 
+        "##choices#host_os": "windows-64", 
+        "##choices#dataset_uoa": "SGEMM_NT", 
+        "##choices#cpu_freq": "max", 
+        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
+        "##choices#compile_only_once": "yes", 
+        "##choices#repeat": 1, 
+        "##choices#module_uoa": "b0ac08fe1d3c2615"
+      }, 
+      "module_uoa": "bc0409fb61f0aa82"
+    }, 
+    {
+      "repo_uoa": "9a3280b14a4285c9", 
+      "point_uid": "f92ed40e984c5047", 
+      "data_uoa": "c9d046c81455a8a9", 
+      "features": {
+        "##choices#run_cmd_key_n": "384", 
+        "##choices#dataset_file": "SGEMM_NT_4x1_barrier.json", 
+        "##choices#target_os": "windows-64", 
+        "##choices#target_os_bits": "64", 
+        "##choices#compile_type": "dynamic", 
+        "##choices#cmd_key": "sgemm_nt", 
+        "##choices#run_cmd_key_lws": "8,8", 
+        "##choices#energy": "no", 
+        "##choices#device_id": "", 
+        "##choices#skip_calibration": "yes", 
+        "##choices#gpu_freq": "max", 
+        "##choices#host_os": "windows-64", 
+        "##choices#dataset_uoa": "SGEMM_NT", 
+        "##choices#cpu_freq": "max", 
+        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
+        "##choices#compile_only_once": "yes", 
+        "##choices#repeat": 1, 
+        "##choices#module_uoa": "b0ac08fe1d3c2615"
+      }, 
+      "module_uoa": "bc0409fb61f0aa82"
+    }
+  ]
+};
+
+var xps={
+  "1": {
+    "color": "#dc3912", 
+    "elinewidth": "5"
+  }, 
+  "0": {
+    "color": "#3366cc"
+  }
+};
+
+// setup x 
+var xValue = function(d) { return d.x;}, // data -> value
+    xScale = d3.scale.linear().range([0, width]), // value -> display
+    xMap = function(d) { return xScale(xValue(d));}, // data -> display
+    xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+
+// setup y
+var yValue = function(d) { return d.y;}, // data -> value
+    yScale = d3.scale.linear().range([height, 0]), // value -> display
+    yMap = function(d) { return yScale(yValue(d));}, // data -> display
+    yAxis = d3.svg.axis().scale(yScale).orient("left");
+
+// add the graph canvas to the body of the webpage
+var svg = d3.select("$#ck_where#$").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// add the tooltip area to the webpage
+var tooltip = d3.select("$#ck_where#$").append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0);
+
+
+/* Check min/max on all axis */
+pxmin="0";
+pxmax="1100";
+pymin="0";
+pymax="13";
+
+xmin=-1;
+xmax=-1;
+ymin=-1;
+ymax=-1;
+
+var data;
+var adata=[];
+var sgraph;
+var ps;
+
+for (graph=0; graph < 100; graph++) {
+
+   sgraph=graph.toString();
+
+   if (!(sgraph in xdata)) break;
+
+   data=xdata[sgraph];
+
+   for (l=0; l<data.length; l++)
+   {
+     v=data[l];
+
+     if (pxmin=="" && (xmin==-1 || v[0]<xmin)) xmin=v[0];
+     if (pxmax=="" && (xmax==-1 || v[0]>xmax)) xmax=v[0];
+
+     if (pymin=="" && (ymin==-1 || v[1]<ymin)) ymin=v[1];
+     if (pymax=="" && (ymax==-1 || v[1]>ymax)) ymax=v[1];
+   }
+}
+
+if (pxmin!="") xmin=parseFloat(pxmin);
+if (pxmax!="") xmax=parseFloat(pxmax);
+if (pymin!="") ymin=parseFloat(pymin);
+if (pymax!="") ymax=parseFloat(pymax);
+
+// don't want dots overlapping axis, so add in buffer to data domain
+xScale.domain([xmin, xmax]);
+yScale.domain([ymin, ymax]);
+
+// x-axis
+svg.append("g")
+   .attr("class", "x axis")
+   .attr("transform", "translate(0," + height + ")")
+   .call(xAxis)
+   .append("text")
+   .attr("class", "label")
+   .attr("x", width)
+   .attr("y", -6)
+   .style("text-anchor", "end")
+   .text("Matrix order (-n)");
+
+// y-axis
+svg.append("g")
+   .attr("class", "y axis")
+   .call(yAxis)
+   .append("text")
+   .attr("class", "label")
+   .attr("transform", "rotate(-90)")
+   .attr("y", 6)
+   .attr("dy", ".71em")
+   .style("text-anchor", "end")
+   .text("Gflops/s");
+
+// Convert to internal format
+for (graph=0; graph < 100; graph++) {
+
+   sgraph=graph.toString();
+
+   if (!(sgraph in xdata)) break;
+
+   data=xdata[sgraph];
+   ps={}; 
+   if (sgraph in xps) ps=xps[sgraph];
+   info={}
+   if (sgraph in xinfo) info=xinfo[sgraph];
+
+   for (q=0; q<data.length; q++)
+   {
+     var inf={};
+     if (q in info) inf=info[q];
+
+     cid=''
+     if (('module_uoa' in inf) && ('data_uoa' in inf))
+        cid=info[q]['module_uoa']+':'+info[q]['data_uoa'];
+
+     var features={}
+     var sfeatures="";
+
+     var dat={}
+
+     if ('features' in inf) {
+        features=inf.features;
+     
+        var keys=[];
+        for (var key in features) {
+          if (features.hasOwnProperty(key)) {
+            keys.push(key);
+          }
+        }
+        keys.sort();
+
+        for (k=0; k<keys.length; k++)
+        {
+          key=keys[k];
+          sfeatures+=key+'='+features[key]+'<br>';
+        }
+     }
+
+     var size=5;
+     if ("size" in ps) size=ps.size;
+
+     var color="#0000bf";
+     if ("color" in ps) color=ps.color;
+
+     if ('point_uid' in inf) dat['subpoint']=inf.point_uid
+     if (cid!='') dat['cid']=cid   
+     if ('type'in ps) dat['type']=ps.type; 
+
+     dat['x']=data[q][0];
+     dat['y']=data[q][1];
+     dat['size']=size;
+     dat['color']=color;
+     dat['features']=sfeatures;
+     dat['info']=inf
+
+     adata.push(dat);
+   }
+}
+
+// draw dots
+svg.selectAll(".dot")
+   .data(adata)
+   .enter()
+
+   .append("circle")
+   .attr("r", function(d) {return d.size})
+   .attr("cx", xMap)
+   .attr("cy", yMap)
+   .style("fill", function(d) {return d.color})
+
+   .on("click", function(d) {
+      var cid='';
+      if ('cid' in d) {
+         cid=d['cid'];
+
+         var subpoint='';
+         if ('subpoint' in d) subpoint=d['subpoint'];
+
+         window.open("$#ck_root_url#$wcid="+cid+'&subpoint='+subpoint);
+      } else {
+         var url='';
+         if ('url' in d) {
+            url=d['url'];
+            var url_ext='';
+            if ('url_ext' in d) {
+               url_ext=d['url_ext'];
+               window.open(url+url_ext);
+            }
+         }
+      }
+   })
+
+   .on("mouseover", function(d) {
+       tooltip.transition()
+            .duration(200)
+            .style("opacity", .9);
+       tooltip.html("<div style=\"text-align:left;background-color:yellow;opacity:0.8;filter:alpha(opacity=80);\"><small><b>x=" + xValue(d) + ", y=" + yValue(d) + "</b><br>"+d.features+"\n</small></div>")
+            .style("left", (d3.event.pageX + 5) + "px")
+            .style("top", (d3.event.pageY - 28) + "px");
+   })
+
+   .on("mouseout", function(d) {
+       tooltip.transition()
+            .duration(500)
+            .style("opacity", 0);
+   });
+
+</script>

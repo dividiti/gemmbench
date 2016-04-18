@@ -31,3 +31,7 @@ Usage
 * Run benchmark with custom CMD (for example, change matrix order, platform ID and device ID):
 
 > ck run:gemmbench-cl-launcher-1.0 --extra_run_cmd="-n 512 -p 0 -d 1"
+
+Publications
+============
+* http://arxiv.org/abs/1511.03742

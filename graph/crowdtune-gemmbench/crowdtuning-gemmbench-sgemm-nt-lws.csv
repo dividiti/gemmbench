@@ -1,0 +1,12 @@
+"##choices#run_cmd_key_n#min";"##characteristics#run#run_time_state#EXECUTION#Gflops/s#center";"##characteristics#run#run_time_state#EXECUTION#Gflops/s#halfrange"
+"384";7.918;0.0
+"256";13.904;0.0
+"128";20.448;0.0
+"384";3.49;0.0
+"128";13.1545;0.3485
+"256";6.305;0.0
+"640";3.667;0.001
+"1024";10.0205;0.3085
+"1024";10.437;0.161
+"384";13.3985;0.0045
+

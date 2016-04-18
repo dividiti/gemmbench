@@ -1,0 +1,56 @@
+{
+  "get_shared_repo": "ck pull repo --url=git@github.com:dividiti/gemmbench.git", 
+  "graphs": [
+    {
+      "id": "crowdtuning-gemmbench-sgemm-nt-lws", 
+      "name": "2D graphs: Gflops vs matrix order", 
+      "notes": "Crowd-tuning OpenCL-based GEMMbench", 
+      "output": "html", 
+      "params": {
+        "axis_x_desc": "Matrix order (-n)", 
+        "axis_y_desc": "Gflops/s", 
+        "data_uoa_list": [
+          "SGEMM_NT-explore-f-n-lws"
+        ], 
+        "display_x_error_bar": "no", 
+        "display_y_error_bar": "yes", 
+        "experiment_module_uoa": "experiment", 
+        "flat_keys_list": [
+          "##choices#run_cmd_key_n#min", 
+          "##characteristics#run#run_time_state#EXECUTION#Gflops/s#center", 
+          "##characteristics#run#run_time_state#EXECUTION#Gflops/s#halfrange"
+        ], 
+        "ignore_point_if_empty_string": "yes", 
+        "mpl_image_dpi": "100", 
+        "mpl_image_size_x": "12", 
+        "mpl_image_size_y": "6", 
+        "plot_grid": "yes", 
+        "plot_type": "d3_2d_scatter", 
+        "point_style": {
+          "0": {
+            "color": "#3366cc"
+          }, 
+          "1": {
+            "color": "#dc3912", 
+            "elinewidth": "5"
+          }
+        }, 
+        "save_info_table_to_json_file": "crowdtuning-gemmbench-sgemm-nt-lws.json", 
+        "save_table_to_csv_file": "crowdtuning-gemmbench-sgemm-nt-lws.csv", 
+        "save_table_to_json_file": "crowdtuning-gemmbench-sgemm-nt-lws.json", 
+        "size_x": 700, 
+        "size_y": 400, 
+        "title": "Crowd-tuning GEMMbench: SGEMM NT", 
+        "xmax": 1100, 
+        "xmin": 0, 
+        "ymax": 13, 
+        "ymin": 0
+      }
+    }
+  ], 
+  "name": "Crowd-tuning OpenCL-based GEMMbench (max Gflops vs matrix order", 
+  "scripts_data_uoa": "a426e8964a9491b6", 
+  "scripts_module_uoa": "script", 
+  "scripts_repo_uoa": "", 
+  "shared_repo": "gemmbench"
+}
