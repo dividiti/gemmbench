@@ -1,0 +1,23 @@
+{
+  "actions": {
+    "clean": {
+      "desc": "clean results"
+    }, 
+    "start": {
+      "desc": "start gemmbench crowdtuning"
+    }
+  }, 
+  "copyright": "See CK COPYRIGHT.txt for copyright details", 
+  "desc": "basic gemmbench crowdtuning", 
+  "developer": "Grigori Fursin", 
+  "developer_email": "Grigori.Fursin@cTuning.org", 
+  "developer_webpage": "http://fursin.net", 
+  "license": "See CK LICENSE.txt for licensing details", 
+  "module_deps": {
+    "cfg": "b34231a3467566f8", 
+    "program.optimization": "27bc42ee449e880e", 
+    "experiment": "bc0409fb61f0aa82",
+    "script": "84e27ad9dd12e734"
+  }, 
+  "script_uoa": "SGEMM_NT"
+}

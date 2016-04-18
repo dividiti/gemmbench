@@ -1,0 +1,1 @@
+ck clean gemmbench.crowdtuning

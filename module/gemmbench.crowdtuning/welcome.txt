@@ -1,0 +1,10 @@
+Dear user,
+
+You are welcome to participate in gemmbench crowdtuning,
+i.e. distributing long autotuning across diverse hardware
+and inputs provided by volunteers.
+
+Each month, we will be awarding 50 euro Amazon voucheer
+to the random user participated in crowdtuning!
+
+Thank you very much for your participation!
