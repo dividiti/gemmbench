@@ -170,15 +170,5 @@ def clean(i):
 
     """
 
-    r=ck.inp({'text':'You are about to clean crowd-tuning results on remote server. Are you sure (y/N)? '})
-    x=r['string'].strip().lower()
-
-    if x=='y' or x=='yes':
-       ii={'action':'rm',
-           'module_uoa':cfg['module_deps']['experiment'],
-           'data_uoa':duoa1,
-           'repo_uoa':rep1}
-       r=ck.access(ii)
-       if r['return']>0: return r
 
     return {'return':0}
