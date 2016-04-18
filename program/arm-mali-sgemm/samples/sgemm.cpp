@@ -438,7 +438,19 @@ void sgemm(int argc, const char **argv)
     kernel_finalize.setArg( 2, alpha );
     kernel_finalize.setArg( 3, beta );
 
-    /* Global Work Size (GWS) for interleave, transpose, matrix multiplication and finalize kernels */
+    /* Kernel events for the interleave, transpose, matrix multiplication and finalize kernels. */
+    cl::Event interleave_event;
+    cl::Event transpose_event;
+    cl::Event mm_event;
+    cl::Event finalize_event;
+
+    /* Kernel events associated with previously enqueued kernels. Don't bother with for an in-order queue. */
+    std::vector<cl::Event>* interleave_events = NULL;
+    std::vector<cl::Event>* transpose_events  = NULL;
+    std::vector<cl::Event>* mm_events         = NULL;
+    std::vector<cl::Event>* finalize_events   = NULL;
+
+    /* Global Work Size (GWS) for the interleave, transpose, matrix multiplication and finalize kernels. */
     cl::NDRange interleave_gws( mtx_a.internal_cols / cl_gemm[gemm_type_idx].interleave.divisor_gws_x,
                                 mtx_a.internal_rows / cl_gemm[gemm_type_idx].interleave.divisor_gws_y );
     cl::NDRange transpose_gws ( mtx_b.internal_cols / cl_gemm[gemm_type_idx].transpose.divisor_gws_x,
@@ -448,34 +460,36 @@ void sgemm(int argc, const char **argv)
     cl::NDRange finalize_gws  ( mtx_b.internal_cols / cl_gemm[gemm_type_idx].finalize.divisor_gws_x,
                                 mtx_a.internal_rows / cl_gemm[gemm_type_idx].finalize.divisor_gws_y );
 
-    /* Local Work Group Size for the Matrix Multiplication kernel */
+    /* Local Work Size (LWS) for the matrix multiplication kernel. */
     cl::NDRange mm_lws = { cl_gemm[gemm_type_idx].default_mm_lws[0], cl_gemm[gemm_type_idx].default_mm_lws[1] };
 
-    /* Enqueues the commands to execute the kernels on a device. */
-    queue.enqueueNDRangeKernel( kernel_interleave, cl::NullRange, interleave_gws );
-    queue.enqueueNDRangeKernel( kernel_transpose,  cl::NullRange, transpose_gws);
+    /* Enqueue the commands to execute the kernels on a device. */
+    queue.enqueueNDRangeKernel( kernel_interleave, cl::NullRange, interleave_gws, cl::NullRange, interleave_events, &interleave_event );
+    queue.enqueueNDRangeKernel( kernel_transpose,  cl::NullRange, transpose_gws,  cl::NullRange, transpose_events,  &transpose_event  );
 
+    std::cout << "[MM] Global Work Size = [" << mm_gws[0] << ", " << mm_gws[1] << "]" << std::endl;
     if( (!(mm_gws[0] % cl_gemm[gemm_type_idx].default_mm_lws[0])) && (!(mm_gws[1] % cl_gemm[gemm_type_idx].default_mm_lws[1])) )
     {
-        std::cout << "Local Work-Group size: [" << mm_lws[0] << ", " << mm_lws[1] << "]" << std::endl;
-        queue.enqueueNDRangeKernel( kernel_mm,         cl::NullRange, mm_gws, mm_lws );
+        std::cout << "[MM] Local Work Size = [" << mm_lws[0] << ", " << mm_lws[1] << "]" << std::endl;
+        queue.enqueueNDRangeKernel( kernel_mm, cl::NullRange, mm_gws, mm_lws, mm_events, &mm_event );
     }
     else
     {
-        queue.enqueueNDRangeKernel( kernel_mm,         cl::NullRange, mm_gws );
+        std::cout << "[MM] Local Work Size = NULL" << std::endl;
+        queue.enqueueNDRangeKernel( kernel_mm, cl::NullRange, mm_gws, cl::NullRange, mm_events, &mm_event );
     }
 
-    /* Do not enqueue finalize kernel if alpha == 1 and beta == 0 */
+    /* Do not enqueue the finalize kernel if alpha == 1 and beta == 0 */
     if( (alpha != 1.0f) || (beta != 0.0f) )
     {
-        queue.enqueueNDRangeKernel( kernel_finalize, cl::NullRange, finalize_gws );
+        queue.enqueueNDRangeKernel( kernel_finalize, cl::NullRange, finalize_gws, cl::NullRange, finalize_events, &finalize_event );
     }
     else
     {
         std::cout << "Skipped finalize kernel as alpha = 1 and beta = 0" << std::endl;
     }
 
-    /* Wait for finishing */
+    /* Wait for completion. */
     queue.finish();
 
     /*******************************************************************************
