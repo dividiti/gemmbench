@@ -200,4 +200,6 @@ def clean(i):
                      'ignore_update':'yes'})
        if rx['return']>0: return rx    
 
+       ck.out('Entry cleaned successfully!')
+
     return {'return':0}
