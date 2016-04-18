@@ -41,10 +41,6 @@
   "program": "yes", 
   "run_cmds": {
     "default": {
-      "dataset_tags": [
-        "dataset", 
-        "opencl"
-      ], 
       "ignore_return_code": "no", 
       "run_time": {
         "fine_grain_timer_file": "tmp-ck-timer.json", 

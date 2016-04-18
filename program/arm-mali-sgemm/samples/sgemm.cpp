@@ -264,12 +264,20 @@ void sgemm(int argc, const char **argv)
     fp32    alpha         = 0.0f;
     fp32    beta          = 0.0f;
 
+    size_t mm_lws_x = 0;
+    size_t mm_lws_y = 0;
+
+    int32_t skip_padding = 0; /* if 1, skip padding */
+
     /* Read environment variables */
     READ_MATRIX_SHAPE( mtx_a,         "MTX_A",       1000,       1000 );
     READ_MATRIX_SHAPE( mtx_b,         "MTX_B",       mtx_a.cols, 1000 );
     READ_CONFIG(       gemm_type_idx, "GEMM_TYPE",   static_cast<int32_t>(FP32) );
     READ_FLOAT_VAR(    alpha,         "ALPHA",       2.0f );
-    READ_FLOAT_VAR(    beta,          "BETA",        1.0f );
+
+    READ_CONFIG(mm_lws_x,             "CK_LWS_X",        0 );
+    READ_CONFIG(mm_lws_y,             "CK_LWS_Y",        0 );
+    READ_CONFIG(skip_padding,         "CK_SKIP_PADDING", 0 );
 
     /* Check if columns of Matrix A are equal to rows of Matrix B */
     if( mtx_a.cols != mtx_b.rows )
@@ -286,15 +294,19 @@ void sgemm(int argc, const char **argv)
     /* Compute matrix dimensions for the OpenCL implementation */
     size_t mm_gws_x = cl_gemm[gemm_type_idx].mm.divisor_gws_x;
     size_t mm_gws_y = cl_gemm[gemm_type_idx].mm.divisor_gws_y;
-    size_t mm_lws_x = cl_gemm[gemm_type_idx].default_mm_lws[0];
-    size_t mm_lws_y = cl_gemm[gemm_type_idx].default_mm_lws[1];
+    if (mm_lws_x==0) mm_lws_x = cl_gemm[gemm_type_idx].default_mm_lws[0];
+    if (mm_lws_y==0) mm_lws_y = cl_gemm[gemm_type_idx].default_mm_lws[1];
+
+    std::cout << "LWS [" << mm_lws_x << "," << mm_lws_y << "]" << std::endl;
 
     /* Since we have a fixed LWS, we need to ensure that the dimensions of GWS[x,y] are multiple of the dimensions of LWS[x, y] */
     /* This kind of operation is done just for the rows of matrix A and columns of Matrix B */
-    mtx_a.internal_rows = ( mtx_a.rows / mm_gws_y ) + PADDING_BYTES( ( mtx_a.rows / mm_gws_y ), mm_lws_y );
+    mtx_a.internal_rows = ( mtx_a.rows / mm_gws_y );
+    if (skip_padding==0) mtx_a.internal_rows += PADDING_BYTES( ( mtx_a.rows / mm_gws_y ), mm_lws_y );
     mtx_a.internal_rows *= mm_gws_y;
 
-    mtx_b.internal_cols = ( mtx_b.cols / mm_gws_x ) + PADDING_BYTES( ( mtx_b.cols / mm_gws_x ), mm_lws_x );
+    mtx_b.internal_cols = ( mtx_b.cols / mm_gws_x );
+    if (skip_padding==0) mtx_b.internal_cols += PADDING_BYTES( ( mtx_b.cols / mm_gws_x ), mm_lws_x );
     mtx_b.internal_cols *= mm_gws_x;
 
     /* Add extra padding bytes if columns of Matrix A and/or rows of Matrix B are not multiple of GWS */
@@ -324,7 +336,7 @@ void sgemm(int argc, const char **argv)
     size_t mtx_a_inter_stride = mtx_a.internal_cols * cl_gemm[gemm_type_idx].interleave.divisor_gws_y;
     size_t mtx_b_trans_stride = mtx_b.internal_rows * cl_gemm[gemm_type_idx].transpose.divisor_gws_x;
 
-    cl::Program program = cl::Program( mali::read_file("kernels/sgemm.cl") );
+    cl::Program program = cl::Program( mali::read_file("../kernels/sgemm.cl") );
 
     /* Pre-processor CL define for the buffer origin */
     std::stringstream options;
