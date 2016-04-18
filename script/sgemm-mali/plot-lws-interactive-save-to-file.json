@@ -1,7 +1,7 @@
 {
   "experiment_module_uoa":"experiment",
 
-  "data_uoa_list":["SGEMM_NT-explore-f-n-lws"],
+  "data_uoa_list":["sgemm-mali-all"],
 
   "flat_keys_list":[
     "##choices#run_cmd_key_n#min",
@@ -22,7 +22,7 @@
   "ymin" : 0,
   "ymax" : 13,
 
-  "title":"Crowd-tuning GEMMbench: SGEMM NT",
+  "title":"Crowd-tuning GEMMbench: SGEMM Mali",
 
   "axis_x_desc":"Matrix order (-n)",
   "axis_y_desc":"Gflops/s",
@@ -46,7 +46,7 @@
 
     "out_common_meta": {
        "get_shared_repo": "ck pull repo --url=git@github.com:dividiti/gemmbench.git", 
-       "name": "Crowd-tuning OpenCL-based GEMMbench (max Gflops vs matrix order)", 
+       "name": "Crowd-tuning OpenCL-based GEMMbench Mali (max Gflops vs matrix order)", 
        "scripts_data_uoa": "a426e8964a9491b6", 
        "scripts_module_uoa": "script", 
        "scripts_repo_uoa": "", 
@@ -54,14 +54,14 @@
     },
     "out_graph_extra_meta":{
       "name": "2D graphs: Gflops vs matrix order", 
-      "notes": "Crowd-tuning OpenCL-based GEMMbench",
+      "notes": "Crowd-tuning OpenCL-based GEMMbench Mali",
       "output": "html"
     },
 
-  "out_to_file":                 "crowdtuning-gemmbench-sgemm-nt-lws.html",
-  "save_to_style":               "crowdtuning-gemmbench-sgemm-nt-lws.style",
+  "out_to_file":                 "crowdtuning-gemmbench-sgemm-mali-lws.html",
+  "save_to_style":               "crowdtuning-gemmbench-sgemm-mali-lws.style",
 
-  "save_table_to_json_file":     "crowdtuning-gemmbench-sgemm-nt-lws.json",
-  "save_info_table_to_json_file":"crowdtuning-gemmbench-sgemm-nt-lws.json",
-  "save_table_to_csv_file":      "crowdtuning-gemmbench-sgemm-nt-lws.csv"
+  "save_table_to_json_file":     "crowdtuning-gemmbench-sgemm-mali-lws.json",
+  "save_info_table_to_json_file":"crowdtuning-gemmbench-sgemm-mali-lws.json",
+  "save_table_to_csv_file":      "crowdtuning-gemmbench-sgemm-mali-lws.csv"
 }

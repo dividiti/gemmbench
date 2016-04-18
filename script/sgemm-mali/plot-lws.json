@@ -1,0 +1,36 @@
+{
+  "experiment_module_uoa":"experiment",
+
+  "data_uoa_list":["sgemm-mali-lws"],
+
+  "flat_keys_list":[
+    "##choices#run_cmd_key_n#min",
+    "##characteristics#run#run_time_state#EXECUTION#Gflops/s#center",
+    "##characteristics#run#run_time_state#EXECUTION#Gflops/s#halfrange"
+  ],
+
+  "ignore_point_if_empty_string":"yes",
+
+  "plot_type":"mpl_2d_scatter",
+  "display_x_error_bar":"no",
+  "display_y_error_bar":"yes",
+
+  "ymin" : 0,
+  "ymax" : 13,
+
+  "title":"GEMMbench: SGEMM Mali",
+
+  "axis_x_desc":"Matrix order (-n)",
+  "axis_y_desc":"Gflops/s",
+
+  "plot_grid":"yes",
+
+  "mpl_image_size_x":"12",
+  "mpl_image_size_y":"6",
+  "mpl_image_dpi":"100",
+
+  "point_style":{"1":{"elinewidth":"5", "color":"#dc3912"},
+                 "0":{"color":"#3366cc"}},
+
+  "out_to_file":"plot-lws_tmp.png"
+}
