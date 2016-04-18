@@ -16,53 +16,68 @@ var xdata={
   "0": [
     [
       "384", 
-      7.918, 
+      10.707, 
       0.0
     ], 
     [
       "256", 
-      13.904, 
+      6.338, 
       0.0
     ], 
     [
-      "128", 
-      20.448, 
+      "1024", 
+      3.556, 
+      0.0
+    ], 
+    [
+      "1024", 
+      2.257, 
+      0.0
+    ], 
+    [
+      "512", 
+      9.082, 
+      0.0
+    ], 
+    [
+      "896", 
+      3.307, 
+      0.0
+    ], 
+    [
+      "768", 
+      6.904, 
+      0.0
+    ], 
+    [
+      "896", 
+      5.736, 
+      0.0
+    ], 
+    [
+      "512", 
+      9.992, 
       0.0
     ], 
     [
       "384", 
-      3.49, 
+      1.683, 
       0.0
     ], 
     [
       "128", 
-      13.154499999999999, 
-      0.3485000000000005
-    ], 
-    [
-      "256", 
-      6.305, 
+      12.068, 
       0.0
     ], 
     [
-      "640", 
-      3.667, 
-      0.001000000000000112
+      "512", 
+      3.407, 
+      0.0
     ], 
     [
-      "1024", 
-      10.0205, 
-      0.30850000000000044
-    ], 
-    [
-      "1024", 
-      10.437000000000001, 
-      0.16100000000000048
-    ], 
-    [
-      "384", 
-      13.3985, 
-      0.0045000000000001705
+      "768", 
+      3.642, 
+      0.0
     ]
   ]
 };
@@ -70,48 +85,22 @@ var xdata={
 var xinfo={
   "0": [
     {
-      "repo_uoa": "9a3280b14a4285c9", 
-      "point_uid": "0abc5c42f432fbb9", 
-      "data_uoa": "c9d046c81455a8a9", 
+      "repo_uoa": "fea7f3d0c800f814", 
+      "point_uid": "16e46859d96d3d30", 
+      "data_uoa": "bbc9067d72c117b8", 
       "features": {
         "##choices#run_cmd_key_n": "384", 
-        "##choices#dataset_file": "SGEMM_NT_1x1.json", 
-        "##choices#target_os": "windows-64", 
-        "##choices#target_os_bits": "64", 
-        "##choices#compile_type": "dynamic", 
-        "##choices#cmd_key": "sgemm_nt", 
-        "##choices#run_cmd_key_lws": "4,8", 
-        "##choices#energy": "no", 
-        "##choices#device_id": "", 
-        "##choices#skip_calibration": "yes", 
-        "##choices#gpu_freq": "max", 
-        "##choices#host_os": "windows-64", 
-        "##choices#dataset_uoa": "SGEMM_NT", 
-        "##choices#cpu_freq": "max", 
-        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
-        "##choices#compile_only_once": "yes", 
-        "##choices#repeat": 1, 
-        "##choices#module_uoa": "b0ac08fe1d3c2615"
-      }, 
-      "module_uoa": "bc0409fb61f0aa82"
-    }, 
-    {
-      "repo_uoa": "9a3280b14a4285c9", 
-      "point_uid": "108e05e3dfa2f481", 
-      "data_uoa": "c9d046c81455a8a9", 
-      "features": {
-        "##choices#run_cmd_key_n": "256", 
         "##choices#dataset_file": "SGEMM_NT_4x1_barrier.json", 
-        "##choices#target_os": "windows-64", 
-        "##choices#target_os_bits": "64", 
+        "##choices#target_os": "linux-32", 
         "##choices#compile_type": "dynamic", 
         "##choices#cmd_key": "sgemm_nt", 
         "##choices#run_cmd_key_lws": "4,16", 
+        "##choices#target_os_bits": "32", 
         "##choices#energy": "no", 
         "##choices#device_id": "", 
         "##choices#skip_calibration": "yes", 
         "##choices#gpu_freq": "max", 
-        "##choices#host_os": "windows-64", 
+        "##choices#host_os": "linux-32", 
         "##choices#dataset_uoa": "SGEMM_NT", 
         "##choices#cpu_freq": "max", 
         "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
@@ -122,95 +111,17 @@ var xinfo={
       "module_uoa": "bc0409fb61f0aa82"
     }, 
     {
-      "repo_uoa": "9a3280b14a4285c9", 
-      "point_uid": "1445689841e3f8b7", 
-      "data_uoa": "c9d046c81455a8a9", 
-      "features": {
-        "##choices#run_cmd_key_n": "128", 
-        "##choices#dataset_file": "SGEMM_NT_4x1_barrier.json", 
-        "##choices#target_os": "windows-64", 
-        "##choices#target_os_bits": "64", 
-        "##choices#compile_type": "dynamic", 
-        "##choices#cmd_key": "sgemm_nt", 
-        "##choices#run_cmd_key_lws": "2,64", 
-        "##choices#energy": "no", 
-        "##choices#device_id": "", 
-        "##choices#skip_calibration": "yes", 
-        "##choices#gpu_freq": "max", 
-        "##choices#host_os": "windows-64", 
-        "##choices#dataset_uoa": "SGEMM_NT", 
-        "##choices#cpu_freq": "max", 
-        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
-        "##choices#compile_only_once": "yes", 
-        "##choices#repeat": 1, 
-        "##choices#module_uoa": "b0ac08fe1d3c2615"
-      }, 
-      "module_uoa": "bc0409fb61f0aa82"
-    }, 
-    {
-      "repo_uoa": "9a3280b14a4285c9", 
-      "point_uid": "3a98acb57f362e94", 
-      "data_uoa": "c9d046c81455a8a9", 
-      "features": {
-        "##choices#run_cmd_key_n": "384", 
-        "##choices#dataset_file": "SGEMM_NT_1x1.json", 
-        "##choices#target_os": "windows-64", 
-        "##choices#target_os_bits": "64", 
-        "##choices#compile_type": "dynamic", 
-        "##choices#cmd_key": "sgemm_nt", 
-        "##choices#run_cmd_key_lws": "16,1", 
-        "##choices#energy": "no", 
-        "##choices#device_id": "", 
-        "##choices#skip_calibration": "yes", 
-        "##choices#gpu_freq": "max", 
-        "##choices#host_os": "windows-64", 
-        "##choices#dataset_uoa": "SGEMM_NT", 
-        "##choices#cpu_freq": "max", 
-        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
-        "##choices#compile_only_once": "yes", 
-        "##choices#repeat": 1, 
-        "##choices#module_uoa": "b0ac08fe1d3c2615"
-      }, 
-      "module_uoa": "bc0409fb61f0aa82"
-    }, 
-    {
-      "repo_uoa": "9a3280b14a4285c9", 
-      "point_uid": "4fe99e1474411910", 
-      "data_uoa": "c9d046c81455a8a9", 
-      "features": {
-        "##choices#run_cmd_key_n": "128", 
-        "##choices#dataset_file": "SGEMM_NT_4x1_barrier.json", 
-        "##choices#target_os": "windows-64", 
-        "##choices#target_os_bits": "64", 
-        "##choices#compile_type": "dynamic", 
-        "##choices#cmd_key": "sgemm_nt", 
-        "##choices#run_cmd_key_lws": "32,1", 
-        "##choices#energy": "no", 
-        "##choices#device_id": "", 
-        "##choices#skip_calibration": "yes", 
-        "##choices#gpu_freq": "max", 
-        "##choices#host_os": "windows-64", 
-        "##choices#dataset_uoa": "SGEMM_NT", 
-        "##choices#cpu_freq": "max", 
-        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
-        "##choices#compile_only_once": "yes", 
-        "##choices#repeat": 1, 
-        "##choices#module_uoa": "b0ac08fe1d3c2615"
-      }, 
-      "module_uoa": "bc0409fb61f0aa82"
-    }, 
-    {
-      "repo_uoa": "9a3280b14a4285c9", 
-      "point_uid": "683d377414f89f9e", 
-      "data_uoa": "c9d046c81455a8a9", 
+      "repo_uoa": "fea7f3d0c800f814", 
+      "point_uid": "24b5011e34cb84b2", 
+      "data_uoa": "bbc9067d72c117b8", 
       "features": {
         "##choices#run_cmd_key_n": "256", 
         "##choices#dataset_file": "SGEMM_NT_1x1.json", 
         "##choices#target_os": "windows-64", 
-        "##choices#target_os_bits": "64", 
         "##choices#compile_type": "dynamic", 
         "##choices#cmd_key": "sgemm_nt", 
         "##choices#run_cmd_key_lws": "8,8", 
+        "##choices#target_os_bits": "64", 
         "##choices#energy": "no", 
         "##choices#device_id": "", 
         "##choices#skip_calibration": "yes", 
@@ -226,17 +137,17 @@ var xinfo={
       "module_uoa": "bc0409fb61f0aa82"
     }, 
     {
-      "repo_uoa": "9a3280b14a4285c9", 
-      "point_uid": "6983bfc6b324e51a", 
-      "data_uoa": "c9d046c81455a8a9", 
+      "repo_uoa": "fea7f3d0c800f814", 
+      "point_uid": "39fe2a7173d6154f", 
+      "data_uoa": "bbc9067d72c117b8", 
       "features": {
-        "##choices#run_cmd_key_n": "640", 
+        "##choices#run_cmd_key_n": "1024", 
         "##choices#dataset_file": "SGEMM_NT_1x1.json", 
         "##choices#target_os": "windows-64", 
-        "##choices#target_os_bits": "64", 
         "##choices#compile_type": "dynamic", 
         "##choices#cmd_key": "sgemm_nt", 
-        "##choices#run_cmd_key_lws": "1,64", 
+        "##choices#run_cmd_key_lws": "16,4", 
+        "##choices#target_os_bits": "64", 
         "##choices#energy": "no", 
         "##choices#device_id": "", 
         "##choices#skip_calibration": "yes", 
@@ -252,43 +163,43 @@ var xinfo={
       "module_uoa": "bc0409fb61f0aa82"
     }, 
     {
-      "repo_uoa": "9a3280b14a4285c9", 
-      "point_uid": "c998d0bc1a111f4a", 
-      "data_uoa": "c9d046c81455a8a9", 
+      "repo_uoa": "fea7f3d0c800f814", 
+      "point_uid": "51b104c0a014d3a9", 
+      "data_uoa": "bbc9067d72c117b8", 
       "features": {
         "##choices#run_cmd_key_n": "1024", 
-        "##choices#dataset_file": "SGEMM_NT_4x1_barrier.json", 
-        "##choices#target_os": "windows-64", 
-        "##choices#target_os_bits": "64", 
-        "##choices#compile_type": "dynamic", 
-        "##choices#cmd_key": "sgemm_nt", 
-        "##choices#run_cmd_key_lws": "8,4", 
-        "##choices#energy": "no", 
-        "##choices#device_id": "", 
-        "##choices#skip_calibration": "yes", 
-        "##choices#gpu_freq": "max", 
-        "##choices#host_os": "windows-64", 
-        "##choices#dataset_uoa": "SGEMM_NT", 
-        "##choices#cpu_freq": "max", 
-        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
-        "##choices#compile_only_once": "yes", 
-        "##choices#repeat": 1, 
-        "##choices#module_uoa": "b0ac08fe1d3c2615"
-      }, 
-      "module_uoa": "bc0409fb61f0aa82"
-    }, 
-    {
-      "repo_uoa": "9a3280b14a4285c9", 
-      "point_uid": "e7a4418bac2da8aa", 
-      "data_uoa": "c9d046c81455a8a9", 
-      "features": {
-        "##choices#run_cmd_key_n": "1024", 
-        "##choices#dataset_file": "SGEMM_NT_4x1.json", 
-        "##choices#target_os": "windows-64", 
-        "##choices#target_os_bits": "64", 
+        "##choices#dataset_file": "SGEMM_NT_1x1.json", 
+        "##choices#target_os": "linux-32", 
         "##choices#compile_type": "dynamic", 
         "##choices#cmd_key": "sgemm_nt", 
         "##choices#run_cmd_key_lws": "4,4", 
+        "##choices#target_os_bits": "32", 
+        "##choices#energy": "no", 
+        "##choices#device_id": "", 
+        "##choices#skip_calibration": "yes", 
+        "##choices#gpu_freq": "max", 
+        "##choices#host_os": "linux-32", 
+        "##choices#dataset_uoa": "SGEMM_NT", 
+        "##choices#cpu_freq": "max", 
+        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
+        "##choices#compile_only_once": "yes", 
+        "##choices#repeat": 1, 
+        "##choices#module_uoa": "b0ac08fe1d3c2615"
+      }, 
+      "module_uoa": "bc0409fb61f0aa82"
+    }, 
+    {
+      "repo_uoa": "fea7f3d0c800f814", 
+      "point_uid": "6a56e5fed953bf3c", 
+      "data_uoa": "bbc9067d72c117b8", 
+      "features": {
+        "##choices#run_cmd_key_n": "512", 
+        "##choices#dataset_file": "SGEMM_NT_4x1_barrier.json", 
+        "##choices#target_os": "windows-64", 
+        "##choices#compile_type": "dynamic", 
+        "##choices#cmd_key": "sgemm_nt", 
+        "##choices#run_cmd_key_lws": "64,1", 
+        "##choices#target_os_bits": "64", 
         "##choices#energy": "no", 
         "##choices#device_id": "", 
         "##choices#skip_calibration": "yes", 
@@ -304,17 +215,199 @@ var xinfo={
       "module_uoa": "bc0409fb61f0aa82"
     }, 
     {
-      "repo_uoa": "9a3280b14a4285c9", 
-      "point_uid": "f92ed40e984c5047", 
-      "data_uoa": "c9d046c81455a8a9", 
+      "repo_uoa": "fea7f3d0c800f814", 
+      "point_uid": "752f81842c124155", 
+      "data_uoa": "bbc9067d72c117b8", 
       "features": {
-        "##choices#run_cmd_key_n": "384", 
-        "##choices#dataset_file": "SGEMM_NT_4x1_barrier.json", 
+        "##choices#run_cmd_key_n": "896", 
+        "##choices#dataset_file": "SGEMM_NT_1x1.json", 
         "##choices#target_os": "windows-64", 
-        "##choices#target_os_bits": "64", 
         "##choices#compile_type": "dynamic", 
         "##choices#cmd_key": "sgemm_nt", 
-        "##choices#run_cmd_key_lws": "8,8", 
+        "##choices#run_cmd_key_lws": "32,1", 
+        "##choices#target_os_bits": "64", 
+        "##choices#energy": "no", 
+        "##choices#device_id": "", 
+        "##choices#skip_calibration": "yes", 
+        "##choices#gpu_freq": "max", 
+        "##choices#host_os": "windows-64", 
+        "##choices#dataset_uoa": "SGEMM_NT", 
+        "##choices#cpu_freq": "max", 
+        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
+        "##choices#compile_only_once": "yes", 
+        "##choices#repeat": 1, 
+        "##choices#module_uoa": "b0ac08fe1d3c2615"
+      }, 
+      "module_uoa": "bc0409fb61f0aa82"
+    }, 
+    {
+      "repo_uoa": "fea7f3d0c800f814", 
+      "point_uid": "7a649a5d4bc491eb", 
+      "data_uoa": "bbc9067d72c117b8", 
+      "features": {
+        "##choices#run_cmd_key_n": "768", 
+        "##choices#dataset_file": "SGEMM_NT_4x1.json", 
+        "##choices#target_os": "windows-64", 
+        "##choices#compile_type": "dynamic", 
+        "##choices#cmd_key": "sgemm_nt", 
+        "##choices#run_cmd_key_lws": "32,1", 
+        "##choices#target_os_bits": "64", 
+        "##choices#energy": "no", 
+        "##choices#device_id": "", 
+        "##choices#skip_calibration": "yes", 
+        "##choices#gpu_freq": "max", 
+        "##choices#host_os": "windows-64", 
+        "##choices#dataset_uoa": "SGEMM_NT", 
+        "##choices#cpu_freq": "max", 
+        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
+        "##choices#compile_only_once": "yes", 
+        "##choices#repeat": 1, 
+        "##choices#module_uoa": "b0ac08fe1d3c2615"
+      }, 
+      "module_uoa": "bc0409fb61f0aa82"
+    }, 
+    {
+      "repo_uoa": "fea7f3d0c800f814", 
+      "point_uid": "7d0bc0be4c47b12e", 
+      "data_uoa": "bbc9067d72c117b8", 
+      "features": {
+        "##choices#run_cmd_key_n": "896", 
+        "##choices#dataset_file": "SGEMM_NT_4x1.json", 
+        "##choices#target_os": "windows-64", 
+        "##choices#compile_type": "dynamic", 
+        "##choices#cmd_key": "sgemm_nt", 
+        "##choices#run_cmd_key_lws": "64,1", 
+        "##choices#target_os_bits": "64", 
+        "##choices#energy": "no", 
+        "##choices#device_id": "", 
+        "##choices#skip_calibration": "yes", 
+        "##choices#gpu_freq": "max", 
+        "##choices#host_os": "windows-64", 
+        "##choices#dataset_uoa": "SGEMM_NT", 
+        "##choices#cpu_freq": "max", 
+        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
+        "##choices#compile_only_once": "yes", 
+        "##choices#repeat": 1, 
+        "##choices#module_uoa": "b0ac08fe1d3c2615"
+      }, 
+      "module_uoa": "bc0409fb61f0aa82"
+    }, 
+    {
+      "repo_uoa": "fea7f3d0c800f814", 
+      "point_uid": "9d23d5b4c18857ee", 
+      "data_uoa": "bbc9067d72c117b8", 
+      "features": {
+        "##choices#run_cmd_key_n": "512", 
+        "##choices#dataset_file": "SGEMM_NT_4x1.json", 
+        "##choices#target_os": "windows-64", 
+        "##choices#compile_type": "dynamic", 
+        "##choices#cmd_key": "sgemm_nt", 
+        "##choices#run_cmd_key_lws": "32,1", 
+        "##choices#target_os_bits": "64", 
+        "##choices#energy": "no", 
+        "##choices#device_id": "", 
+        "##choices#skip_calibration": "yes", 
+        "##choices#gpu_freq": "max", 
+        "##choices#host_os": "windows-64", 
+        "##choices#dataset_uoa": "SGEMM_NT", 
+        "##choices#cpu_freq": "max", 
+        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
+        "##choices#compile_only_once": "yes", 
+        "##choices#repeat": 1, 
+        "##choices#module_uoa": "b0ac08fe1d3c2615"
+      }, 
+      "module_uoa": "bc0409fb61f0aa82"
+    }, 
+    {
+      "repo_uoa": "fea7f3d0c800f814", 
+      "point_uid": "c99fd4850b67b2ac", 
+      "data_uoa": "bbc9067d72c117b8", 
+      "features": {
+        "##choices#run_cmd_key_n": "384", 
+        "##choices#dataset_file": "SGEMM_NT_4x1.json", 
+        "##choices#target_os": "linux-32", 
+        "##choices#compile_type": "dynamic", 
+        "##choices#cmd_key": "sgemm_nt", 
+        "##choices#run_cmd_key_lws": "16,1", 
+        "##choices#target_os_bits": "32", 
+        "##choices#energy": "no", 
+        "##choices#device_id": "", 
+        "##choices#skip_calibration": "yes", 
+        "##choices#gpu_freq": "max", 
+        "##choices#host_os": "linux-32", 
+        "##choices#dataset_uoa": "SGEMM_NT", 
+        "##choices#cpu_freq": "max", 
+        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
+        "##choices#compile_only_once": "yes", 
+        "##choices#repeat": 1, 
+        "##choices#module_uoa": "b0ac08fe1d3c2615"
+      }, 
+      "module_uoa": "bc0409fb61f0aa82"
+    }, 
+    {
+      "repo_uoa": "fea7f3d0c800f814", 
+      "point_uid": "dba9ad14384a7075", 
+      "data_uoa": "bbc9067d72c117b8", 
+      "features": {
+        "##choices#run_cmd_key_n": "128", 
+        "##choices#dataset_file": "SGEMM_NT_4x1.json", 
+        "##choices#target_os": "linux-32", 
+        "##choices#compile_type": "dynamic", 
+        "##choices#cmd_key": "sgemm_nt", 
+        "##choices#run_cmd_key_lws": "2,8", 
+        "##choices#target_os_bits": "32", 
+        "##choices#energy": "no", 
+        "##choices#device_id": "", 
+        "##choices#skip_calibration": "yes", 
+        "##choices#gpu_freq": "max", 
+        "##choices#host_os": "linux-32", 
+        "##choices#dataset_uoa": "SGEMM_NT", 
+        "##choices#cpu_freq": "max", 
+        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
+        "##choices#compile_only_once": "yes", 
+        "##choices#repeat": 1, 
+        "##choices#module_uoa": "b0ac08fe1d3c2615"
+      }, 
+      "module_uoa": "bc0409fb61f0aa82"
+    }, 
+    {
+      "repo_uoa": "fea7f3d0c800f814", 
+      "point_uid": "e5544b14b0b922d8", 
+      "data_uoa": "bbc9067d72c117b8", 
+      "features": {
+        "##choices#run_cmd_key_n": "512", 
+        "##choices#dataset_file": "SGEMM_NT_1x1.json", 
+        "##choices#target_os": "windows-64", 
+        "##choices#compile_type": "dynamic", 
+        "##choices#cmd_key": "sgemm_nt", 
+        "##choices#run_cmd_key_lws": "32,1", 
+        "##choices#target_os_bits": "64", 
+        "##choices#energy": "no", 
+        "##choices#device_id": "", 
+        "##choices#skip_calibration": "yes", 
+        "##choices#gpu_freq": "max", 
+        "##choices#host_os": "windows-64", 
+        "##choices#dataset_uoa": "SGEMM_NT", 
+        "##choices#cpu_freq": "max", 
+        "##choices#data_uoa": "gemmbench-cl-launcher-1.0", 
+        "##choices#compile_only_once": "yes", 
+        "##choices#repeat": 1, 
+        "##choices#module_uoa": "b0ac08fe1d3c2615"
+      }, 
+      "module_uoa": "bc0409fb61f0aa82"
+    }, 
+    {
+      "repo_uoa": "fea7f3d0c800f814", 
+      "point_uid": "fe4d1561b4c1f9d1", 
+      "data_uoa": "bbc9067d72c117b8", 
+      "features": {
+        "##choices#run_cmd_key_n": "768", 
+        "##choices#dataset_file": "SGEMM_NT_1x1.json", 
+        "##choices#target_os": "windows-64", 
+        "##choices#compile_type": "dynamic", 
+        "##choices#cmd_key": "sgemm_nt", 
+        "##choices#run_cmd_key_lws": "16,4", 
+        "##choices#target_os_bits": "64", 
         "##choices#energy": "no", 
         "##choices#device_id": "", 
         "##choices#skip_calibration": "yes", 
