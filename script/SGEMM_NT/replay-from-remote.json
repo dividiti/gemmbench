@@ -4,8 +4,10 @@
 
   "data_uoa":"SGEMM_NT-explore-f-n-lws",
 
-  "dims_to_check":["##characteristics#run#run_time_state#*"],
+  "dims_to_check":["##characteristics#run#run_time_state#EXECUTION#Gflops*"],
   "end_of_dims_to_check":["#min", "#mean", "#exp"],
 
-  "threshold_to_compare":8
+  "repetitions":2,
+
+  "threshold_to_compare":0
 }
