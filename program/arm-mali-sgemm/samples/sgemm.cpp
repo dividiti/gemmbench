@@ -258,37 +258,45 @@ void verify_result(gemm_type type, int32_t row, int32_t col, void *expected, voi
 
 void sgemm(int argc, const char **argv)
 {
+    int32_t gemm_type_idx = 0;
+
     matrix_shape mtx_a;
     matrix_shape mtx_b;
-    int32_t gemm_type_idx = 0;
-    fp32    alpha         = 0.0f;
-    fp32    beta          = 0.0f;
+
+    fp32 alpha = 0.0f;
+    fp32 beta  = 0.0f;
 
     size_t mm_lws_x = 0;
     size_t mm_lws_y = 0;
 
     int32_t skip_padding = 0; /* if 1, skip padding */
+    int32_t skip_validation = 0; /* if 1, skip validation */
 
     /* Read environment variables */
+    READ_CONFIG(       gemm_type_idx, "GEMM_TYPE",   static_cast<int32_t>(FP32) );
+
     READ_MATRIX_SHAPE( mtx_a,         "MTX_A",       1000,       1000 );
     READ_MATRIX_SHAPE( mtx_b,         "MTX_B",       mtx_a.cols, 1000 );
-    READ_CONFIG(       gemm_type_idx, "GEMM_TYPE",   static_cast<int32_t>(FP32) );
-    READ_FLOAT_VAR(    alpha,         "ALPHA",       2.0f );
 
-    READ_CONFIG(mm_lws_x,             "CK_LWS_X",        0 );
-    READ_CONFIG(mm_lws_y,             "CK_LWS_Y",        0 );
-    READ_CONFIG(skip_padding,         "CK_SKIP_PADDING", 0 );
+    READ_FLOAT_VAR(    alpha,         "ALPHA",       1.0f );
+    READ_FLOAT_VAR(    beta ,         "BETA",        0.0f );
 
-    /* Check if columns of Matrix A are equal to rows of Matrix B */
+    READ_CONFIG(mm_lws_x,             "CK_LWS_X",           0 );
+    READ_CONFIG(mm_lws_y,             "CK_LWS_Y",           0 );
+
+    READ_CONFIG(skip_padding,         "CK_SKIP_PADDING",    0 );
+    READ_CONFIG(skip_validation,      "CK_SKIP_VALIDATION", 0 );
+
+    /* Check whether matrix A can be multiplied by matrix B */
     if( mtx_a.cols != mtx_b.rows )
     {
-        throw std::runtime_error( "Columns of Matrix A must be equal to rows of Matrix B!" );
+        throw std::runtime_error( "The number of columns of matrix A must be the same as the number of rows of matrix B!" );
     }
 
-    /* Check if GEMM_TYPE is not valid */
+    /* Check whether GEMM_TYPE is valid. */
     if( (gemm_type_idx < 0) || (gemm_type_idx > 2) )
     {
-        throw std::runtime_error( "GEMM_TYPE must be in the interval of [0, 2]" );
+        throw std::runtime_error( "GEMM_TYPE must be 0, 1 or 2!" );
     }
 
     /* Compute matrix dimensions for the OpenCL implementation */
@@ -299,7 +307,7 @@ void sgemm(int argc, const char **argv)
 
     std::cout << "LWS [" << mm_lws_x << "," << mm_lws_y << "]" << std::endl;
 
-    /* Since we have a fixed LWS, we need to ensure that the dimensions of GWS[x,y] are multiple of the dimensions of LWS[x, y] */
+    /* Since we have a fixed LWS, we need to ensure that the dimensions of GWS[x,y] are multiples of the dimensions of LWS[x, y] */
     /* This kind of operation is done just for the rows of matrix A and columns of Matrix B */
     mtx_a.internal_rows = ( mtx_a.rows / mm_gws_y );
     if (skip_padding==0) mtx_a.internal_rows += PADDING_BYTES( ( mtx_a.rows / mm_gws_y ), mm_lws_y );
@@ -309,7 +317,7 @@ void sgemm(int argc, const char **argv)
     if (skip_padding==0) mtx_b.internal_cols += PADDING_BYTES( ( mtx_b.cols / mm_gws_x ), mm_lws_x );
     mtx_b.internal_cols *= mm_gws_x;
 
-    /* Add extra padding bytes if columns of Matrix A and/or rows of Matrix B are not multiple of GWS */
+    /* Add extra padding bytes if columns of Matrix A and/or rows of Matrix B are not multiples of GWS */
     mtx_a.internal_cols = mtx_a.cols + PADDING_BYTES( mtx_a.cols, mm_gws_x );
     mtx_b.internal_rows = mtx_b.rows + PADDING_BYTES( mtx_b.rows, mm_gws_y );
 
@@ -491,7 +499,9 @@ void sgemm(int argc, const char **argv)
     }
 
     /* Output validation */
-    verify_result(static_cast<gemm_type>(gemm_type_idx), mtx_a.rows, mtx_b.cols, expected, actual);
+    if (skip_validation==0) {
+        verify_result(static_cast<gemm_type>(gemm_type_idx), mtx_a.rows, mtx_b.cols, expected, actual);
+    }
 
     /* Unmap output buffer */
     queue.enqueueUnmapMemObject( buffer_mtx_out, ptr_mtx_out );
@@ -503,5 +513,5 @@ void sgemm(int argc, const char **argv)
 
 int main(int argc, const char **argv)
 {
-    return mali::run_mali_sample(argc, argv, sgemm, "Single precision floating GEneral Matrix Multiplication - SGEMM");
+    return mali::run_mali_sample(argc, argv, sgemm, "SGEMM - Single precision floating point GEneral Matrix Matrix multiplication");
 }
