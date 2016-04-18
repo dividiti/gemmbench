@@ -1,5 +1,6 @@
 {
   "flat_keys": [
+    "##characteristics#run#crowdtuning_user",
     "##choices#host_os",
     "##choices#target_os",
     "##features#platform.cpu#cpu#name",
@@ -15,6 +16,10 @@
     "##characteristics#run#run_time_state#RESULTS#max_abs_diff"
   ],
   "flat_keys_desc": [
+    {
+      "desc": "Participant",
+      "type": "string"
+    },
     {
       "desc": "Host OS",
       "module_uoa": "0440cb72c2bc5cc6",
