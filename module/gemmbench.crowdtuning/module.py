@@ -85,10 +85,10 @@ def start(i):
 
     ck.out(line)
 
-    r=ck.inp({'text':'Please, enter your email if you would like to identify your contributions as well as participate in monthly prize draws: '})
+    r=ck.inp({'text':'Please enter your email if you would like to identify your contributions, as well as to participate in our monthly prize draw: '})
     user=r['string'].strip()
 
-    r=ck.inp({'text':'Enter any integer seed: '})
+    r=ck.inp({'text':'Plesae enter any random integer seed: '})
     seed=r['string'].strip()
     if seed!='': seed=int(seed)
 

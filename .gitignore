@@ -19,6 +19,9 @@
 *.a
 *.lib
 
+# Compiled Python modules
+*.pyc
+
 # Executables
 *.exe
 *.out
