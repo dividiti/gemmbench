@@ -18,15 +18,15 @@
     ]
   ],
   "choices_selection":[
-    {"type":"parallel-random", "start":4, "stop":1100, "step":1, "default":512},
+    {"type":"parallel-random", "start":128, "stop":1024, "step":128, "default":512},
     {"type":"random-with-next", "choice":[0,1,2]},
-    {"type":"random-with-next", "start":2, "stop":32, "step":2, "default":4},
-    {"type":"random-with-next", "start":2, "stop":32, "step":2, "default":8},
+    {"type":"random-with-next", "start":4, "stop":32, "step":4, "default":4},
+    {"type":"random-with-next", "start":4, "stop":32, "step":4, "default":8},
     {"type":"random-with-next", "choice":[0,1]}
   ],
 
   "seed":12345,
-  "iterations":100,
+  "iterations":10,
   "repetitions":1,
 
   "pipeline_update":{
