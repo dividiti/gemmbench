@@ -119,6 +119,24 @@ cl_pipeline_config cl_gemm[] =
     },
 };
 
+static cl_ulong
+get_profiling_info(const std::string& prefix, cl::Event& event)
+{
+    if (event == cl::Event()) return 0;
+
+    cl_ulong queued = event.getProfilingInfo<CL_PROFILING_COMMAND_QUEUED>();
+    cl_ulong submit = event.getProfilingInfo<CL_PROFILING_COMMAND_SUBMIT>();
+    cl_ulong start  = event.getProfilingInfo<CL_PROFILING_COMMAND_START>();
+    cl_ulong end    = event.getProfilingInfo<CL_PROFILING_COMMAND_END>();
+
+    std::cout << prefix << " QUEUED " << queued << std::endl;
+    std::cout << prefix << " SUBMIT " << submit << std::endl;
+    std::cout << prefix << " START  " << start  << std::endl;
+    std::cout << prefix << " END    " << end    << std::endl;
+
+    return (end - start);
+}
+
 template<typename _type>
 _type max (const _type& a, const _type& b)
 {
@@ -438,19 +456,19 @@ void sgemm(int argc, const char **argv)
     kernel_finalize.setArg( 2, alpha );
     kernel_finalize.setArg( 3, beta );
 
-    /* Kernel events for the interleave, transpose, matrix multiplication and finalize kernels. */
+    /* Kernel events for the interleave, transpose, multiply and finalize kernels. */
     cl::Event interleave_event;
     cl::Event transpose_event;
-    cl::Event mm_event;
+    cl::Event multiply_event;
     cl::Event finalize_event;
 
-    /* Kernel events associated with previously enqueued kernels. Don't bother with for an in-order queue. */
+    /* Vector of events associated with the previously enqueued kernels. Don't bother with for an in-order queue. */
     std::vector<cl::Event>* interleave_events = NULL;
     std::vector<cl::Event>* transpose_events  = NULL;
-    std::vector<cl::Event>* mm_events         = NULL;
+    std::vector<cl::Event>* multiply_events   = NULL;
     std::vector<cl::Event>* finalize_events   = NULL;
 
-    /* Global Work Size (GWS) for the interleave, transpose, matrix multiplication and finalize kernels. */
+    /* Global Work Size (GWS) for the kernels. */
     cl::NDRange interleave_gws( mtx_a.internal_cols / cl_gemm[gemm_type_idx].interleave.divisor_gws_x,
                                 mtx_a.internal_rows / cl_gemm[gemm_type_idx].interleave.divisor_gws_y );
     cl::NDRange transpose_gws ( mtx_b.internal_cols / cl_gemm[gemm_type_idx].transpose.divisor_gws_x,
@@ -467,16 +485,16 @@ void sgemm(int argc, const char **argv)
     queue.enqueueNDRangeKernel( kernel_interleave, cl::NullRange, interleave_gws, cl::NullRange, interleave_events, &interleave_event );
     queue.enqueueNDRangeKernel( kernel_transpose,  cl::NullRange, transpose_gws,  cl::NullRange, transpose_events,  &transpose_event  );
 
-    std::cout << "[MM] Global Work Size = [" << mm_gws[0] << ", " << mm_gws[1] << "]" << std::endl;
+    std::cout << "[multiply]   Global Work Size = [" << mm_gws[0] << ", " << mm_gws[1] << "]" << std::endl;
     if( (!(mm_gws[0] % cl_gemm[gemm_type_idx].default_mm_lws[0])) && (!(mm_gws[1] % cl_gemm[gemm_type_idx].default_mm_lws[1])) )
     {
-        std::cout << "[MM] Local Work Size = [" << mm_lws[0] << ", " << mm_lws[1] << "]" << std::endl;
-        queue.enqueueNDRangeKernel( kernel_mm, cl::NullRange, mm_gws, mm_lws, mm_events, &mm_event );
+        std::cout << "[multiply]   Local Work Size = [" << mm_lws[0] << ", " << mm_lws[1] << "]" << std::endl;
+        queue.enqueueNDRangeKernel( kernel_mm, cl::NullRange, mm_gws, mm_lws, multiply_events, &multiply_event );
     }
     else
     {
-        std::cout << "[MM] Local Work Size = NULL" << std::endl;
-        queue.enqueueNDRangeKernel( kernel_mm, cl::NullRange, mm_gws, cl::NullRange, mm_events, &mm_event );
+        std::cout << "[multiply]   Local Work Size = NULL" << std::endl;
+        queue.enqueueNDRangeKernel( kernel_mm, cl::NullRange, mm_gws, cl::NullRange, multiply_events, &multiply_event );
     }
 
     /* Do not enqueue the finalize kernel if alpha == 1 and beta == 0 */
@@ -486,11 +504,25 @@ void sgemm(int argc, const char **argv)
     }
     else
     {
-        std::cout << "Skipped finalize kernel as alpha = 1 and beta = 0" << std::endl;
+        std::cout << "[finalize]   skipped as alpha = 1 and beta = 0" << std::endl;
     }
 
     /* Wait for completion. */
     queue.finish();
+
+    /* Print profiling info for the kernels and get the execution time. */
+    cl_ulong interleave_ns = get_profiling_info( "[interleave]", interleave_event );
+    std::cout << "[interleave] DT     " << interleave_ns * 1e-6 << " (ms)" << std::endl;
+
+    cl_ulong transpose_ns = get_profiling_info( "[transpose] ", transpose_event  );
+    std::cout << "[transpose]  DT     " << transpose_ns  * 1e-6 << " (ms)" << std::endl;
+
+    cl_ulong multiply_ns = get_profiling_info( "[multiply]  ", multiply_event   );
+    std::cout << "[multiply]   DT     " << multiply_ns   * 1e-6 << " (ms)" << std::endl;
+    // TODO: calculate nflops and then GFLOPS (nflops / ns).
+
+    cl_ulong finalize_ns = get_profiling_info( "[finalize]  ", finalize_event   );
+    std::cout << "[finalize]   DT     " << finalize_ns   * 1e-6 << " (ms)" << std::endl;
 
     /*******************************************************************************
      * Read back
