@@ -35,7 +35,7 @@ class xopenme
 private:
     static const int max_str_len = 1000;
     static const int max_var_count = 50;
-    static const int max_tmr_count = 2;
+    static const int max_tmr_count = 4;
     static const int max_work_dims = 3;
 
 public:
@@ -433,10 +433,28 @@ void sgemm(int argc, const char **argv)
     cl::Buffer buffer_mtx_out  ( CL_MEM_ALLOC_HOST_PTR | CL_MEM_READ_WRITE, buffer_mtx_c_size, NULL );
 
     /* OpenCL Kernels to run */
+#if (1 == XOPENME)
+        xopenme_clock_start(1);
+#endif
     cl::Kernel kernel_interleave( program, cl_gemm[gemm_type_idx].interleave.kernel_name );
+#if (1 == XOPENME)
+        xopenme_clock_end(1);
+        xopenme_clock_start(2);
+#endif
     cl::Kernel kernel_transpose ( program, cl_gemm[gemm_type_idx].transpose.kernel_name );
+#if (1 == XOPENME)
+        xopenme_clock_end(2);
+        xopenme_clock_start(0);
+#endif
     cl::Kernel kernel_mm        ( program, cl_gemm[gemm_type_idx].mm.kernel_name );
+#if (1 == XOPENME)
+        xopenme_clock_end(0);
+        xopenme_clock_start(3);
+#endif
     cl::Kernel kernel_finalize  ( program, cl_gemm[gemm_type_idx].finalize.kernel_name );
+#if (1 == XOPENME)
+        xopenme_clock_end(3);
+#endif
 
     /* Create command queue */
     cl::CommandQueue queue( cl::QueueProperties::Profiling, NULL );
