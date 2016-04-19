@@ -25,6 +25,52 @@
 #include <iostream>
 #include <sys/time.h>
 
+#if (1 == XOPENME)
+ #include <cassert>
+ #include "xopenme.h"
+
+/* OpenME class to communicate with CK */
+class xopenme
+{
+private:
+    static const int max_str_len = 1000;
+    static const int max_var_count = 50;
+    static const int max_tmr_count = 2;
+    static const int max_work_dims = 3;
+
+public:
+    char str[max_str_len];
+    int  var_count;
+
+    cl_uint  tmp_uint;
+    cl_ulong tmp_ulong;
+    size_t   tmp_size_t;
+    size_t   tmp_size_t_dims[max_work_dims];
+
+    xopenme() :
+        var_count(0),
+        tmp_uint(0),
+        tmp_ulong(0),
+        tmp_size_t(0),
+        tmp_size_t_dims() // C++11: {0, ..., 0}
+    {
+        assert(3 == max_work_dims);
+        xopenme_init(max_tmr_count, max_var_count);
+    }
+
+    ~xopenme()
+    {
+        xopenme_dump_state();
+    }
+
+    bool var_count_below_max()
+    {
+        return var_count < max_var_count;
+    }
+
+}; // END OF xopenme class
+#endif
+
 /* Floating point types */
 typedef cl_half     fp16;
 typedef cl_float    fp32;
@@ -559,5 +605,9 @@ void sgemm(int argc, const char **argv)
 
 int main(int argc, const char **argv)
 {
+#if (1 == XOPENME)
+    xopenme openme;
+#endif
+
     return mali::run_mali_sample(argc, argv, sgemm, "SGEMM - Single precision floating point GEneral Matrix Matrix multiplication");
 }
