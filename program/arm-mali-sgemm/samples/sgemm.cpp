@@ -23,7 +23,9 @@
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
+#ifndef WINDOWS
 #include <sys/time.h>
+#endif
 
 #if (1 == XOPENME)
  #include <cassert>
