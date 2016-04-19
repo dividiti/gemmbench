@@ -69,7 +69,131 @@ public:
     }
 
 }; // END OF xopenme class
+
 #endif
+
+/* Platform and device ID */
+int32_t platform_idx = 0;
+int32_t device_idx = 0;
+
+cl_platform_id   platform;
+cl_device_id     device;
+
+#if (1 == XOPENME)
+    xopenme openme;
+#endif
+
+    // Get OpenCL platform specified with the "-p" command line argument.
+    void get_platform()
+    {
+        cl_int err = CL_SUCCESS;
+
+        cl_uint num_entries = platform_idx+1;
+        cl_platform_id * platforms = new cl_platform_id[num_entries];
+
+        cl_uint num_platforms;
+        err = clGetPlatformIDs(num_entries, platforms, &num_platforms);
+        assert(CL_SUCCESS == err && "clGetPlatformIDs() failed.");
+        assert(platform_idx < num_platforms && "Platform not available.");
+
+        platform = platforms[platform_idx];
+        delete [] platforms;
+
+#if (1 == XOPENME)
+        err = clGetPlatformInfo(platform, CL_PLATFORM_NAME,   sizeof(openme.str), &openme.str, NULL);
+        assert(CL_SUCCESS == err && "clGetPlatformInfo() failed.");
+        xopenme_add_var_s(openme.var_count++, (char*) "  \"CL_PLATFORM_NAME\":\"%s\"",    openme.str);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        err = clGetPlatformInfo(platform, CL_PLATFORM_VENDOR, sizeof(openme.str), &openme.str, NULL);
+        assert(CL_SUCCESS == err && "clGetPlatformInfo() failed.");
+        xopenme_add_var_s(openme.var_count++, (char*) "  \"CL_PLATFORM_VENDOR\":\"%s\"",  openme.str);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        err = clGetPlatformInfo(platform, CL_PLATFORM_VERSION, sizeof(openme.str), &openme.str, NULL);
+        assert(CL_SUCCESS == err && "clGetPlatformInfo() failed.");
+        xopenme_add_var_s(openme.var_count++, (char*) "  \"CL_PLATFORM_VERSION\":\"%s\"", openme.str);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+#endif
+    } // END OF get_platform()
+
+
+    // Get OpenCL device specified with the "-d" command line argument.
+    void get_device()
+    {
+        cl_int err = CL_SUCCESS;
+
+        cl_uint num_entries = device_idx+1;
+        cl_device_id * devices = new cl_device_id[num_entries];
+
+        cl_uint num_devices;
+        err = clGetDeviceIDs(platform, CL_DEVICE_TYPE_ALL, num_entries, devices, &num_devices);
+        assert(CL_SUCCESS == err && "clGetDeviceIDs() failed.");
+        assert(device_idx < num_devices && "No device.");
+
+        device = devices[device_idx];
+        delete [] devices;
+
+#if (1 == XOPENME)
+        err = clGetDeviceInfo(device, CL_DEVICE_NAME, sizeof(openme.str),   &openme.str, NULL);
+        assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
+        xopenme_add_var_s(openme.var_count++, (char*) "  \"CL_DEVICE_NAME\":\"%s\"",   openme.str);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        err = clGetDeviceInfo(device, CL_DEVICE_VENDOR, sizeof(openme.str), &openme.str, NULL);
+        assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
+        xopenme_add_var_s(openme.var_count++, (char*) "  \"CL_DEVICE_VENDOR\":\"%s\"", openme.str);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        err = clGetDeviceInfo(device, CL_DEVICE_VERSION, sizeof(openme.str), &openme.str, NULL);
+        assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
+        xopenme_add_var_s(openme.var_count++, (char*) "  \"CL_DEVICE_VERSION\":\"%s\"", openme.str);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        err = clGetDeviceInfo(device, CL_DRIVER_VERSION, sizeof(openme.str), &openme.str, NULL);
+        assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
+        xopenme_add_var_s(openme.var_count++, (char*) "  \"CL_DRIVER_VERSION\":\"%s\"", openme.str);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        err = clGetDeviceInfo(device, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(cl_uint), &openme.tmp_uint, NULL);
+        assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"CL_DEVICE_MAX_COMPUTE_UNITS\":%u", openme.tmp_uint);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        err = clGetDeviceInfo(device, CL_DEVICE_MAX_CLOCK_FREQUENCY, sizeof(cl_uint), &openme.tmp_uint, NULL);
+        assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"CL_DEVICE_MAX_CLOCK_FREQUENCY\":%u", openme.tmp_uint);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        err = clGetDeviceInfo(device, CL_DEVICE_GLOBAL_MEM_SIZE, sizeof(cl_ulong), &openme.tmp_ulong, NULL);
+        assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"CL_DEVICE_GLOBAL_MEM_SIZE\":%u", openme.tmp_ulong);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        err = clGetDeviceInfo(device, CL_DEVICE_LOCAL_MEM_SIZE, sizeof(cl_ulong), &openme.tmp_ulong, NULL);
+        assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"CL_DEVICE_LOCAL_MEM_SIZE\":%u", openme.tmp_ulong);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        err = clGetDeviceInfo(device, CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(size_t), &openme.tmp_size_t, NULL);
+        assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"CL_DEVICE_MAX_WORK_GROUP_SIZE\":%u", openme.tmp_size_t);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        err = clGetDeviceInfo(device, CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS, sizeof(size_t), &openme.tmp_size_t, NULL);
+        assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS\":%u", openme.tmp_size_t);
+        assert(openme.tmp_size_t == 3 && "CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS != 3");
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        err = clGetDeviceInfo(device, CL_DEVICE_MAX_WORK_ITEM_SIZES, sizeof(openme.tmp_size_t_dims), openme.tmp_size_t_dims, NULL);
+        assert(CL_SUCCESS == err && "clGetDeviceInfo() failed.");
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"CL_DEVICE_MAX_WORK_ITEM_SIZES_0\":%u", openme.tmp_size_t_dims[0]);
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"CL_DEVICE_MAX_WORK_ITEM_SIZES_1\":%u", openme.tmp_size_t_dims[1]);
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"CL_DEVICE_MAX_WORK_ITEM_SIZES_2\":%u", openme.tmp_size_t_dims[2]);
+#endif
+
+    } // END OF get_device()
 
 /* Floating point types */
 typedef cl_half     fp16;
@@ -351,6 +475,10 @@ void sgemm(int argc, const char **argv)
     READ_CONFIG(skip_padding,         "CK_SKIP_PADDING",    0 );
     READ_CONFIG(skip_validation,      "CK_SKIP_VALIDATION", 0 );
 
+    READ_CONFIG(platform_idx,         "PLATFORM_ID",    0 );
+    READ_CONFIG(device_idx,           "DEVICE_ID", 0 );
+
+
     /* Check whether matrix A can be multiplied by matrix B */
     if( mtx_a.cols != mtx_b.rows )
     {
@@ -407,6 +535,9 @@ void sgemm(int argc, const char **argv)
     /* Those strides are respectively the number of elements per row in matrix A after interleaving and in matrix B after transposing */
     size_t mtx_a_inter_stride = mtx_a.internal_cols * cl_gemm[gemm_type_idx].interleave.divisor_gws_y;
     size_t mtx_b_trans_stride = mtx_b.internal_rows * cl_gemm[gemm_type_idx].transpose.divisor_gws_x;
+
+    get_platform();
+    get_device();
 
     cl::Program program = cl::Program( mali::read_file("../kernels/sgemm.cl") );
 
@@ -621,11 +752,8 @@ void sgemm(int argc, const char **argv)
     free(actual);
 }
 
+
 int main(int argc, const char **argv)
 {
-#if (1 == XOPENME)
-    xopenme openme;
-#endif
-
     return mali::run_mali_sample(argc, argv, sgemm, "SGEMM - Single precision floating point GEneral Matrix Matrix multiplication");
 }
