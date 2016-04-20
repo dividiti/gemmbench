@@ -1,0 +1,56 @@
+{
+  "get_shared_repo": "ck pull repo --url=git@github.com:dividiti/gemmbench.git", 
+  "graphs": [
+    {
+      "id": "crowdtuning-gemmbench-sgemm-mali-lws", 
+      "name": "2D graphs: Gflops vs matrix order", 
+      "notes": "Crowd-tuning OpenCL-based GEMMbench Mali", 
+      "output": "html", 
+      "params": {
+        "axis_x_desc": "Matrix index", 
+        "axis_y_desc": "Gflops/s", 
+        "data_uoa_list": [
+          "sgemm-mali-all"
+        ], 
+        "display_x_error_bar": "no", 
+        "display_y_error_bar": "yes", 
+        "experiment_module_uoa": "experiment", 
+        "flat_keys_list": [
+          "##choices#env#MINDEX#min", 
+          "##characteristics#run#run_time_state#EXECUTION#Gflops/s#center", 
+          "##characteristics#run#run_time_state#EXECUTION#Gflops/s#halfrange"
+        ], 
+        "ignore_point_if_empty_string": "yes", 
+        "mpl_image_dpi": "100", 
+        "mpl_image_size_x": "12", 
+        "mpl_image_size_y": "6", 
+        "plot_grid": "yes", 
+        "plot_type": "d3_2d_scatter", 
+        "point_style": {
+          "0": {
+            "color": "#3366cc"
+          }, 
+          "1": {
+            "color": "#dc3912", 
+            "elinewidth": "5"
+          }
+        }, 
+        "save_info_table_to_json_file": "crowdtuning-gemmbench-sgemm-mali-lws.json", 
+        "save_table_to_csv_file": "crowdtuning-gemmbench-sgemm-mali-lws.csv", 
+        "save_table_to_json_file": "crowdtuning-gemmbench-sgemm-mali-lws.json", 
+        "size_x": 700, 
+        "size_y": 400, 
+        "title": "Crowd-tuning GEMMbench: SGEMM Mali", 
+        "xmax": 16, 
+        "xmin": 0, 
+        "ymax": 50, 
+        "ymin": 0
+      }
+    }
+  ], 
+  "name": "Crowd-tuning OpenCL-based GEMMbench Mali (max Gflops vs matrix order)", 
+  "scripts_data_uoa": "a426e8964a9491b6", 
+  "scripts_module_uoa": "script", 
+  "scripts_repo_uoa": "", 
+  "shared_repo": "gemmbench"
+}
