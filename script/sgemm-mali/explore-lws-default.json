@@ -1,0 +1,28 @@
+{
+  "custom_autotuner":{
+     "script":"explore-lws-autotuner-default"
+  },
+
+  "seed":"",
+  "iterations":100,
+  "repetitions":4,
+
+  "pipeline_update":{
+    "cpu_freq":"max",
+    "gpu_freq":"max",
+    "compiler_vars": {}
+  },
+
+  "record":"yes",
+  "record_failed":"yes",
+  "record_repo":"local",
+  "record_uoa":"sgemm-mali-all-default",
+
+  "record_dict":{"subview_uoa":"41c48ccfa3ccd256"},
+
+  "record_params":{
+    "search_point_by_features":"yes"
+  },
+
+  "features_keys_to_process":["##choices#*"]
+}
