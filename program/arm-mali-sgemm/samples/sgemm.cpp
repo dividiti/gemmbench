@@ -721,37 +721,35 @@ void sgemm(int argc, const char **argv)
     cl_ulong finalize_ns = get_profiling_info( "[finalize]  ", finalize_event   );
     std::cout << "[finalize]   DT     " << finalize_ns   * 1e-6 << " (ms)" << std::endl;
 
-    /*******************************************************************************
-     * Read back
-    *******************************************************************************/
-    void *ptr_out = NULL;
-
-    /* Map output buffer */
-    ptr_out = queue.enqueueMapBuffer( buffer_mtx_out, CL_TRUE, CL_MAP_READ, 0, buffer_mtx_c_size );
-
-    void* actual = malloc( buffer_expected_size );
-
-    size_t stride_src = mtx_b.internal_cols * (static_cast<gemm_type>(gemm_type_idx) == FP32 ? sizeof(
-                                                            fp32) : sizeof(fp16));
-    size_t stride_dst = mtx_b.cols * (static_cast<gemm_type>(gemm_type_idx) == FP32 ? sizeof(
-                                                            fp32) : sizeof(fp16));
-
-    for(int32_t y = 0; y < mtx_a.rows; ++y)
-    {
-        memcpy( (uint8_t*)actual + y * stride_dst, (uint8_t*)ptr_out + y * stride_src, stride_dst);
-    }
-
     /* Output validation */
-    if (skip_validation==0) {
+    if (skip_validation==0)
+    {
+        void *ptr_out = NULL;
+
+        /* Map output buffer */
+        ptr_out = queue.enqueueMapBuffer( buffer_mtx_out, CL_TRUE, CL_MAP_READ, 0, buffer_mtx_c_size );
+
+        void* actual = malloc( buffer_expected_size );
+
+        size_t stride_src = mtx_b.internal_cols * (static_cast<gemm_type>(gemm_type_idx) == FP32 ? sizeof(
+                                                                fp32) : sizeof(fp16));
+        size_t stride_dst = mtx_b.cols * (static_cast<gemm_type>(gemm_type_idx) == FP32 ? sizeof(
+                                                                fp32) : sizeof(fp16));
+
+        for(int32_t y = 0; y < mtx_a.rows; ++y)
+        {
+            memcpy( (uint8_t*)actual + y * stride_dst, (uint8_t*)ptr_out + y * stride_src, stride_dst);
+        }
+
         verify_result(static_cast<gemm_type>(gemm_type_idx), mtx_a.rows, mtx_b.cols, expected, actual);
+
+        /* Unmap output buffer */
+        queue.enqueueUnmapMemObject( buffer_mtx_out, ptr_mtx_out );
+
+        /* Free allocated memory */
+        free(expected);
+        free(actual);
     }
-
-    /* Unmap output buffer */
-    queue.enqueueUnmapMemObject( buffer_mtx_out, ptr_mtx_out );
-
-    /* Free allocated memory */
-    free(expected);
-    free(actual);
 }
 
 
