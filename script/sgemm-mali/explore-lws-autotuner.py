@@ -87,7 +87,13 @@ def make(i):
     # Setting LWS
     lx=mr.randrange(4,32,4)
     keys['##env#CK_LWS_X']=lx
-    keys['##env#CK_LWS_Y']=mr.randrange(4,128/lx,4)
+
+    lym=128/lx
+    if lym>=8:
+       ly=mr.randrange(4,128/lx,4)
+    else:
+       ly=4
+    keys['##env#CK_LWS_Y']=ly
 
     # GEMM TYPE
     keys['##env#GEMM_TYPE']=mr.randrange(0,2)
