@@ -100,7 +100,7 @@ def make(i):
     keys['##env#CK_LWS_Y']=8
 
     # GEMM TYPE
-    keys['##env#GEMM_TYPE']=mr.randrange(0,2)
+    keys['##env#GEMM_TYPE']=0 # mr.randrange(0,2)
 
     # CK_SKIP_PADDING"
 #    keys['##env#CK_SKIP_PADDING']=mr.randrange(0,1)
