@@ -46,12 +46,40 @@ def make(i):
     # Setting dimensions X,Y,Z
 
 #   Purely random
-    x=mr.randrange(128, 1024, 128)
-    y=mr.randrange(128, 1024, 128)
-    z=mr.randrange(128, 1024, 128)
+#    x=mr.randrange(128, 1024, 128)
+#    y=mr.randrange(128, 1024, 128)
+#    z=mr.randrange(128, 1024, 128)
 
     # Typical sizes from AlexNet (profiled by Anton)
-    
+    sizes=[
+      [ 1,   64, 3024,  360],
+      [ 2,  192,  728, 1600],
+      [ 3,  384,  168, 1728],
+      [ 4,  256,  168, 3456],
+      [ 5,  256,  168, 2304],
+
+      [ 6, 2304,  168,  256],
+      [ 7, 3456,  168,  256],
+      [ 8, 1728,  168,  384],
+      [ 9, 1600,  728,  192],
+      [10,  360, 3024,   64],
+
+      [11,  256, 3456,  168],
+      [12,  384, 1728,  168],
+      [13,  192, 1600,  728],
+      [14,   64,  360, 3024],
+      [15,  256, 2304,  168]
+    ]
+
+    ind=mr.randrange(0, len(sizes)-1)
+    cur=sizes[ind]#
+
+    n=cur[0]
+    x=cur[1]
+    y=cur[2]
+    z=cur[3]
+
+    keys['##env#MINDEX']=n
 
     keys['##env#MTX_A']=str(x)+','+str(y)
     keys['##env#MTX_B']=str(y)+','+str(z)
