@@ -734,6 +734,28 @@ void sgemm(int argc, const char **argv)
         const cl_double gflops_per_s = (cl_double) flops / (cl_double) ns;
         std::cout << "Calculating performance... " << gflops_per_s << " Gflops/s";
         std::cout << " (performed "  << flops << " flops in " << ns << " ns)." << std::endl;
+#if (1 == XOPENME)
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#ns\":%u", ns);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_f(openme.var_count++, (char*) "  \"EXECUTION#us\":%.3f", ns * 1e-3);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_f(openme.var_count++, (char*) "  \"EXECUTION#ms\":%.3f", ns * 1e-6);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_f(openme.var_count++, (char*) "  \"EXECUTION#s\":%.3f", ns * 1e-9);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#flops\":%u", flops);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_f(openme.var_count++, (char*) "  \"EXECUTION#Gflops\":%.3f", flops * 1e-9);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_d(openme.var_count++, (char*) "  \"EXECUTION#Gflops/s\":%.3lf", gflops_per_s);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+#endif
     }
 
     /* Validate the output results. */
