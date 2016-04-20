@@ -48,7 +48,7 @@
       }
     }
   ], 
-  "name": "Crowd-tuning OpenCL-based GEMMbench (max Gflops vs matrix order", 
+  "name": "Crowd-tuning OpenCL-based GEMMbench (max GFLOPS vs matrix order)", 
   "scripts_data_uoa": "a426e8964a9491b6", 
   "scripts_module_uoa": "script", 
   "scripts_repo_uoa": "", 
