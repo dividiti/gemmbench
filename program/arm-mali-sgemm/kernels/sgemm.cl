@@ -18,7 +18,9 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+#ifdef cl_khr_fp16
 #pragma OPENCL EXTENSION cl_khr_fp16 : enable
+#endif
 
 __kernel void mm_fp32( __global float *const mtx_a,
                        __global float *const mtx_b,
@@ -75,6 +77,8 @@ __kernel void mm_fp32( __global float *const mtx_a,
     vstore4(c30, 0, mtx_out + dst_addr + 3 * COL_MTX_C);
 }
 
+
+#ifdef cl_khr_fp16
 __kernel void mm_fp16( __global half *const mtx_a,
                        __global half *const mtx_b,
                        __global half       *mtx_out
@@ -129,7 +133,9 @@ __kernel void mm_fp16( __global half *const mtx_a,
     vstore8(c20, 0, mtx_out + dst_addr + 2 * COL_MTX_C);
     vstore8(c30, 0, mtx_out + dst_addr + 3 * COL_MTX_C);
 }
+#endif
 
+#ifdef cl_khr_fp16
 __kernel void mm_hybrid( __global half *const mtx_a,
                          __global half *const mtx_b,
                          __global half       *mtx_out
@@ -181,6 +187,7 @@ __kernel void mm_hybrid( __global half *const mtx_a,
     vstore_half4(c30, 0, mtx_out + dst_addr + 3 * COL_MTX_C);
 
 }
+#endif
 
 __kernel void transpose_fp32( __global float const *mtx_b,
                               __global float       *mtx_out
@@ -200,6 +207,7 @@ __kernel void transpose_fp32( __global float const *mtx_b,
     vstore4(b0, 0, mtx_out + dst_addr);
 }
 
+#ifdef cl_khr_fp16
 __kernel void transpose_fp16( __global half const *mtx_b,
                               __global half       *mtx_out
                             )
@@ -217,7 +225,9 @@ __kernel void transpose_fp16( __global half const *mtx_b,
 
     vstore8(b0, 0, mtx_out + dst_addr);
 }
+#endif
 
+#ifdef cl_khr_fp16
 __kernel void transpose_hybrid( __global half const *mtx_b,
                                 __global half       *mtx_out
                               )
@@ -235,6 +245,7 @@ __kernel void transpose_hybrid( __global half const *mtx_b,
 
     vstore4(b0, 0, mtx_out + dst_addr);
 }
+#endif
 
 __kernel void interleave_fp32( __global float const *mtx_a,
                                __global float       *mtx_out
@@ -268,6 +279,7 @@ __kernel void interleave_fp32( __global float const *mtx_a,
     vstore4(val0, 0, mtx_out + dst_addr + 12);
 }
 
+#ifdef cl_khr_fp16
 __kernel void interleave_fp16( __global half const *mtx_a,
                                __global half       *mtx_out
                              )
@@ -298,6 +310,7 @@ __kernel void interleave_fp16( __global half const *mtx_a,
     val0 = (half4)(a0.s3, a1.s3, a2.s3, a3.s3);
     vstore4(val0, 0, mtx_out + dst_addr + 12);
 }
+#endif
 
 __kernel void finalize_fp32( __global float const *mtx_c,
                              __global float       *mtx_axb,
@@ -324,6 +337,7 @@ __kernel void finalize_fp32( __global float const *mtx_c,
     vstore4(out, 0, mtx_axb + addr);
 }
 
+#ifdef cl_khr_fp16
 __kernel void finalize_fp16( __global half const *mtx_c,
                              __global half        *mtx_axb,
                              float               alpha,
@@ -344,3 +358,8 @@ __kernel void finalize_fp16( __global half const *mtx_c,
 
     vstore_half8(out, 0, mtx_axb + addr);
 }
+#endif
+
+#ifdef cl_khr_fp16
+#pragma OPENCL EXTENSION cl_khr_fp16 : disable
+#endif
