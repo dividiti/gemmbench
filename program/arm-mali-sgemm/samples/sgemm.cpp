@@ -459,27 +459,26 @@ void sgemm(int argc, const char **argv)
     size_t mm_lws_x = 0;
     size_t mm_lws_y = 0;
 
-    int32_t skip_padding = 0; /* if 1, skip padding */
+    int32_t skip_padding = 0;    /* if 1, skip padding */
     int32_t skip_validation = 0; /* if 1, skip validation */
 
-    /* Read environment variables */
-    READ_CONFIG(       gemm_type_idx, "GEMM_TYPE",   static_cast<int32_t>(FP32) );
+    /* Read environment: (program variable, environment variable, default value). */
+    READ_CONFIG( gemm_type_idx,   "GEMM_TYPE",          static_cast<int32_t>(FP32) );
 
-    READ_MATRIX_SHAPE( mtx_a,         "MTX_A",       1000,       1000 );
-    READ_MATRIX_SHAPE( mtx_b,         "MTX_B",       mtx_a.cols, 1000 );
+    READ_MATRIX_SHAPE( mtx_a,     "MTX_A",              1000,       1000 );
+    READ_MATRIX_SHAPE( mtx_b,     "MTX_B",              mtx_a.cols, 1000 );
 
-    READ_FLOAT_VAR(    alpha,         "ALPHA",       1.0f );
-    READ_FLOAT_VAR(    beta ,         "BETA",        0.0f );
+    READ_FLOAT_VAR( alpha,        "ALPHA",              1.0f );
+    READ_FLOAT_VAR( beta ,        "BETA",               0.0f );
 
-    READ_CONFIG(mm_lws_x,             "CK_LWS_X",           0 );
-    READ_CONFIG(mm_lws_y,             "CK_LWS_Y",           0 );
+    READ_CONFIG( mm_lws_x,        "CK_LWS_X",           0 );
+    READ_CONFIG( mm_lws_y,        "CK_LWS_Y",           0 );
 
-    READ_CONFIG(skip_padding,         "CK_SKIP_PADDING",    0 );
-    READ_CONFIG(skip_validation,      "CK_SKIP_VALIDATION", 0 );
+    READ_CONFIG( skip_padding,    "CK_SKIP_PADDING",    0 );
+    READ_CONFIG( skip_validation, "CK_SKIP_VALIDATION", 0 );
 
-    READ_CONFIG(platform_idx,         "PLATFORM_ID",    0 );
-    READ_CONFIG(device_idx,           "DEVICE_ID", 0 );
-
+    READ_CONFIG( platform_idx,    "PLATFORM_ID",        0 );
+    READ_CONFIG( device_idx,      "DEVICE_ID",          0 );
 
     /* Check whether matrix A can be multiplied by matrix B */
     if( mtx_a.cols != mtx_b.rows )
@@ -554,10 +553,10 @@ void sgemm(int argc, const char **argv)
     options << "-DMATRIX_A_INTERLEAVED_STRIDE=" << mtx_a_inter_stride << " ";           // Number of elements per row in matrix A after interleaving
     options << "-DMATRIX_B_TRANSPOSED_STRIDE="  << mtx_b_trans_stride;                  // Number of elements per row in matrix B after transposing
 
-    /* Build CL program */
+    /* Build OpenCL program. */
     mali::build_cl_program( program, options.str().c_str() );
 
-    /* Allocate cl buffers for matrix A, B, C, temp0 , temp1 and output matrix */
+    /* Allocate OpenCL buffers for A, B, C, temp0, temp1 and output matrix. */
     cl::Buffer buffer_mtx_a    ( CL_MEM_ALLOC_HOST_PTR | CL_MEM_READ_WRITE, buffer_mtx_a_size, NULL );
     cl::Buffer buffer_mtx_b    ( CL_MEM_ALLOC_HOST_PTR | CL_MEM_READ_WRITE, buffer_mtx_b_size, NULL );
     cl::Buffer buffer_mtx_c    ( CL_MEM_ALLOC_HOST_PTR | CL_MEM_READ_WRITE, buffer_mtx_c_size, NULL );
@@ -565,7 +564,7 @@ void sgemm(int argc, const char **argv)
     cl::Buffer buffer_mtx_temp1( CL_MEM_ALLOC_HOST_PTR | CL_MEM_READ_WRITE, buffer_mtx_b_size, NULL );
     cl::Buffer buffer_mtx_out  ( CL_MEM_ALLOC_HOST_PTR | CL_MEM_READ_WRITE, buffer_mtx_c_size, NULL );
 
-    /* OpenCL Kernels to run */
+    /* Create OpenCL kernels. */
 #if (1 == XOPENME)
         xopenme_clock_start(1);
 #endif
@@ -589,10 +588,10 @@ void sgemm(int argc, const char **argv)
         xopenme_clock_end(3);
 #endif
 
-    /* Create command queue */
+    /* Create command queue. */
     cl::CommandQueue queue( cl::QueueProperties::Profiling, NULL );
 
-    /* Init input buffers */
+    /* Init input buffers. */
     void *ptr_mtx_a     = NULL;
     void *ptr_mtx_b     = NULL;
     void *ptr_mtx_c     = NULL;
@@ -600,7 +599,7 @@ void sgemm(int argc, const char **argv)
     void *ptr_mtx_temp1 = NULL;
     void *ptr_mtx_out   = NULL;
 
-    /* Map CL buffers */
+    /* Map buffers. */
     ptr_mtx_a     = queue.enqueueMapBuffer( buffer_mtx_a,     CL_TRUE, CL_MAP_WRITE, 0, buffer_mtx_a_size );
     ptr_mtx_b     = queue.enqueueMapBuffer( buffer_mtx_b,     CL_TRUE, CL_MAP_WRITE, 0, buffer_mtx_b_size );
     ptr_mtx_c     = queue.enqueueMapBuffer( buffer_mtx_c,     CL_TRUE, CL_MAP_WRITE, 0, buffer_mtx_c_size );
@@ -608,7 +607,7 @@ void sgemm(int argc, const char **argv)
     ptr_mtx_temp1 = queue.enqueueMapBuffer( buffer_mtx_temp1, CL_TRUE, CL_MAP_WRITE, 0, buffer_mtx_b_size );
     ptr_mtx_out   = queue.enqueueMapBuffer( buffer_mtx_out,   CL_TRUE, CL_MAP_WRITE, 0, buffer_mtx_c_size );
 
-    /* Init to zero */
+    /* Init to zero. */
     memset(ptr_mtx_a,     0, buffer_mtx_a_size);
     memset(ptr_mtx_b,     0, buffer_mtx_b_size);
     memset(ptr_mtx_c,     0, buffer_mtx_c_size);
@@ -616,17 +615,22 @@ void sgemm(int argc, const char **argv)
     memset(ptr_mtx_temp1, 0, buffer_mtx_b_size);
     memset(ptr_mtx_out,   0, buffer_mtx_c_size);
 
-    /* Init matrix A, B and C */
+    /* Init matrix A, B and C. */
     sgemm_init( static_cast<gemm_type>(gemm_type_idx), mtx_a, mtx_b, ptr_mtx_a, ptr_mtx_b, ptr_mtx_c );
 
-    /* Run reference implementation */
-    size_t buffer_expected_size = ( mtx_a.rows * mtx_b.cols ) * (static_cast<gemm_type>(gemm_type_idx) == FP32 ? sizeof(
-                                                            fp32) : sizeof(fp16));
-    void *expected = malloc( buffer_expected_size );
-    run_reference_gemm( static_cast<gemm_type>(gemm_type_idx), mtx_a, mtx_b, ptr_mtx_a, ptr_mtx_b, ptr_mtx_c, alpha, beta,
-                        expected );
+    /* Run reference implementation. */
+    size_t buffer_expected_size = 0;
+    void *expected = NULL;
+    if (skip_validation==0)
+    {
+        buffer_expected_size = ( mtx_a.rows * mtx_b.cols ) * (static_cast<gemm_type>(gemm_type_idx) == FP32 ? sizeof(
+                                                                fp32) : sizeof(fp16));
+        expected = malloc( buffer_expected_size );
+        run_reference_gemm( static_cast<gemm_type>(gemm_type_idx), mtx_a, mtx_b, ptr_mtx_a, ptr_mtx_b, ptr_mtx_c, alpha, beta,
+                            expected );
+    }
 
-    /* Unmap CL buffers */
+    /* Unmap buffers. */
     queue.enqueueUnmapMemObject( buffer_mtx_a, ptr_mtx_a );
     queue.enqueueUnmapMemObject( buffer_mtx_b, ptr_mtx_b );
     queue.enqueueUnmapMemObject( buffer_mtx_c, ptr_mtx_c );
@@ -634,20 +638,20 @@ void sgemm(int argc, const char **argv)
     queue.enqueueUnmapMemObject( buffer_mtx_temp1, ptr_mtx_temp1 );
     queue.enqueueUnmapMemObject( buffer_mtx_out, ptr_mtx_out );
 
-    /* Interleave kernel arguments */
+    /* Interleave kernel arguments. */
     kernel_interleave.setArg( 0, buffer_mtx_a );
     kernel_interleave.setArg( 1, buffer_mtx_temp0 );
 
-    /* Transpose kernel arguments */
+    /* Transpose kernel arguments. */
     kernel_transpose.setArg( 0, buffer_mtx_b );
     kernel_transpose.setArg( 1, buffer_mtx_temp1 );
 
-    /* Matrix Multiplication kernel arguments - A x B */
+    /* Matrix Multiplication kernel arguments - A x B. */
     kernel_mm.setArg( 0, buffer_mtx_temp0 );
     kernel_mm.setArg( 1, buffer_mtx_temp1 );
     kernel_mm.setArg( 2, buffer_mtx_out );
 
-    /* Finalize kernel arguments */
+    /* Finalize kernel arguments. */
     kernel_finalize.setArg( 0, buffer_mtx_c );
     kernel_finalize.setArg( 1, buffer_mtx_out );
     kernel_finalize.setArg( 2, alpha );
@@ -714,19 +718,30 @@ void sgemm(int argc, const char **argv)
     cl_ulong transpose_ns = get_profiling_info( "[transpose] ", transpose_event  );
     std::cout << "[transpose]  DT     " << transpose_ns  * 1e-6 << " (ms)" << std::endl;
 
-    cl_ulong multiply_ns = get_profiling_info( "[multiply]  ", multiply_event   );
-    std::cout << "[multiply]   DT     " << multiply_ns   * 1e-6 << " (ms)" << std::endl;
-    // TODO: calculate nflops and then GFLOPS (nflops / ns).
-
     cl_ulong finalize_ns = get_profiling_info( "[finalize]  ", finalize_event   );
     std::cout << "[finalize]   DT     " << finalize_ns   * 1e-6 << " (ms)" << std::endl;
 
-    /* Output validation */
+    cl_ulong multiply_ns = get_profiling_info( "[multiply]  ", multiply_event   );
+    std::cout << "[multiply]   DT     " << multiply_ns   * 1e-6 << " (ms)" << std::endl;
+    /* Calculate nflops and then GFLOPS (nflops / ns). */
+    {
+        const cl_ulong ns = multiply_ns;
+        // C[M][K] = A[M][N] * B[N][K]
+        const cl_ulong M = mtx_a.rows;
+        const cl_ulong N = mtx_a.cols;
+        const cl_ulong K = mtx_b.cols;
+        const cl_ulong flops = 2 * M * N * K; // FIXME: Correct in the first approximation.
+        const cl_double gflops_per_s = (cl_double) flops / (cl_double) ns;
+        std::cout << "Calculating performance... " << gflops_per_s << " Gflops/s";
+        std::cout << " (performed "  << flops << " flops in " << ns << " ns)." << std::endl;
+    }
+
+    /* Validate the output results. */
     if (skip_validation==0)
     {
         void *ptr_out = NULL;
 
-        /* Map output buffer */
+        /* Map output buffer. */
         ptr_out = queue.enqueueMapBuffer( buffer_mtx_out, CL_TRUE, CL_MAP_READ, 0, buffer_mtx_c_size );
 
         void* actual = malloc( buffer_expected_size );
@@ -743,10 +758,10 @@ void sgemm(int argc, const char **argv)
 
         verify_result(static_cast<gemm_type>(gemm_type_idx), mtx_a.rows, mtx_b.cols, expected, actual);
 
-        /* Unmap output buffer */
+        /* Unmap output buffer. */
         queue.enqueueUnmapMemObject( buffer_mtx_out, ptr_mtx_out );
 
-        /* Free allocated memory */
+        /* Free allocated memory. */
         free(expected);
         free(actual);
     }
