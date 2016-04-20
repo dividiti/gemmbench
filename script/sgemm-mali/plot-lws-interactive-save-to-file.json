@@ -4,7 +4,7 @@
   "data_uoa_list":["sgemm-mali-all"],
 
   "flat_keys_list":[
-    "##choices#run_cmd_key_n#min",
+    "##choices#env#MINDEX#min",
     "##characteristics#run#run_time_state#EXECUTION#Gflops/s#center",
     "##characteristics#run#run_time_state#EXECUTION#Gflops/s#halfrange"
   ],
@@ -16,15 +16,15 @@
   "display_x_error_bar":"no",
   "display_y_error_bar":"yes",
 
-  "xmin":0,
-  "xmax":1100,
-
   "ymin" : 0,
-  "ymax" : 13,
+  "ymax" : 50,
+
+  "xmin" : 0,
+  "xmax" : 16,
 
   "title":"Crowd-tuning GEMMbench: SGEMM Mali",
 
-  "axis_x_desc":"Matrix order (-n)",
+  "axis_x_desc":"Matrix index",
   "axis_y_desc":"Gflops/s",
 
   "plot_grid":"yes",
