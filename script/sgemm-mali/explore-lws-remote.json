@@ -1,31 +1,8 @@
 {
-  "choices_order":[
-    [
-      "##env#MTX_A",
-      "##env#MTX_B"
-    ],
-    [
-      "##env#GEMM_TYPE"
-    ],
-    [
-      "##env#CK_LWS_X"
-    ],
-    [
-      "##env#CK_LWS_Y"
-    ],
-    [
-      "##env#CK_SKIP_PADDING"
-    ]
-  ],
-  "choices_selection":[
-    {"type":"parallel-random", "start":128, "stop":1024, "step":128, "default":512},
-    {"type":"random-with-next", "choice":[0,1,2]},
-    {"type":"random-with-next", "start":4, "stop":32, "step":4, "default":4},
-    {"type":"random-with-next", "start":4, "stop":32, "step":4, "default":8},
-    {"type":"random-with-next", "choice":[0,1]}
-  ],
+  "custom_autotuner":{
+     "script":"explore-lws-autotuner"
+  },
 
-  "seed":12345,
   "iterations":10,
   "repetitions":1,
 

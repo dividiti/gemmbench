@@ -62,19 +62,4 @@ def make(i):
     # CK_SKIP_PADDING"
 #    keys['##env#CK_SKIP_PADDING']=mr.randrange(0,1)
 
-    # Print and set keys
-    if o=='con': 
-       ck.out('')
-
-    for k in sorted(keys):
-        v=keys[k]
-        if o=='con': 
-           ck.out(' * '+k+' = '+str(v))
-
-        rx=ck.set_by_flat_key({'dict':pipeline, 'key':k, 'value':v})
-        if rx['return']>0: return rx
-
-    if o=='con': 
-       ck.out('')
-
-    return {'return':0, 'finish':finish}
+    return {'return':0, 'keys':keys, 'finish':finish}
