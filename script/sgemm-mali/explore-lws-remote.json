@@ -3,7 +3,7 @@
      "script":"explore-lws-autotuner"
   },
 
-  "iterations":10,
+  "iterations":100,
   "repetitions":4,
 
   "pipeline_update":{
