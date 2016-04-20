@@ -22,7 +22,6 @@
         ], "default":"8,8"}
   ],
 
-  "seed":12345,
   "iterations":100,
   "repetitions":1,
 
