@@ -85,9 +85,9 @@ def make(i):
     keys['##env#MTX_B']=str(y)+','+str(z)
 
     # Setting LWS
-    lx=mr.randrange(2,32,2)
+    lx=mr.randrange(4,32,4)
     keys['##env#CK_LWS_X']=lx
-    keys['##env#CK_LWS_Y']=mr.randrange(2,128/lx,2)
+    keys['##env#CK_LWS_Y']=mr.randrange(4,128/lx,4)
 
     # GEMM TYPE
     keys['##env#GEMM_TYPE']=mr.randrange(0,2)
