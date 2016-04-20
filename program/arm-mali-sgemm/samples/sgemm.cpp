@@ -565,28 +565,10 @@ void sgemm(int argc, const char **argv)
     cl::Buffer buffer_mtx_out  ( CL_MEM_ALLOC_HOST_PTR | CL_MEM_READ_WRITE, buffer_mtx_c_size, NULL );
 
     /* Create OpenCL kernels. */
-#if (1 == XOPENME)
-        xopenme_clock_start(1);
-#endif
     cl::Kernel kernel_interleave( program, cl_gemm[gemm_type_idx].interleave.kernel_name );
-#if (1 == XOPENME)
-        xopenme_clock_end(1);
-        xopenme_clock_start(2);
-#endif
     cl::Kernel kernel_transpose ( program, cl_gemm[gemm_type_idx].transpose.kernel_name );
-#if (1 == XOPENME)
-        xopenme_clock_end(2);
-        xopenme_clock_start(0);
-#endif
     cl::Kernel kernel_mm        ( program, cl_gemm[gemm_type_idx].mm.kernel_name );
-#if (1 == XOPENME)
-        xopenme_clock_end(0);
-        xopenme_clock_start(3);
-#endif
     cl::Kernel kernel_finalize  ( program, cl_gemm[gemm_type_idx].finalize.kernel_name );
-#if (1 == XOPENME)
-        xopenme_clock_end(3);
-#endif
 
     /* Create command queue. */
     cl::CommandQueue queue( cl::QueueProperties::Profiling, NULL );
@@ -713,38 +695,54 @@ void sgemm(int argc, const char **argv)
 
     /* Print profiling info for the kernels and get the execution time. */
     cl_ulong interleave_ns = get_profiling_info( "[interleave]", interleave_event );
-    std::cout << "[interleave] DT     " << interleave_ns * 1e-6 << " (ms)" << std::endl;
-
-    cl_ulong transpose_ns = get_profiling_info( "[transpose] ", transpose_event  );
-    std::cout << "[transpose]  DT     " << transpose_ns  * 1e-6 << " (ms)" << std::endl;
-
-    cl_ulong finalize_ns = get_profiling_info( "[finalize]  ", finalize_event   );
-    std::cout << "[finalize]   DT     " << finalize_ns   * 1e-6 << " (ms)" << std::endl;
-
-    cl_ulong multiply_ns = get_profiling_info( "[multiply]  ", multiply_event   );
-    std::cout << "[multiply]   DT     " << multiply_ns   * 1e-6 << " (ms)" << std::endl;
+    cl_ulong transpose_ns  = get_profiling_info( "[transpose] ", transpose_event  );
+    cl_ulong multiply_ns   = get_profiling_info( "[multiply]  ", multiply_event   );
+    cl_ulong finalize_ns   = get_profiling_info( "[finalize]  ", finalize_event   );
     /* Calculate nflops and then GFLOPS (nflops / ns). */
     {
-        const cl_ulong ns = multiply_ns;
         // C[M][K] = A[M][N] * B[N][K]
         const cl_ulong M = mtx_a.rows;
         const cl_ulong N = mtx_a.cols;
         const cl_ulong K = mtx_b.cols;
         const cl_ulong flops = 2 * M * N * K; // FIXME: Correct in the first approximation.
-        const cl_double gflops_per_s = (cl_double) flops / (cl_double) ns;
+        const cl_double gflops_per_s = (cl_double) flops / (cl_double) multiply_ns;
         std::cout << "Calculating performance... " << gflops_per_s << " Gflops/s";
-        std::cout << " (performed "  << flops << " flops in " << ns << " ns)." << std::endl;
+        std::cout << " (performed "  << flops << " flops in " << multiply_ns << " ns)." << std::endl;
 #if (1 == XOPENME)
-        xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#ns\":%u", ns);
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"INTERLEAVE#ns\":%u",   interleave_ns);
         assert(openme.var_count_below_max() && "xOpenME max var count reached.");
 
-        xopenme_add_var_f(openme.var_count++, (char*) "  \"EXECUTION#us\":%.3f", ns * 1e-3);
+        xopenme_add_var_f(openme.var_count++, (char*) "  \"INTERLEAVE#us\":%.3f", interleave_ns * 1e-3);
         assert(openme.var_count_below_max() && "xOpenME max var count reached.");
 
-        xopenme_add_var_f(openme.var_count++, (char*) "  \"EXECUTION#ms\":%.3f", ns * 1e-6);
+        xopenme_add_var_f(openme.var_count++, (char*) "  \"INTERLEAVE#ms\":%.3f", interleave_ns * 1e-6);
         assert(openme.var_count_below_max() && "xOpenME max var count reached.");
 
-        xopenme_add_var_f(openme.var_count++, (char*) "  \"EXECUTION#s\":%.3f", ns * 1e-9);
+        xopenme_add_var_f(openme.var_count++, (char*) "  \"INTERLEAVE#s\":%.3f",  interleave_ns * 1e-9);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"TRANSPOSE#ns\":%u",    transpose_ns);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_f(openme.var_count++, (char*) "  \"TRANSPOSE#us\":%.3f",  transpose_ns * 1e-3);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_f(openme.var_count++, (char*) "  \"TRANSPOSE#ms\":%.3f",  transpose_ns * 1e-6);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_f(openme.var_count++, (char*) "  \"TRANSPOSE#s\":%.3f",   transpose_ns * 1e-9);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#ns\":%u",    multiply_ns);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_f(openme.var_count++, (char*) "  \"EXECUTION#us\":%.3f",  multiply_ns * 1e-3);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_f(openme.var_count++, (char*) "  \"EXECUTION#ms\":%.3f",  multiply_ns * 1e-6);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_f(openme.var_count++, (char*) "  \"EXECUTION#s\":%.3f",   multiply_ns * 1e-9);
         assert(openme.var_count_below_max() && "xOpenME max var count reached.");
 
         xopenme_add_var_i(openme.var_count++, (char*) "  \"EXECUTION#flops\":%u", flops);
@@ -754,6 +752,18 @@ void sgemm(int argc, const char **argv)
         assert(openme.var_count_below_max() && "xOpenME max var count reached.");
 
         xopenme_add_var_d(openme.var_count++, (char*) "  \"EXECUTION#Gflops/s\":%.3lf", gflops_per_s);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_i(openme.var_count++, (char*) "  \"FINALIZE#ns\":%u",    finalize_ns);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_f(openme.var_count++, (char*) "  \"FINALIZE#us\":%.3f",  finalize_ns * 1e-3);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_f(openme.var_count++, (char*) "  \"FINALIZE#ms\":%.3f",  finalize_ns * 1e-6);
+        assert(openme.var_count_below_max() && "xOpenME max var count reached.");
+
+        xopenme_add_var_f(openme.var_count++, (char*) "  \"FINALIZE#s\":%.3f",   finalize_ns * 1e-9);
         assert(openme.var_count_below_max() && "xOpenME max var count reached.");
 #endif
     }
