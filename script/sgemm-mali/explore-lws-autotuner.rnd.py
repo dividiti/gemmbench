@@ -44,14 +44,9 @@ def make(i):
     keys={}
 
     # Setting dimensions X,Y,Z
-
-#   Purely random
     x=mr.randrange(128, 1024, 128)
     y=mr.randrange(128, 1024, 128)
     z=mr.randrange(128, 1024, 128)
-
-    # Typical sizes from AlexNet (profiled by Anton)
-    
 
     keys['##env#MTX_A']=str(x)+','+str(y)
     keys['##env#MTX_B']=str(y)+','+str(z)
