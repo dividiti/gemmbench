@@ -18,7 +18,7 @@
   "record_repo":"local",
   "record_uoa":"sgemm-mali-all",
 
-  "record_dict":{"subview_uoa":"1a52139e549b4eeb"},
+  "record_dict":{"subview_uoa":"41c48ccfa3ccd256"},
 
   "record_params":{
     "search_point_by_features":"yes"

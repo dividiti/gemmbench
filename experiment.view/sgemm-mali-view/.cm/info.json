@@ -1,0 +1,20 @@
+{
+  "backup_data_uid": "41c48ccfa3ccd256", 
+  "backup_module_uid": "e7c9e42ba8edace0", 
+  "backup_module_uoa": "experiment.view", 
+  "control": {
+    "author": "Anton Lokhmotov", 
+    "author_email": "anton@dividiti.com", 
+    "author_webpage": "http://dividiti.com", 
+    "copyright": "2015 (c) dividiti", 
+    "engine": "CK", 
+    "iso_datetime": "2016-04-20T10:38:25.648236", 
+    "license": "See CK LICENSE.txt for licensing details", 
+    "version": [
+      "1", 
+      "6", 
+      "14x"
+    ]
+  }, 
+  "data_name": "sgemm-mali-view"
+}
