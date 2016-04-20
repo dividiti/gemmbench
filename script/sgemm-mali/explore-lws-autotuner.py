@@ -71,7 +71,7 @@ def make(i):
       [15,  256, 2304,  168]
     ]
 
-    ind=mr.randrange(0, len(sizes)-1)
+    ind=mr.randrange(0,len(sizes)) # exclusive of the upper bound
     cur=sizes[ind]#
 
     n=cur[0]
@@ -96,7 +96,7 @@ def make(i):
     keys['##env#CK_LWS_Y']=ly
 
     # GEMM TYPE
-    keys['##env#GEMM_TYPE']=mr.randrange(0,2)
+    keys['##env#GEMM_TYPE']=mr.randrange(0,3) # exclusive of the upper bound
 
     # CK_SKIP_PADDING"
 #    keys['##env#CK_SKIP_PADDING']=mr.randrange(0,1)
