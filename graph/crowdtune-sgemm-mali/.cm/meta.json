@@ -10,7 +10,9 @@
         "axis_x_desc": "Matrix index", 
         "axis_y_desc": "Gflops/s", 
         "data_uoa_list": [
-          "sgemm-mali-all"
+          "sgemm-mali-all",
+          "sgemm-mali-default-fp32",
+          "sgemm-mali-default-fp16"
         ], 
         "display_x_error_bar": "no", 
         "display_y_error_bar": "yes", 
@@ -27,14 +29,18 @@
         "plot_grid": "yes", 
         "plot_type": "d3_2d_scatter", 
         "point_style": {
-          "0": {
-            "color": "#3366cc"
-          }, 
-          "1": {
-            "color": "#dc3912", 
-            "elinewidth": "5"
-          }
-        }, 
+           "0": {
+             "color": "#3366cc"
+           },
+           "1": {
+             "color": "#ff0012",
+             "elinewidth": "5"
+           },
+           "2": {
+             "color": "#00ff12",
+             "elinewidth": "5"
+           }
+         },
         "save_info_table_to_json_file": "crowdtuning-gemmbench-sgemm-mali-lws.json", 
         "save_table_to_csv_file": "crowdtuning-gemmbench-sgemm-mali-lws.csv", 
         "save_table_to_json_file": "crowdtuning-gemmbench-sgemm-mali-lws.json", 
