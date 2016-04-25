@@ -1,0 +1,42 @@
+{
+  "customize": {
+    "extra_dir": "", 
+    "split_version": [
+      "trunk"
+    ], 
+    "version": "trunk"
+  }, 
+  "deps": {
+    "cmake": {
+      "local": "yes", 
+      "sort": 5, 
+      "tags": "tool,cmake"
+    }, 
+    "compiler": {
+      "local": "yes", 
+      "sort": 10, 
+      "tags": "compiler,lang-cpp"
+    }, 
+    "opencl": {
+      "local": "yes", 
+      "sort": 20, 
+      "tags": "lib,opencl"
+    }
+  }, 
+  "only_for_host_os_tags": [
+    "windows", 
+    "linux"
+  ], 
+  "only_for_target_os_tags": [
+    "windows", 
+    "linux"
+  ], 
+  "process_script": "process", 
+  "soft_uoa": "7b81c6ad862f4b38", 
+  "suggested_path": "lib-clblast", 
+  "tags": [
+    "lib", 
+    "clblast", 
+    "2016.03"
+  ]
+}
