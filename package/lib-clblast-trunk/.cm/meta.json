@@ -1,9 +1,6 @@
 {
   "customize": {
     "extra_dir": "", 
-    "split_version": [
-      "trunk"
-    ], 
     "version": "trunk"
   }, 
   "deps": {
