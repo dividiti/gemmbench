@@ -5,21 +5,25 @@
   "compile_deps": {
     "compiler": {
       "local": "yes", 
+      "name": "C++ compiler", 
       "sort": 10, 
       "tags": "compiler,lang-cpp"
     }, 
     "lib.cjson": {
       "local": "yes", 
+      "name": "cJSON library", 
       "sort": 20, 
       "tags": "lib,cjson"
     }, 
     "lib.xopenme": {
       "local": "yes", 
+      "name": "xOpenME library", 
       "sort": 30, 
       "tags": "lib,xopenme"
     }, 
     "lib_opencl": {
       "local": "yes", 
+      "name": "OpenCL library", 
       "sort": 15, 
       "tags": "lib,opencl"
     }
@@ -31,6 +35,32 @@
   "compiler_env": "CK_CXX", 
   "compiler_flags_as_env": "$<<CK_COMPILER_FLAG_MFLOAT_ABI_HARD>>$", 
   "data_name": "gemmbench-cl-launcher-1.0", 
+  "deps": {
+    "compiler": {
+      "local": "yes", 
+      "name": "C++ compiler", 
+      "sort": 10, 
+      "tags": "compiler,lang-cpp"
+    }, 
+    "lib-cjson": {
+      "local": "yes", 
+      "name": "cJSON library", 
+      "sort": 20, 
+      "tags": "lib,cjson"
+    }, 
+    "lib-opencl": {
+      "local": "yes", 
+      "name": "OpenCL library", 
+      "sort": 15, 
+      "tags": "lib,opencl"
+    }, 
+    "lib-xopenme": {
+      "local": "yes", 
+      "name": "xOpenME library", 
+      "sort": 30, 
+      "tags": "lib,xopenme"
+    }
+  }, 
   "extra_ld_vars": "$<<CK_EXTRA_LIB_M>>$", 
   "linker_add_lib_as_env": [
     "CK_CXX_EXTRA", 
