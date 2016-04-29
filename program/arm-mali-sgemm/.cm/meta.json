@@ -9,33 +9,6 @@
       "sort": 10, 
       "tags": "compiler,lang-cpp"
     }, 
-    "lib.xopenme": {
-      "local": "yes", 
-      "name": "xOpenME library", 
-      "sort": 30, 
-      "tags": "lib,xopenme"
-    }, 
-    "lib_opencl": {
-      "local": "yes", 
-      "name": "OpenCL library", 
-      "sort": 20, 
-      "tags": "lib,opencl"
-    }
-  }, 
-  "compiler_add_include_as_env_from_deps": [
-    "CK_ENV_LIB_STDCPP_INCLUDE", 
-    "CK_ENV_LIB_STDCPP_INCLUDE_EXTRA"
-  ], 
-  "compiler_env": "CK_CXX", 
-  "compiler_flags_as_env": "$<<CK_COMPILER_FLAG_MFLOAT_ABI_HARD>>$ $<<CK_COMPILER_FLAG_CPP11>>$", 
-  "data_name": "arm-mali-sgemm", 
-  "deps": {
-    "compiler": {
-      "local": "yes", 
-      "name": "C++ compiler", 
-      "sort": 10, 
-      "tags": "compiler,lang-cpp"
-    }, 
     "lib-opencl": {
       "local": "yes", 
       "name": "OpenCL library", 
@@ -49,6 +22,13 @@
       "tags": "lib,xopenme"
     }
   }, 
+  "compiler_add_include_as_env_from_deps": [
+    "CK_ENV_LIB_STDCPP_INCLUDE", 
+    "CK_ENV_LIB_STDCPP_INCLUDE_EXTRA"
+  ], 
+  "compiler_env": "CK_CXX", 
+  "compiler_flags_as_env": "$<<CK_COMPILER_FLAG_MFLOAT_ABI_HARD>>$ $<<CK_COMPILER_FLAG_CPP11>>$", 
+  "data_name": "arm-mali-sgemm", 
   "extra_ld_vars": "$<<CK_EXTRA_LIB_M>>$", 
   "linker_add_lib_as_env": [
     "CK_CXX_EXTRA", 
