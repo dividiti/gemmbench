@@ -102,6 +102,7 @@ def start(i):
         'module_uoa':cfg['module_deps']['program.optimization'],
         'out':'',
         'email':user,
+        'type':'opencl-crowdtuning',
         'repo_uoa':rep1}
     r=ck.access(ii)
     if r['return']>0: return r
