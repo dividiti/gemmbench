@@ -1,7 +1,7 @@
 {
   "customize": {
     "extra_dir": "", 
-    "version": "trunk"
+    "version": "development"
   }, 
   "deps": {
     "cmake": {
@@ -35,8 +35,10 @@
   "soft_uoa": "7b81c6ad862f4b38", 
   "suggested_path": "lib-clblast", 
   "tags": [
-    "lib", 
-    "clblast", 
-    "2016.03"
+    "lib",
+    "clblast",
+    "blas",
+    "opencl",
+    "2016"
   ]
 }
