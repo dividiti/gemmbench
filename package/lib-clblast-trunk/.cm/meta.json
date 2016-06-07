@@ -1,7 +1,11 @@
 {
   "customize": {
     "extra_dir": "", 
-    "version": "development"
+    "version": "development",
+    "install_env":{
+       "CLBLAST_URL":"https://github.com/CNugteren/CLBlast",
+       "CLBLAST_BRANCH":"development"
+    }
   }, 
   "deps": {
     "cmake": {
@@ -23,6 +27,7 @@
       "tags": "lib,opencl"
     }
   }, 
+  "need_cpu_info":"yes",
   "only_for_host_os_tags": [
     "windows", 
     "linux"
@@ -31,6 +36,12 @@
     "windows", 
     "linux"
   ], 
+  "end_full_path": {
+    "android": "lib$#sep#$libclblast.so", 
+    "linux": "lib/libclblast.so", 
+    "mingw": "lib\\libclblast.so", 
+    "win": "lib\\libclblast.so"
+  }, 
   "process_script": "process", 
   "soft_uoa": "7b81c6ad862f4b38", 
   "suggested_path": "lib-clblast", 

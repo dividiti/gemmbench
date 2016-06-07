@@ -12,6 +12,10 @@ rem
 rem PACKAGE_DIR
 rem INSTALL_DIR
 
+exit /b 1
+rem SHOULD CONVERT TO NEW FORMAT
+rem SEEM THAT DOESN'T SUPPORT Visual Studio compilers ...
+
 set LIB_NAME=libclblast
 
 echo.

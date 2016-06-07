@@ -14,8 +14,6 @@
 # PACKAGE_DIR
 # INSTALL_DIR
 
-export CLBLAST_URL=https://github.com/CNugteren/CLBlast
-export CLBLAST_BRANCH=development
 export CLBLAST_SRC_DIR=${INSTALL_DIR}/src
 export CLBLAST_BUILD_DIR=${INSTALL_DIR}/build/release
 
@@ -52,4 +50,4 @@ if [ "${?}" != "0" ] ; then
   exit 1
 fi
 
-export LIB_NAME=libclblast
+#export LIB_NAME=libclblast
