@@ -49,7 +49,9 @@
         "run_cmd_out1": "run.stdout", 
         "run_cmd_out2": "run.stderr", 
         "run_correctness_output_files": [], 
-        "run_input_files": [], 
+        "run_input_files": [
+          "kernels/sgemm.cl"
+        ], 
         "run_output_files": [
           "run.stdout", 
           "run.stderr", 

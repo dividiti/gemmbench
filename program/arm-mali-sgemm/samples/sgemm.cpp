@@ -540,7 +540,7 @@ void sgemm(int argc, const char **argv)
     get_platform();
     get_device();
 
-    cl::Program program = cl::Program( mali::read_file("../kernels/sgemm.cl") );
+    cl::Program program = cl::Program( mali::read_file("/data/local/tmp/kernels/sgemm.cl") );
 
     /* Pre-processor CL define for the buffer origin */
     std::stringstream options;

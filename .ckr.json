@@ -8,6 +8,9 @@
       },
       {
         "repo_uoa": "ck-dissemination-modules"
+      },
+      {
+        "repo_uoa": "ck-math"
       }
     ], 
     "url": "git@github.com:dividiti/gemmbench.git", 
