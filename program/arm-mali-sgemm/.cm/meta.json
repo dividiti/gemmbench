@@ -62,8 +62,8 @@
     }
   }, 
   "run_vars": {
-    "GPGPU_DEVICE_ID": 0, 
-    "GPGPU_PLATFORM_ID": 0
+    "CK_GPGPU_DEVICE_ID": 0, 
+    "CK_GPGPU_PLATFORM_ID": 0
   }, 
   "source_files": [
     "samples/sgemm.cpp"

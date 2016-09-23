@@ -478,8 +478,8 @@ void sgemm(int argc, const char **argv)
     READ_CONFIG( skip_padding,    "CK_SKIP_PADDING",    0 );
     READ_CONFIG( skip_validation, "CK_SKIP_VALIDATION", 0 );
 
-    READ_CONFIG( platform_idx,    "GPGPU_PLATFORM_ID",  0 );
-    READ_CONFIG( device_idx,      "GPGPU_DEVICE_ID",    0 );
+    READ_CONFIG( platform_idx,    "CK_GPGPU_PLATFORM_ID",  0 );
+    READ_CONFIG( device_idx,      "CK_GPGPU_DEVICE_ID",    0 );
 
     /* Check whether matrix A can be multiplied by matrix B */
     if( mtx_a.cols != mtx_b.rows )

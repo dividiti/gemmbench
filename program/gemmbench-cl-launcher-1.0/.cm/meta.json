@@ -57,7 +57,7 @@
         "post_process_cmds": [
           "python $#src_path_local#$ck_postprocess.py"
         ], 
-        "run_cmd_main": "$#BIN_FILE#$ -f $#dataset_path#$$#dataset_filename#$ -p $<<GPGPU_PLATFORM_ID>>$ -d $<<GPGPU_DEVICE_ID>>$", 
+        "run_cmd_main": "$#BIN_FILE#$ -f $#dataset_path#$$#dataset_filename#$ -p $<<CK_GPGPU_PLATFORM_ID>>$ -d $<<CK_GPGPU_DEVICE_ID>>$", 
         "run_cmd_out1": "", 
         "run_cmd_out2": "", 
         "run_correctness_output_files": [], 
@@ -81,7 +81,7 @@
         "post_process_cmds": [
           "python $#src_path_local#$ck_postprocess.py"
         ], 
-        "run_cmd_main": "$#BIN_FILE#$ -f $#dataset_path#$$#dataset_filename#$ -p $<<GPGPU_PLATFORM_ID>>$ -d $<<GPGPU_DEVICE_ID>>$ -n $#run_cmd_key_n#$ -lws $#run_cmd_key_lws#$", 
+        "run_cmd_main": "$#BIN_FILE#$ -f $#dataset_path#$$#dataset_filename#$ -p $<<CK_GPGPU_PLATFORM_ID>>$ -d $<<CK_GPGPU_DEVICE_ID>>$ -n $#run_cmd_key_n#$ -lws $#run_cmd_key_lws#$", 
         "run_cmd_out1": "run.stdout", 
         "run_cmd_out2": "run.stderr", 
         "run_correctness_output_files": [], 
@@ -95,8 +95,8 @@
     }
   }, 
   "run_vars": {
-    "GPGPU_DEVICE_ID": 0, 
-    "GPGPU_PLATFORM_ID": 0
+    "CK_GPGPU_DEVICE_ID": 0, 
+    "CK_GPGPU_PLATFORM_ID": 0
   }, 
   "source_files": [
     "cl_state.cpp", 
