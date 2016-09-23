@@ -74,6 +74,7 @@ public:
 
 #endif
 
+
 /* Platform and device ID */
 int32_t platform_idx = 0;
 int32_t device_idx = 0;
@@ -477,8 +478,8 @@ void sgemm(int argc, const char **argv)
     READ_CONFIG( skip_padding,    "CK_SKIP_PADDING",    0 );
     READ_CONFIG( skip_validation, "CK_SKIP_VALIDATION", 0 );
 
-    READ_CONFIG( platform_idx,    "PLATFORM_ID",        0 );
-    READ_CONFIG( device_idx,      "DEVICE_ID",          0 );
+    READ_CONFIG( platform_idx,    "GPGPU_PLATFORM_ID",  0 );
+    READ_CONFIG( device_idx,      "GPGPU_DEVICE_ID",    0 );
 
     /* Check whether matrix A can be multiplied by matrix B */
     if( mtx_a.cols != mtx_b.rows )

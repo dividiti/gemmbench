@@ -41,6 +41,7 @@
     "default": {
       "ignore_return_code": "no", 
       "run_time": {
+        "need_gpgpu_device":"opencl",
         "fine_grain_timer_file": "tmp-ck-timer.json", 
         "post_process_cmds": [
           "python $#src_path_local#$ck_postprocess.py"
@@ -61,8 +62,8 @@
     }
   }, 
   "run_vars": {
-    "DEVICE_ID": 0, 
-    "PLATFORM_ID": 0
+    "GPGPU_DEVICE_ID": 0, 
+    "GPGPU_PLATFORM_ID": 0
   }, 
   "source_files": [
     "samples/sgemm.cpp"

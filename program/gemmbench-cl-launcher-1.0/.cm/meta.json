@@ -52,11 +52,12 @@
       ], 
       "ignore_return_code": "no", 
       "run_time": {
+        "need_gpgpu_device":"opencl",
         "fine_grain_timer_file": "tmp-ck-timer.json", 
         "post_process_cmds": [
           "python $#src_path_local#$ck_postprocess.py"
         ], 
-        "run_cmd_main": "$#BIN_FILE#$ -f $#dataset_path#$$#dataset_filename#$", 
+        "run_cmd_main": "$#BIN_FILE#$ -f $#dataset_path#$$#dataset_filename#$ -p $<<GPGPU_PLATFORM_ID>>$ -d $<<GPGPU_DEVICE_ID>>$", 
         "run_cmd_out1": "", 
         "run_cmd_out2": "", 
         "run_correctness_output_files": [], 
@@ -75,11 +76,12 @@
       ], 
       "ignore_return_code": "no", 
       "run_time": {
+        "need_gpgpu_device":"opencl",
         "fine_grain_timer_file": "tmp-ck-timer.json", 
         "post_process_cmds": [
           "python $#src_path_local#$ck_postprocess.py"
         ], 
-        "run_cmd_main": "$#BIN_FILE#$ -f $#dataset_path#$$#dataset_filename#$ -p $<<PLATFORM_ID>>$ -d $<<DEVICE_ID>>$ -n $#run_cmd_key_n#$ -lws $#run_cmd_key_lws#$", 
+        "run_cmd_main": "$#BIN_FILE#$ -f $#dataset_path#$$#dataset_filename#$ -p $<<GPGPU_PLATFORM_ID>>$ -d $<<GPGPU_DEVICE_ID>>$ -n $#run_cmd_key_n#$ -lws $#run_cmd_key_lws#$", 
         "run_cmd_out1": "run.stdout", 
         "run_cmd_out2": "run.stderr", 
         "run_correctness_output_files": [], 
@@ -93,8 +95,8 @@
     }
   }, 
   "run_vars": {
-    "DEVICE_ID": 0, 
-    "PLATFORM_ID": 0
+    "GPGPU_DEVICE_ID": 0, 
+    "GPGPU_PLATFORM_ID": 0
   }, 
   "source_files": [
     "cl_state.cpp", 
