@@ -22,15 +22,15 @@ Usage
 
 * Compile benchmark
 
-> ck compile:gemmbench-cl-launcher-1.0
+> ck compile program:gemmbench-cl-launcher-1.0
 
 * Run benchmark (select "default" CMD when asked)
 
-> ck run:gemmbench-cl-launcher-1.0
+> ck run program:gemmbench-cl-launcher-1.0
 
 * Run benchmark with custom CMD (for example, change matrix order, platform ID and device ID):
 
-> ck run:gemmbench-cl-launcher-1.0 --extra_run_cmd="-n 512 -p 0 -d 1"
+> ck run program:gemmbench-cl-launcher-1.0 --extra_run_cmd="-n 512 -p 0 -d 1"
 
 Publications
 ============
