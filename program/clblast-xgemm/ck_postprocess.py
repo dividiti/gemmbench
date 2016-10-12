@@ -22,20 +22,25 @@ def ck_postprocess(i):
     r=ck.load_text_file({'text_file':'run.stdout','split_to_list':'yes'})
     if r['return']>0: return r
 
-    found_marker = False
+    found_header = False
     table = []
+    column_count = 0
 
     for line in r['lst']:
-        match = re.search('^\s*$', line) # check if line is empty
-        # if the line is not empty and we have already found the marker we are in the table
-        if (not match) and found_marker:
-            table.append(line.split(";"))
-
-        # using | <--       CLBlast       --> | as a marker
-        header_regex = '(^\s*\|\s*<--\s*CLBlast\s*-->\s*\|$)'
-        match = re.search(header_regex, line)
-        if match:
-            found_marker = True
+ 	if (not found_header):
+	    #  m; n; k; layout; transA; transB; lda; ldb; ldc; offa; offb; offc; alpha; beta; ms_1; GFLOPS_1; GBs_1
+	    header_regex = '(^\s+m;\s+n;\s+k;\s+layout;\s+transA;\s+transB;\s+lda;\s+ldb;\s+ldc;\s+offa;\s+offb;\s+offc;\s+alpha;\s+beta;\s+ms_1;\s+GFLOPS_1;\s+GBs_1\s*$)'
+            match = re.search(header_regex, line)
+  	    if match:
+	        found_header = True
+                header_line = line.split(";")
+                column_count = len(header_line)
+	        table.append(header_line)
+	else: # we haven found the header
+	    candidate_line = line.split(";")
+	    if len(candidate_line) == column_count:
+		table.append(candidate_line)
+	    
 
     # transpose the table
     transposed_table = map(list, zip(*table))

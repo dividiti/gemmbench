@@ -44,7 +44,7 @@
         "post_process_cmds": [
           "python $#src_path_local#$ck_postprocess.py"
         ], 
-        "run_cmd_main": "$#BIN_FILE#$ -p $<<CK_COMPUTE_PLATFORM_ID>>$ -d $<<CK_COMPUTE_DEVICE_ID>>$ -step 256 -num_steps 2", 
+        "run_cmd_main": "$#BIN_FILE#$ -platform $<<CK_COMPUTE_PLATFORM_ID>>$ -device $<<CK_COMPUTE_DEVICE_ID>>$", 
         "run_cmd_out1": "run.stdout", 
         "run_cmd_out2": "run.stderr", 
         "run_correctness_output_files": [], 
