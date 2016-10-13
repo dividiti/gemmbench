@@ -19,7 +19,7 @@
       "name": "CLBlast library (Mali overlay)", 
       "sort": 20, 
       "tags": "lib,clblast,vmali-overlay"
-    }, 
+    },
     "lib-clblast": {
       "local": "yes",
       "name": "CLBlast library (development)",
@@ -65,7 +65,8 @@
   }, 
   "run_vars": {
     "CK_COMPUTE_DEVICE_ID": 0, 
-    "CK_COMPUTE_PLATFORM_ID": 0
+    "CK_COMPUTE_PLATFORM_ID": 0,
+    "LD_PRELOAD": "$<<CK_ENV_LIB_CLBLAST_LIB>>$/$<<CK_ENV_LIB_CLBLAST_DYNAMIC_NAME>>$"
   }, 
   "source_files": [
     "client/client.cpp", 
