@@ -18,7 +18,6 @@
 #include <utility>
 #include <algorithm>
 #include <chrono>
-#include <iostream>
 
 namespace clblast {
 // =================================================================================================
@@ -261,7 +260,6 @@ double Client<T,U>::TimedExecution(const size_t num_runs, const Arguments<U> &ar
   // Start the timed part
   auto timings = std::vector<double>(num_runs);
   for (auto &timing: timings) {
-    std::cout << "start timing" << std::endl;
     auto start_time = std::chrono::steady_clock::now();
 
     // Executes the main computation
@@ -275,8 +273,6 @@ double Client<T,U>::TimedExecution(const size_t num_runs, const Arguments<U> &ar
     // Records and stores the end-time
     auto elapsed_time = std::chrono::steady_clock::now() - start_time;
     timing = std::chrono::duration<double,std::milli>(elapsed_time).count();
-    std::cout << "end timing" << std::endl;
-    std::cout << "timing: " << timing << std::endl;
   }
   return *std::min_element(timings.begin(), timings.end());
 }
