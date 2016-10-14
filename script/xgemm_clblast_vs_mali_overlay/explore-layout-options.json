@@ -23,6 +23,8 @@
   "record_repo":"local",
   "record_uoa":"xgemm_clblast_vs_mali_overlay-explore-layout-options",
 
+  "tags": ["layout-options", "clblast"],
+
   "record_dict":{"subview_uoa":"1048849e824f668c"},
 
   "record_params":{

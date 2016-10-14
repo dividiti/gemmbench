@@ -39,6 +39,7 @@
     "default": {
       "ignore_return_code": "no", 
       "run_time": {
+	"fine_grain_timer_file": "tmp-ck-timer.json",
         "need_compute_device":"opencl",
         "post_process_via_ck":"yes",
         "post_process_cmds": [
@@ -58,6 +59,7 @@
     "explore-layouts": {
       "ignore_return_code": "no", 
       "run_time": {
+	"fine_grain_timer_file": "tmp-ck-timer.json",
         "need_compute_device":"opencl",
         "post_process_via_ck":"yes",
         "post_process_cmds": [
