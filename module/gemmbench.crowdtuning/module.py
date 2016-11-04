@@ -64,7 +64,11 @@ def start(i):
 
     user=''
 
-    curdir=os.getcwd()
+    try:
+        curdir=os.getcwd()
+    except OSError:
+        os.chdir('..')
+        curdir=os.getcwd()
 
     # Params
     hos=i.get('host_os','')
