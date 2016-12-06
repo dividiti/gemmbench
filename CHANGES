@@ -1,3 +1,5 @@
+* 2016.11.04 * making os.getcwd() safer
+
 * 2016.09.23 * added support for new CK widget "ck detect platform.gpgpu --select"
                to detect OpenCL platforms and devices, ask user to select the needed one,
                and set GPGPU_PLATFORM_ID and GPGPU_DEVICE_ID vars
