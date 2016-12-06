@@ -1,0 +1,99 @@
+{
+  "compile_deps": {
+    "compiler": {
+      "local": "yes", 
+      "name": "C++ compiler", 
+      "sort": 10, 
+      "tags": "compiler,lang-cpp"
+    }, 
+    "lib-opencl": {
+      "local": "yes", 
+      "name": "OpenCL library", 
+      "sort": 15, 
+      "tags": "lib,opencl"
+    },
+    "lib-clblast": {
+      "add_to_path": "yes",
+      "local": "yes",
+      "name": "CLBlast library",
+      "sort": 20,
+      "tags": "lib,clblast"
+    }
+  }, 
+  "compiler_add_include_as_env_from_deps": [
+    "CK_ENV_LIB_STDCPP_INCLUDE", 
+    "CK_ENV_LIB_STDCPP_INCLUDE_EXTRA"
+  ], 
+  "compiler_env": "CK_CXX", 
+  "compiler_flags_as_env": "$<<CK_COMPILER_FLAG_MFLOAT_ABI_HARD>>$ $<<CK_COMPILER_FLAG_CPP11>>$", 
+  "data_name": "clblast-xgemm", 
+  "extra_ld_vars": "$<<CK_EXTRA_LIB_M>>$", 
+  "linker_add_lib_as_env": [
+    "CK_CXX_EXTRA", 
+    "CK_ENV_LIB_STDCPP_STATIC"
+  ], 
+  "main_language": "cpp", 
+  "process_in_tmp": "yes", 
+  "program": "yes", 
+  "run_cmds": {
+    "default": {
+      "ignore_return_code": "no", 
+      "run_time": {
+	"fine_grain_timer_file": "tmp-ck-timer.json",
+        "need_compute_device":"opencl",
+        "post_process_via_ck":"yes",
+        "post_process_cmds": [
+          "python $#src_path_local#$ck_postprocess.py"
+        ], 
+        "run_cmd_main": "$#BIN_FILE#$ -platform $<<CK_COMPUTE_PLATFORM_ID>>$ -device $<<CK_COMPUTE_DEVICE_ID>>$", 
+        "run_cmd_out1": "run.stdout", 
+        "run_cmd_out2": "run.stderr", 
+        "run_correctness_output_files": [], 
+        "run_input_files": [], 
+        "run_output_files": [
+          "run.stdout", 
+          "run.stderr"
+        ]
+      }
+    },
+    "explore-layouts": {
+      "ignore_return_code": "no", 
+      "run_time": {
+	"fine_grain_timer_file": "tmp-ck-timer.json",
+        "need_compute_device":"opencl",
+        "post_process_via_ck":"yes",
+        "post_process_cmds": [
+          "python $#src_path_local#$ck_postprocess.py"
+        ], 
+        "run_cmd_main": "$#BIN_FILE#$ -platform $<<CK_COMPUTE_PLATFORM_ID>>$ -device $<<CK_COMPUTE_DEVICE_ID>>$ -layout $<<CLBLAST_LAYOUT>>$", 
+        "run_cmd_out1": "run.stdout", 
+        "run_cmd_out2": "run.stderr", 
+        "run_correctness_output_files": [], 
+        "run_input_files": [], 
+        "run_output_files": [
+          "run.stdout", 
+          "run.stderr"
+        ]
+      }
+    }
+  }, 
+  "run_vars": {
+    "CK_COMPUTE_DEVICE_ID": 0, 
+    "CK_COMPUTE_PLATFORM_ID": 0
+  }, 
+  "source_files": [
+    "client/client.cpp",
+    "utilities/utilities.cpp", 
+    "xgemm.cpp"
+  ], 
+  "species": [], 
+  "tags": [
+    "program", 
+    "gemmbench", 
+    "opencl", 
+    "v1.0", 
+    "v1", 
+    "lang-cpp"
+  ], 
+  "target_file": "clblast_client_xgemm"
+}
