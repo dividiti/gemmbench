@@ -88,12 +88,10 @@
   ], 
   "species": [], 
   "tags": [
-    "program", 
-    "gemmbench", 
-    "opencl", 
-    "v1.0", 
-    "v1", 
-    "lang-cpp"
+    "gemmbench",
+    "program",
+    "clblast",
+    "xgemm"
   ], 
   "target_file": "clblast_client_xgemm"
 }

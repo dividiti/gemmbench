@@ -13,18 +13,11 @@
       "sort": 15, 
       "tags": "lib,opencl"
     },
-    "lib-clblast-mali-overlay": {
-      "add_to_path": "yes", 
-      "local": "yes", 
-      "name": "CLBlast library (Mali overlay)", 
-      "sort": 20, 
-      "tags": "lib,clblast,vmali-overlay"
-    },
     "lib-clblast": {
       "local": "yes",
-      "name": "CLBlast library (development)",
-      "sort": 30,
-      "tags": "lib,clblast,vdev"
+      "name": "CLBlast library",
+      "sort": 20,
+      "tags": "lib,clblast"
     }
   }, 
   "compiler_add_include_as_env_from_deps": [
@@ -75,12 +68,11 @@
   ], 
   "species": [], 
   "tags": [
-    "program", 
-    "gemmbench", 
-    "opencl", 
-    "v1.0", 
-    "v1", 
-    "lang-cpp"
+    "gemmbench",
+    "program",
+    "clblast",
+    "xgemm",
+    "overlay"
   ], 
   "target_file": "clblast_client_xgemm"
 }
