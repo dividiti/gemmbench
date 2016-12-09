@@ -10,7 +10,7 @@ def do(i):
     # Detect basic platform info.
     ii={'action':'detect',
         'module_uoa':'platform',
-        'out':'out'}
+        'out':'con'}
     r=ck.access(ii)
     if r['return']>0: return r
 
@@ -35,59 +35,23 @@ def do(i):
     ii={'action':'load', 'module_uoa':'program', 'data_uoa':program['data_uoa']}
     r=ck.access(ii)
     if r['return']>0: return r
-                                        
+
     # Update deps from GPGPU or ones remembered during autotuning.
     cdeps=r['dict'].get('compile_deps',{})
     ck.out('---------------------------------------------------------------------------------------')
     ck.out('cdeps: ' + str(cdeps))
 
     # Resolve CLBlast dep.
-    cdeps_clblast=copy.deepcopy(cdeps['lib-clblast'])
     ii={'action':'resolve', 'module_uoa':'env',
         'host_os':hos, 'target_os':tos, 'device_id':tdid,
-        'deps':{'lib-clblast':cdeps_clblast}}
+        'deps':cdeps, 'out':'con'}
     r=ck.access(ii)
     if r['return']>0: return r
     # All UOAs of CLBlast envs.
-    envs_clblast=r['deps']['lib-clblast'].get('choices',[])
-    if not envs_clblast:
-        return {'return':1, 'error':'no CLBlast envs found!'}
-    ck.out('clblast: ' + str(envs_clblast))
-
-    # Resolve OpenCL dep.
-    cdeps_opencl=copy.deepcopy(cdeps['lib-opencl'])
-    ii={'action':'resolve', 'module_uoa':'env',
-        'host_os':hos, 'target_os':tos, 'device_id':tdid,
-        'deps':{'lib-opencl':cdeps_opencl}}
-    r=ck.access(ii)
-    if r['return']>0: return r
-    # All UOAs of OpenCL envs.
-    envs_opencl=r['deps']['lib-opencl'].get('choices',[])
-    if not envs_opencl:
-        return {'return':1, 'error':'no OpenCL envs found!'}
-    ck.out('opencl: ' + str(envs_opencl))
-
-    # Resolve compiler dep.
-    cdeps_compiler=copy.deepcopy(cdeps['compiler'])
-    ii={'action':'resolve', 'module_uoa':'env',
-        'host_os':hos, 'target_os':tos, 'device_id':tdid,
-        'deps':{'compiler':cdeps_compiler}}
-    r=ck.access(ii)
-    if r['return']>0: return r
-    # All UOAs of compiler envs.
-    envs_compiler=r['deps']['compiler'].get('choices',[])
-    if not envs_compiler:
-        return {'return':1, 'error':'no compiler envs found!'}
-    ck.out('compiler: ' + str(envs_compiler))
-    
-    # Prepare pipeline.
-    cdeps['lib-clblast']['uoa']=envs_clblast[0]
-    cdeps['lib-opencl']['uoa']=envs_opencl[0]
-    cdeps['compiler']['uoa']=envs_compiler[0]
 
     ii={'action':'pipeline',
         'prepare':'yes',
-       
+
         'module_uoa':'program',
         'data_uoa':program['data_uoa'],
         'dependencies': cdeps,
