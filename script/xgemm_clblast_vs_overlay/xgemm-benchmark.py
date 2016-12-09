@@ -171,16 +171,24 @@ def do(i):
             'repetitions':p['repeat'],
  
             'record':'yes',
+            'record_repo':record_repo,
+            'record_uoa':record_uoa,
             'record_failed':'yes',
             'record_params':{
                 'search_point_by_features':'yes'
             },
-            'record_repo':record_repo,
-            'record_uoa':record_uoa,
+            'record_dict':{
+                'subview_uoa':'1048849e824f668c'
+            },
  
             'tags':tags+['layouts'],
  
             'pipeline':cpipeline,
+            'pipeline_update':{
+              'cpu_freq':'max',
+              'gpu_freq':'max',
+              'compiler_vars': {}
+            },
             'out':'con'
         }
 
