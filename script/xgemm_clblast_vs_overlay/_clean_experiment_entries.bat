@@ -1,1 +1,1 @@
-ck rm local:experiment:sgemm-mali-*
+ck rm local:experiment:gemmbench-xgemm-clblast*
