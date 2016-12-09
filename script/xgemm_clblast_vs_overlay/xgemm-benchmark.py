@@ -60,6 +60,8 @@ def do(i):
 
         'cmd_key':'explore-layouts',
 
+#        'dvdt_prof':'yes',
+
         'cpu_freq':'max',
         'gpu_freq':'max',
 
