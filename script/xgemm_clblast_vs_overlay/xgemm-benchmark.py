@@ -8,9 +8,7 @@ p={'start':101, 'step':1, 'stop':102, 'default':101, 'repeat':4}
 
 def do(i):
     # Detect basic platform info.
-    ii={'action':'detect',
-        'module_uoa':'platform',
-        'out':'con'}
+    ii={'action':'detect', 'module_uoa':'platform', 'out':'con'}
     r=ck.access(ii)
     if r['return']>0: return r
 
@@ -21,6 +19,7 @@ def do(i):
     tos=r['os_uoa']
     tosd=r['os_dict']
     tdid=r['device_id']
+    # FIXME: detect OpenCL device here.
 
     # Search for xgemm programs.
     ii={'action':'search', 'module_uoa':'program', 'tags':'gemmbench,xgemm'}
@@ -31,30 +30,33 @@ def do(i):
         return {'return':1, 'error':'no xgemm programs found!'}
 
     # Get deps from one of the xgemm programs.
-    program=programs[1]
+    program=programs[0]
     ii={'action':'load', 'module_uoa':'program', 'data_uoa':program['data_uoa']}
     r=ck.access(ii)
     if r['return']>0: return r
 
     # Update deps from GPGPU or ones remembered during autotuning.
+    # FIXME: What does the above comment mean? Autotuning hasn't started yet...
     cdeps=r['dict'].get('compile_deps',{})
+
+    # Show deps.
     ck.out('---------------------------------------------------------------------------------------')
     ck.out('cdeps: ' + str(cdeps))
 
-    # Resolve CLBlast dep.
+    # Resolve deps.
     ii={'action':'resolve', 'module_uoa':'env',
         'host_os':hos, 'target_os':tos, 'device_id':tdid,
         'deps':cdeps, 'out':'con'}
     r=ck.access(ii)
     if r['return']>0: return r
-    # All UOAs of CLBlast envs.
 
+    # Prepare pipeline.
     ii={'action':'pipeline',
         'prepare':'yes',
 
         'module_uoa':'program',
         'data_uoa':program['data_uoa'],
-        'dependencies': cdeps,
+        'dependencies':cdeps,
 
         'cmd_key':'explore-layouts',
 
@@ -86,6 +88,7 @@ def do(i):
     tmp_dir=state['tmp_dir']
 
     # Remember resolved deps for this benchmarking session.
+    # FIXME: Unused anywhere. Can be safely removed?
     xcdeps=r.get('dependencies',{})
 
     # Clean pipeline.
@@ -93,7 +96,7 @@ def do(i):
     if 'fail' in r: del(r['fail'])
     if 'return' in r: del(r['return'])
 
-    # FIXME: Is deep copy needed? also deep copied below.
+    # FIXME: Is deep copy here needed? Also deep copied below for each program.
     pipeline=copy.deepcopy(r)
 
     # For each xgemm program.
@@ -102,38 +105,46 @@ def do(i):
         ii={'action':'load', 'module_uoa':'program', 'data_uoa':program['data_uoa']}
         r=ck.access(ii)
         if r['return']>0: return r
+
+        # Show program tags.
         tags=r['dict']['tags']
         ck.out('---------------------------------------------------------------------------------------')
         ck.out(r['data_name']+': '+str(tags))
-        
+
+        # Configure repository.
         record_repo='local'
         record_uoa='gemmbench-xgemm-clblast'
         if 'overlay' in tags:
             record_uoa+='-overlay'
 
+        # Configure choices.
+        choices_selection=[]
+        choices_order=[]
+        choices_selection.append({'type':'loop', 'start':p['start'], 'stop':p['stop'], 'step':p['step'], 'default':p['default']})
+        choices_order.append(["##env#CLBLAST_LAYOUT"])
+        # TODO: Make Lift overlay iterate over multiple generated kernels.
+#        if 'overlay' in tags:
+#            choices_selection.append({"type":"loop"})
+#            choices_order.append("##dataset_file")
+
         # Prepare pipeline.
         cpipeline=copy.deepcopy(pipeline)
+        cpipeline.update({'data_uoa':program['data_uoa']})
 
         # Prepare autotuning input.
         ii={'action':'autotune',
- 
+
             'module_uoa':'pipeline',
             'data_uoa':'program',
- 
-            'choices_order':[
-                [
-                    "##env#CLBLAST_LAYOUT"
-                ]
-            ],
-            'choices_selection':[
-                {'type':'loop', 'start':p['start'], 'stop':p['stop'], 'step':p['step'], 'default':p['default']}
-            ],
- 
+
+            'choices_selection':choices_selection,
+            'choices_order':choices_order,
+
             'features_keys_to_process':['##choices#*'],
- 
+
             'iterations':-1,
             'repetitions':p['repeat'],
- 
+
             'record':'yes',
             'record_repo':record_repo,
             'record_uoa':record_uoa,
@@ -144,9 +155,9 @@ def do(i):
             'record_dict':{
                 'subview_uoa':'1048849e824f668c'
             },
- 
+
             'tags':tags+['layouts'],
- 
+
             'pipeline':cpipeline,
             'pipeline_update':{
               'cpu_freq':'max',
