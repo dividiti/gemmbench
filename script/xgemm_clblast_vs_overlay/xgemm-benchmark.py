@@ -125,7 +125,7 @@ def do(i):
         # TODO: Make Lift overlay iterate over multiple generated kernels.
 #        if 'overlay' in tags:
 #            choices_selection.append({"type":"loop"})
-#            choices_order.append("##dataset_file")
+#            choices_order.append(["##dataset_file"])
 
         # Prepare pipeline.
         cpipeline=copy.deepcopy(pipeline)
