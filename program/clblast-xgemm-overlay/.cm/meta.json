@@ -55,6 +55,26 @@
           "run.stderr"
         ]
       }
+    },
+    "explore-layouts": {
+      "ignore_return_code": "no",
+      "run_time": {
+        "fine_grain_timer_file": "tmp-ck-timer.json",
+        "need_compute_device": "opencl",
+        "post_process_via_ck": "yes",
+        "post_process_cmds": [
+          "python $#src_path_local#$ck_postprocess.py"
+        ],
+        "run_cmd_main": "$#BIN_FILE#$ -platform $<<CK_COMPUTE_PLATFORM_ID>>$ -device $<<CK_COMPUTE_DEVICE_ID>>$ -layout $<<CLBLAST_LAYOUT>>$",
+        "run_cmd_out1": "run.stdout",
+        "run_cmd_out2": "run.stderr",
+        "run_correctness_output_files": [],
+        "run_input_files": [],
+        "run_output_files": [
+          "run.stdout",
+          "run.stderr"
+        ]
+      }
     }
   },
   "run_vars": {

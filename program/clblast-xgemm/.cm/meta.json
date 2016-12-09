@@ -1,4 +1,5 @@
 {
+  "backup_data_uid": "0ef9511e3864c67b",
   "compile_deps": {
     "compiler": {
       "local": "yes",
@@ -13,7 +14,6 @@
       "tags": "lib,opencl"
     },
     "lib-clblast": {
-      "add_to_path": "yes",
       "local": "yes",
       "name": "CLBlast library",
       "sort": 20,
@@ -40,8 +40,8 @@
       "ignore_return_code": "no",
       "run_time": {
         "fine_grain_timer_file": "tmp-ck-timer.json",
-        "need_compute_device":"opencl",
-        "post_process_via_ck":"yes",
+        "need_compute_device": "opencl",
+        "post_process_via_ck": "yes",
         "post_process_cmds": [
           "python $#src_path_local#$ck_postprocess.py"
         ],
