@@ -13,8 +13,8 @@
     "version": [
       "1", 
       "8", 
-      "3dev"
+      "4"
     ]
   }, 
-  "data_name": "xgemm_clblast_vs_mali_overlay"
+  "data_name": "xgemm_clblast_vs_overlay"
 }
