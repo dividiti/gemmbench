@@ -32,9 +32,6 @@ def do(i):
     rg=ck.access(ii)
     if rg['return']>0: return rg
 
-    fgpu=rg['features']['gpgpu']
-    ngpu=len(fgpu)
-
     cp_id=rg.get('choices',{}).get('compute_platform_id','')
     cd_id=rg.get('choices',{}).get('compute_device_id','')
 
