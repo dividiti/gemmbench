@@ -19,7 +19,24 @@ def do(i):
     tos=r['os_uoa']
     tosd=r['os_dict']
     tdid=r['device_id']
-    # FIXME: detect OpenCL device here.
+
+    # Detect OpenCL device here.
+    ii={'action':'detect',
+        'module_uoa':'platform.gpgpu',
+        'out':'con',
+        'host_os':hos,
+        'target_os':tos,
+        'target_device_id':tdid,
+        'type':'opencl',
+        'select':'yes'}
+    rg=ck.access(ii)
+    if rg['return']>0: return rg
+
+    fgpu=rg['features']['gpgpu']
+    ngpu=len(fgpu)
+
+    cp_id=rg.get('choices',{}).get('compute_platform_id','')
+    cd_id=rg.get('choices',{}).get('compute_device_id','')
 
     # Search for xgemm programs.
     ii={'action':'search', 'module_uoa':'program', 'tags':'gemmbench,xgemm'}
@@ -35,8 +52,7 @@ def do(i):
     r=ck.access(ii)
     if r['return']>0: return r
 
-    # Update deps from GPGPU or ones remembered during autotuning.
-    # FIXME: What does the above comment mean? Autotuning hasn't started yet...
+    # Get compile deps from the first program
     cdeps=r['dict'].get('compile_deps',{})
 
     # Show deps.
@@ -68,6 +84,9 @@ def do(i):
         'speed':'yes',
         'energy':'no',
 
+        'compute_platform_id':cp_id,
+        'compute_device_id':cd_id,
+
         'no_state_check':'yes',
         'no_compiler_description':'yes',
         'compile_only_once':'yes',
@@ -89,16 +108,16 @@ def do(i):
     state=r['state']
     tmp_dir=state['tmp_dir']
 
-    # Remember resolved deps for this benchmarking session.
-    # FIXME: Unused anywhere. Can be safely removed?
-    xcdeps=r.get('dependencies',{})
-
     # Clean pipeline.
     if 'ready' in r: del(r['ready'])
     if 'fail' in r: del(r['fail'])
     if 'return' in r: del(r['return'])
 
     # FIXME: Is deep copy here needed? Also deep copied below for each program.
+    # FGG: I prefer to keep it - when we reuse output dict, there are
+    # often references and some parts of dict can later disappear and
+    # it's very difficult to debug. Hence I have a clean and full copy here (reference pipeline)
+    # and then I created a new clean and full copy of this reference copy at each iteration ...
     pipeline=copy.deepcopy(r)
 
     # For each xgemm program.
