@@ -1,0 +1,6 @@
+{
+  "kernel_name": "KERNEL",
+  "global_size": ["n/2", "m/2", "1"],
+  "local_size": ["?", "?", "1"],
+  "argument_order": ["a", "b", "c", "k", "m", "n"]
+}

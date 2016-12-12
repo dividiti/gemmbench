@@ -71,6 +71,16 @@ constexpr auto kArgImaxOffset = "offimax";
 constexpr auto kArgAlpha = "alpha";
 constexpr auto kArgBeta = "beta";
 
+constexpr auto kArgKernelFile = "kernelFile";
+constexpr auto kArgKernelName = "kernelName";
+constexpr auto kArgGlobalX = "globalX";
+constexpr auto kArgGlobalY = "globalY";
+constexpr auto kArgGlobalZ = "globalZ";
+constexpr auto kArgLocalX = "localX";
+constexpr auto kArgLocalY = "localY";
+constexpr auto kArgLocalZ = "localZ";
+constexpr auto kArgArgumentOrder = "kernelArgOrder";
+
 // The tuner-specific arguments in string form
 constexpr auto kArgFraction = "fraction";
 
@@ -160,6 +170,19 @@ struct Arguments {
   bool print_help = false;
   bool silent = false;
   bool no_abbrv = false;
+
+  // Overlay specific arguments
+  std::string kernelFileName = "";
+  std::string kernelName = "KERNEL";
+
+  size_t globalX = 1;
+  size_t globalY = 1;
+  size_t globalZ = 1;
+  size_t localX = 1;
+  size_t localY = 1;
+  size_t localZ = 1;
+
+  std::string argumentOrder = "";
 };
 
 // Structure containing all possible buffers for test clients

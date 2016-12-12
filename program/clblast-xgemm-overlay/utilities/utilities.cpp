@@ -82,6 +82,11 @@ template std::string ToString<size_t>(size_t value);
 template std::string ToString<float>(float value);
 template std::string ToString<double>(double value);
 
+template <>
+std::string ToString(std::string value) {
+  return value;
+}
+
 // If not possible directly: special cases for complex data-types
 template <>
 std::string ToString(float2 value) {
@@ -163,6 +168,10 @@ T ConvertArgument(const char* value) {
 }
 template size_t ConvertArgument(const char* value);
 
+template <> std::string ConvertArgument(const char* value) {
+  return std::string(value);
+}
+
 template <> half ConvertArgument(const char* value) {
   return FloatToHalf(static_cast<float>(std::stod(value)));
 }
@@ -228,6 +237,7 @@ template Side GetArgument<Side>(const int, char **, std::string&, const std::str
 template Triangle GetArgument<Triangle>(const int, char **, std::string&, const std::string&, const Triangle);
 template Diagonal GetArgument<Diagonal>(const int, char **, std::string&, const std::string&, const Diagonal);
 template Precision GetArgument<Precision>(const int, char **, std::string&, const std::string&, const Precision);
+template std::string GetArgument<std::string>(const int, char **, std::string&, const std::string&, const std::string);
 
 // =================================================================================================
 

@@ -19,6 +19,10 @@
 #include <vector>
 #include <string>
 
+#include "utilities/routine.hpp"
+#include "utilities/common.hpp"
+#include "utilities/clblast_exceptions.hpp"
+
 #ifdef CLBLAST_REF_CLBLAS
   #include "test/wrapper_clblas.hpp"
 #endif
@@ -28,6 +32,32 @@
 
 namespace clblast {
 // =================================================================================================
+
+namespace overlay {
+
+template <typename T>
+class Xgemm : public Routine {
+ public:
+
+  // Constructor
+  Xgemm(Queue &queue, const std::string& kernelSource, EventPointer event, const std::string &name = "GEMM");
+
+  // Templated-precision implementation of the routine
+  void DoGemm(const std::vector<size_t>& global,
+              const std::vector<size_t>& local,
+              const std::string& kernelName,
+              std::string argumentOrder,
+              const Layout layout,
+              const Transpose a_transpose, const Transpose b_transpose,
+              const size_t m, const size_t n, const size_t k,
+              const T alpha,
+              const Buffer<T> &a_buffer, const size_t a_offset, const size_t a_ld,
+              const Buffer<T> &b_buffer, const size_t b_offset, const size_t b_ld,
+              const T beta,
+              const Buffer<T> &c_buffer, const size_t c_offset, const size_t c_ld);
+};
+
+}
 
 // See comment at top of file for a description of the class
 template <typename T>
@@ -43,7 +73,12 @@ class TestXgemm {
             kArgLayout, kArgATransp, kArgBTransp,
             kArgALeadDim, kArgBLeadDim, kArgCLeadDim,
             kArgAOffset, kArgBOffset, kArgCOffset,
-            kArgAlpha, kArgBeta};
+            kArgAlpha, kArgBeta,
+            kArgKernelFile, kArgKernelName,
+            kArgGlobalX, kArgGlobalY, kArgGlobalZ,
+            kArgLocalX, kArgLocalY, kArgLocalZ,
+            kArgArgumentOrder
+           };
   }
 
   // Describes how to obtain the sizes of the buffers
@@ -84,16 +119,29 @@ class TestXgemm {
 
   // Describes how to run the CLBlast routine
   static StatusCode RunRoutine(const Arguments<T> &args, Buffers<T> &buffers, Queue &queue) {
-    auto queue_plain = queue();
-    auto event = cl_event{};
-    auto status = Gemm(args.layout, args.a_transpose, args.b_transpose,
-                       args.m, args.n, args.k, args.alpha,
-                       buffers.a_mat(), args.a_offset, args.a_ld,
-                       buffers.b_mat(), args.b_offset, args.b_ld, args.beta,
-                       buffers.c_mat(), args.c_offset, args.c_ld,
-                       &queue_plain, &event);
-    clWaitForEvents(1, &event);
-    return status;
+	  auto event = cl_event{};
+	  try {
+	    auto queue_cpp = Queue(queue());
+	    auto ifs = std::ifstream(args.kernelFileName);
+            auto source = std::string(std::istreambuf_iterator<char>{ifs}, {});
+	    auto routine = clblast::overlay::Xgemm<T>(queue_cpp, source, &event);
+            
+            auto global = std::vector<size_t>{args.globalX, args.globalY, args.globalZ};
+            auto local = std::vector<size_t>{args.localX, args.localY, args.localZ};
+
+	    routine.DoGemm(global, local, args.kernelName, args.argumentOrder,
+                           args.layout, args.a_transpose, args.b_transpose,
+			   args.m, args.n, args.k,
+			   args.alpha,
+			   Buffer<T>(buffers.a_mat()), args.a_offset, args.a_ld,
+			   Buffer<T>(buffers.b_mat()), args.b_offset, args.b_ld,
+			   args.beta,
+			   Buffer<T>(buffers.c_mat()), args.c_offset, args.c_ld);
+	    clWaitForEvents(1, &event);
+	    return StatusCode::kSuccess;
+	  } catch (...)  {
+	    return StatusCode::kKernelRunError;
+	  }
   }
 
   // Describes how to run the clBLAS routine (for correctness/performance comparison)

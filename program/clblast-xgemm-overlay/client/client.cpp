@@ -91,6 +91,20 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const size_t le
     // Scalar values 
     if (o == kArgAlpha) { args.alpha = GetArgument(argc, argv, help, kArgAlpha, GetScalar<U>()); }
     if (o == kArgBeta)  { args.beta  = GetArgument(argc, argv, help, kArgBeta, GetScalar<U>()); }
+
+
+    // Overlay specific values
+    if (o == kArgKernelFile) { args.kernelFileName = GetArgument(argc, argv, help, kArgKernelFile, std::string()); }
+    if (o == kArgKernelName) { args.kernelName = GetArgument(argc, argv, help, kArgKernelName, std::string("KERNEL")); }
+
+    if (o == kArgGlobalX) { args.globalX = GetArgument(argc, argv, help, kArgGlobalX, size_t{1}); }
+    if (o == kArgGlobalY) { args.globalY = GetArgument(argc, argv, help, kArgGlobalY, size_t{1}); }
+    if (o == kArgGlobalZ) { args.globalZ = GetArgument(argc, argv, help, kArgGlobalZ, size_t{1}); }
+    if (o == kArgLocalX) { args.localX = GetArgument(argc, argv, help, kArgLocalX, size_t{1}); }
+    if (o == kArgLocalY) { args.localY = GetArgument(argc, argv, help, kArgLocalY, size_t{1}); }
+    if (o == kArgLocalZ) { args.localZ = GetArgument(argc, argv, help, kArgLocalZ, size_t{1}); }
+
+    if (o == kArgArgumentOrder) { args.argumentOrder = GetArgument(argc, argv, help, kArgArgumentOrder, std::string("a, b, c, k, m, n")); }
   }
 
   // These are the options common to all routines
