@@ -3,14 +3,21 @@ import ck.kernel as ck
 import copy
 import re
 
+class CKError(RuntimeError):
+   def __init__(self, arg):
+      self.args = arg
+
+def ck_do(ii):
+  r=ck.access(ii)
+  if r['return']>0: raise CKError(r)
+  return r
+
 # Layout parameters and number of repetitions.
-p={'start':101, 'step':1, 'stop':102, 'default':101, 'repeat':4}
+# layoutParams={'start':101, 'step':1, 'stop':102, 'default':101, 'repeat':4}
+repetitions = 4
 
 def do(i):
-    # Detect basic platform info.
-    ii={'action':'detect', 'module_uoa':'platform', 'out':'con'}
-    r=ck.access(ii)
-    if r['return']>0: return r
+    r=ck_do({'action':'detect', 'module_uoa':'platform', 'out':'con'})
 
     # Host and target OS params.
     hos=r['host_os_uoa']
@@ -21,57 +28,53 @@ def do(i):
     tdid=r['device_id']
 
     # Detect OpenCL device here.
-    ii={'action':'detect',
-        'module_uoa':'platform.gpgpu',
-        'out':'con',
-        'host_os':hos,
-        'target_os':tos,
-        'target_device_id':tdid,
-        'type':'opencl',
-        'select':'yes'}
-    rg=ck.access(ii)
-    if rg['return']>0: return rg
+    rg=ck_do({'action':'detect',
+              'module_uoa':'platform.gpgpu',
+              'out':'con',
+              'host_os':hos,
+              'target_os':tos,
+              'target_device_id':tdid,
+              'type':'opencl',
+              'select':'yes'})
 
     cp_id=rg.get('choices',{}).get('compute_platform_id','')
     cd_id=rg.get('choices',{}).get('compute_device_id','')
 
     # Search for xgemm programs.
-    ii={'action':'search', 'module_uoa':'program', 'tags':'gemmbench,xgemm'}
-    r=ck.access(ii)
-    if r['return']>0: return r
+    r=ck_do({'action':'search', 'module_uoa':'program', 'tags':'gemmbench,xgemm'})
     programs=r['lst']
     if not programs:
-        return {'return':1, 'error':'no xgemm programs found!'}
+        raise CKError({'return':1, 'error':'no xgemm programs found!'})
 
-    # Get deps from one of the xgemm programs.
-    program=programs[0]
-    ii={'action':'load', 'module_uoa':'program', 'data_uoa':program['data_uoa']}
-    r=ck.access(ii)
-    if r['return']>0: return r
-
-    # Get compile deps from the first program
-    cdeps=r['dict'].get('compile_deps',{})
-
-    # Show deps.
     ck.out('---------------------------------------------------------------------------------------')
-    ck.out('cdeps: ' + str(cdeps))
+    ck.out('Found {} programs:'.format(len(programs)))
+    for p in programs:
+      ck.out('  {}'.format(p['data_uoa']))
 
-    # Resolve deps.
-    ii={'action':'resolve', 'module_uoa':'env',
-        'host_os':hos, 'target_os':tos, 'device_id':tdid,
-        'deps':cdeps, 'out':'con'}
-    r=ck.access(ii)
-    if r['return']>0: return r
+    cdeps = {}
+    for p in programs:
+      r=ck_do({'action':'load', 'module_uoa':'program', 'data_uoa':p['data_uoa']})
+      cdeps[p['data_uoa']] = r['dict'].get('compile_deps',{})
+
+      # Show deps.
+      ck.out('---------------------------------------------------------------------------------------')
+      ck.out('cdeps for {}: {}'.format(p['data_uoa'], str(cdeps[p['data_uoa']])))
+
+      # Resolve deps.
+      ck_do({'action':'resolve', 'module_uoa':'env',
+             'host_os':hos, 'target_os':tos, 'device_id':tdid,
+             'deps':cdeps[p['data_uoa']], 'out':'con'})
 
     # Prepare pipeline.
-    ii={'action':'pipeline',
+    r=ck_do({
+        'action':'pipeline',
         'prepare':'yes',
 
         'module_uoa':'program',
-        'data_uoa':program['data_uoa'],
-        'dependencies':cdeps,
+        'data_uoa':programs[0]['data_uoa'],
+        'dependencies':cdeps[programs[0]['data_uoa']],
 
-        'cmd_key':'explore-layouts',
+        'cmd_key':'explore-lift-kernels',
 
 #        'dvdt_prof':'yes',
 
@@ -90,17 +93,15 @@ def do(i):
         'skip_calibration':'yes',
         'skip_print_timers':'yes',
         'out':'con'
-    }
-    r=ck.access(ii)
-    if r['return']>0: return r
+    })
 
     fail=r.get('fail','')
     if fail=='yes':
-        return {'return':10, 'error':'pipeline failed ('+r.get('fail_reason','')+')'}
+        raise CKError({'return':10, 'error':'pipeline failed ('+r.get('fail_reason','')+')'})
 
     ready=r.get('ready','')
     if ready!='yes':
-        return {'return':11, 'error':'pipeline not ready'}
+        raise CKError({'return':11, 'error':'pipeline not ready'})
 
     state=r['state']
     tmp_dir=state['tmp_dir']
@@ -120,9 +121,7 @@ def do(i):
     # For each xgemm program.
     for program in programs:
         # Load xgemm program.
-        ii={'action':'load', 'module_uoa':'program', 'data_uoa':program['data_uoa']}
-        r=ck.access(ii)
-        if r['return']>0: return r
+        r=ck_do({'action':'load', 'module_uoa':'program', 'data_uoa':program['data_uoa']})
 
         # Show program tags.
         tags=r['dict']['tags']
@@ -138,8 +137,8 @@ def do(i):
         # Configure choices.
         choices_selection=[]
         choices_order=[]
-        choices_selection.append({'type':'loop', 'start':p['start'], 'stop':p['stop'], 'step':p['step'], 'default':p['default']})
-        choices_order.append(["##env#CLBLAST_LAYOUT"])
+        #choices_selection.append({'type':'loop', 'start':layoutParams['start'], 'stop':layoutParams['stop'], 'step':layoutParams['step'], 'default':layoutParams['default']})
+        #choices_order.append(["##env#CLBLAST_LAYOUT"])
         # TODO: Make Lift overlay iterate over multiple generated kernels.
 #        if 'overlay' in tags:
 #            choices_selection.append({"type":"loop"})
@@ -150,7 +149,8 @@ def do(i):
         cpipeline.update({'data_uoa':program['data_uoa']})
 
         # Prepare autotuning input.
-        ii={'action':'autotune',
+        r=ck_do({
+            'action':'autotune',
 
             'module_uoa':'pipeline',
             'data_uoa':'program',
@@ -161,7 +161,7 @@ def do(i):
             'features_keys_to_process':['##choices#*'],
 
             'iterations':-1,
-            'repetitions':p['repeat'],
+            'repetitions':repetitions,
 
             'record':'yes',
             'record_repo':record_repo,
@@ -183,16 +183,16 @@ def do(i):
               'compiler_vars': {}
             },
             'out':'con'
-        }
-
-        r=ck.access(ii)
-        if r['return']>0: return r
+        })
 
         fail=r.get('fail','')
         if fail=='yes':
-            return {'return':10, 'error':'pipeline failed ('+r.get('fail_reason','')+')'}
+            raise CKError({'return':10, 'error':'pipeline failed ('+r.get('fail_reason','')+')'})
 
     return {'return':0}
 
-r=do({})
-if r['return']>0: ck.err(r)
+try:
+  r=do({})
+  if r['return']>0: ck.err(r)
+except CKError as err:
+  ck.err(err.args)

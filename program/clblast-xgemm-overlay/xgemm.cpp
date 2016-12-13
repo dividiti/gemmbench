@@ -117,9 +117,7 @@ void Xgemm<T>::DoGemm(const std::vector<size_t>& global,
   // Retrieves the proper XgemmDirect kernel from the compiled binary
   //const auto name = (a_do_transpose) ? (b_do_transpose ? "XgemmDirectTT" : "XgemmDirectTN") :
                                        //(b_do_transpose ? "XgemmDirectNT" : "XgemmDirectNN");
-  std::cout << "creating kernel\n";
   auto kernel = Kernel(*program_, kernelName);
-  std::cout << "finished creating kernel\n";
 
   size_t i = 0;
   auto setArg = [&](std::string arg) {
@@ -141,8 +139,6 @@ void Xgemm<T>::DoGemm(const std::vector<size_t>& global,
     argumentOrder.erase(0, pos + delimiter.length());
   }
   setArg(argumentOrder); // set last arg
-
-  std::cout << "finished setting " << i << " arguments\n";
 
   // Launches the kernel
   RunKernel(kernel, queue_, device_, global, local, event_);

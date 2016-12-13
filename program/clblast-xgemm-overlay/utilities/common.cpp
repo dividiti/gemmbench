@@ -63,8 +63,6 @@ void RunKernel(Kernel &kernel, Queue &queue, const Device &device,
     const auto start_time = std::chrono::steady_clock::now();
   #endif
 
-std::cout << "launch kernel\n";
-
   // Launches the kernel (and checks for launch errors)
   kernel.Launch(queue, global, local, event, waitForEvents);
 

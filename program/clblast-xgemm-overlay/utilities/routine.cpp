@@ -95,9 +95,6 @@ Routine::Routine(Queue &queue, EventPointer event, const std::string &name,
     const auto start_time = std::chrono::steady_clock::now();
   #endif
 
-std::cout << "start building\n";
-std::cout << "\n\n" << source_string << "\n\n";
-
   // Compiles the kernel
   program_ = std::unique_ptr<Program>(new Program(context_, source_string));
   try {
@@ -109,8 +106,6 @@ std::cout << "\n\n" << source_string << "\n\n";
     }
     throw;
   }
-
-std::cout << "building completed\n";
 
   // Prints the elapsed compilation time in case of debugging in verbose mode
   #ifdef VERBOSE
