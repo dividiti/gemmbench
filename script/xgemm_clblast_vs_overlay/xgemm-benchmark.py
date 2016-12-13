@@ -9,7 +9,9 @@ class CKError(RuntimeError):
 
 def ck_do(ii):
   r=ck.access(ii)
-  if r['return']>0: raise CKError(r)
+  if r['return']>0: 
+     ck.err(r['error'])
+#raise CKError(r)
   return r
 
 # Layout parameters and number of repetitions.
@@ -129,65 +131,94 @@ def do(i):
         ck.out(r['data_name']+': '+str(tags))
 
         # Configure repository.
+        ds=[None]
         record_repo='local'
         record_uoa='gemmbench-xgemm-clblast'
+        cmd_key='default'
         if 'overlay' in tags:
+            ds=[]
             record_uoa+='-overlay'
+            cmd_key='explore-lift-kernels'
 
-        # Configure choices.
-        choices_selection=[]
-        choices_order=[]
-        #choices_selection.append({'type':'loop', 'start':layoutParams['start'], 'stop':layoutParams['stop'], 'step':layoutParams['step'], 'default':layoutParams['default']})
-        #choices_order.append(["##env#CLBLAST_LAYOUT"])
-        # TODO: Make Lift overlay iterate over multiple generated kernels.
-#        if 'overlay' in tags:
-#            choices_selection.append({"type":"loop"})
-#            choices_order.append(["##dataset_file"])
+            # Find related data set
+            r=ck_do({'action':'search', 'module_uoa':'dataset', 'tags':'dataset,lift,gemmbench,opencl kernel', 'add_meta':'yes'})
 
-        # Prepare pipeline.
-        cpipeline=copy.deepcopy(pipeline)
-        cpipeline.update({'data_uoa':program['data_uoa']})
+            lst=r['lst']
 
-        # Prepare autotuning input.
-        r=ck_do({
-            'action':'autotune',
+            for q in lst:
+                duid=q['data_uid']
+                meta=q['meta']
+                for z in meta.get('dataset_files',[]):
+                    ds.append({'dataset_uid':duid, 'dataset_file':z})
 
-            'module_uoa':'pipeline',
-            'data_uoa':'program',
+        # Loop over datasets
+        for d in ds:
+            ds_uoa=''
+            ds_file=''
 
-            'choices_selection':choices_selection,
-            'choices_order':choices_order,
+            if d!=None:
+               ds_uoa=d['dataset_uid']
+               ds_file=d['dataset_file']
 
-            'features_keys_to_process':['##choices#*'],
+            # Configure choices.
+            choices_selection=[]
+            choices_order=[]
+            #choices_selection.append({'type':'loop', 'start':layoutParams['start'], 'stop':layoutParams['stop'], 'step':layoutParams['step'], 'default':layoutParams['default']})
+            #choices_order.append(["##env#CLBLAST_LAYOUT"])
+            # TODO: Make Lift overlay iterate over multiple generated kernels.
+#            if 'overlay' in tags:
+#                choices_selection.append({"type":"loop"})
+#                choices_order.append(["##dataset_file"])
 
-            'iterations':-1,
-            'repetitions':repetitions,
+            # Prepare pipeline.
+            cpipeline=copy.deepcopy(pipeline)
+            cpipeline.update({'data_uoa':program['data_uoa']})
 
-            'record':'yes',
-            'record_repo':record_repo,
-            'record_uoa':record_uoa,
-            'record_failed':'yes',
-            'record_params':{
-                'search_point_by_features':'yes'
-            },
-            'record_dict':{
-                'subview_uoa':'1048849e824f668c'
-            },
+            # Prepare autotuning input.
+            r=ck.access({
+                'action':'autotune',
 
-            'tags':tags+['layouts'],
+                'module_uoa':'pipeline',
+                'data_uoa':'program',
 
-            'pipeline':cpipeline,
-            'pipeline_update':{
-              'cpu_freq':'max',
-              'gpu_freq':'max',
-              'compiler_vars': {}
-            },
-            'out':'con'
-        })
+                'choices_selection':choices_selection,
+                'choices_order':choices_order,
 
-        fail=r.get('fail','')
-        if fail=='yes':
-            raise CKError({'return':10, 'error':'pipeline failed ('+r.get('fail_reason','')+')'})
+                'features_keys_to_process':['##choices#*'],
+
+                'iterations':1,
+                'repetitions':repetitions,
+
+                'record':'yes',
+                'record_repo':record_repo,
+                'record_uoa':record_uoa,
+                'record_failed':'yes',
+                'record_params':{
+                    'search_point_by_features':'yes'
+                },
+                'record_dict':{
+                    'subview_uoa':'1048849e824f668c'
+                },
+
+                'tags':tags+['layouts'],
+
+                'pipeline':cpipeline,
+                'pipeline_update':{
+                  'cpu_freq':'max',
+                  'gpu_freq':'max',
+                  'compiler_vars': {},
+                  'dataset_uoa':ds_uoa,
+                  'dataset_file':ds_file,
+                  'cmd_key':cmd_key
+                },
+                'out':'con',
+                'ask_enter_after_each_iteration':'yes'
+            })
+            if r['return']>0: ck.err(r)
+
+            fail=r.get('fail','')
+            if fail=='yes':
+                raise CKError({'return':10, 'error':'pipeline failed ('+r.get('fail_reason','')+')'})
 
     return {'return':0}
 
