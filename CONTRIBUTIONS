@@ -20,7 +20,7 @@ O: ENS Paris
 C: feedback about a bug on Ubuntu (fixed)
 W: 
 
-N: Michel Stewer
+N: Michel Steuwer
 E: 
 O: University of Edinburgh, UK
 C: adding new OpenCL launcher (to compare results with CLBlast), fixing bugs, experimenting
