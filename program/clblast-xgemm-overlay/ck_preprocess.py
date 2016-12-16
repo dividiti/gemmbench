@@ -1,7 +1,7 @@
 #
 # Preprocessing Caffe templates
 #
-# Developer: Michel Stewer, University of Edinburh, 2016
+# Developer: Michel Steuwer, University of Edinburgh, 2016
 #            Grigori Fursin, cTuning foundation, 2016
 #
 

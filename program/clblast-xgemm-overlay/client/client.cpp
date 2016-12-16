@@ -307,7 +307,10 @@ void Client<T,U>::PrintTableHeader(const Arguments<U>& args) {
   }
 
   // Second line
-  for (auto &option: options_) { fprintf(stdout, "%9s;", option.c_str()); }
+  for (auto &option: options_) {
+    if (option == "kernelFile") break; // skip all additional arguments added for running lift generated kernels
+    fprintf(stdout, "%9s;", option.c_str());
+  }
   fprintf(stdout, "%9s;%9s;%9s", "ms_1", "GFLOPS_1", "GBs_1");
   if (args.compare_clblas) { fprintf(stdout, ";%9s;%9s;%9s", "ms_2", "GFLOPS_2", "GBs_2"); }
   if (args.compare_cblas) { fprintf(stdout, ";%9s;%9s;%9s", "ms_3", "GFLOPS_3", "GBs_3"); }
