@@ -1,0 +1,20 @@
+{
+  "dataset_files": [
+    "0c0ea95e756f0080e68a2c904b0c5fe7e8a53bb21ff4c9db637a447f24775266.json",
+    "4111b29da58507e9e9681939ea3e5d34b43d6ae3d9b8fd87a12e8d35ad6caeac.json"
+  ],
+  "extra_dataset_files": {
+    "0c0ea95e756f0080e68a2c904b0c5fe7e8a53bb21ff4c9db637a447f24775266.json": [
+      "0c0ea95e756f0080e68a2c904b0c5fe7e8a53bb21ff4c9db637a447f24775266.cl"
+    ],
+    "4111b29da58507e9e9681939ea3e5d34b43d6ae3d9b8fd87a12e8d35ad6caeac.json": [
+     "4111b29da58507e9e9681939ea3e5d34b43d6ae3d9b8fd87a12e8d35ad6caeac.cl"
+    ]
+  },
+  "tags": [
+    "dataset",
+    "lift",
+    "gemmbench",
+    "opencl kernel"
+  ]
+}

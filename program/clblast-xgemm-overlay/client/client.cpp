@@ -91,6 +91,20 @@ Arguments<U> Client<T,U>::ParseArguments(int argc, char *argv[], const size_t le
     // Scalar values 
     if (o == kArgAlpha) { args.alpha = GetArgument(argc, argv, help, kArgAlpha, GetScalar<U>()); }
     if (o == kArgBeta)  { args.beta  = GetArgument(argc, argv, help, kArgBeta, GetScalar<U>()); }
+
+
+    // Overlay specific values
+    if (o == kArgKernelFile) { args.kernelFileName = GetArgument(argc, argv, help, kArgKernelFile, std::string()); }
+    if (o == kArgKernelName) { args.kernelName = GetArgument(argc, argv, help, kArgKernelName, std::string("KERNEL")); }
+
+    if (o == kArgGlobalX) { args.globalX = GetArgument(argc, argv, help, kArgGlobalX, size_t{1}); }
+    if (o == kArgGlobalY) { args.globalY = GetArgument(argc, argv, help, kArgGlobalY, size_t{1}); }
+    if (o == kArgGlobalZ) { args.globalZ = GetArgument(argc, argv, help, kArgGlobalZ, size_t{1}); }
+    if (o == kArgLocalX) { args.localX = GetArgument(argc, argv, help, kArgLocalX, size_t{1}); }
+    if (o == kArgLocalY) { args.localY = GetArgument(argc, argv, help, kArgLocalY, size_t{1}); }
+    if (o == kArgLocalZ) { args.localZ = GetArgument(argc, argv, help, kArgLocalZ, size_t{1}); }
+
+    if (o == kArgArgumentOrder) { args.argumentOrder = GetArgument(argc, argv, help, kArgArgumentOrder, std::string("a, b, c, k, m, n")); }
   }
 
   // These are the options common to all routines
@@ -293,7 +307,10 @@ void Client<T,U>::PrintTableHeader(const Arguments<U>& args) {
   }
 
   // Second line
-  for (auto &option: options_) { fprintf(stdout, "%9s;", option.c_str()); }
+  for (auto &option: options_) {
+    if (option == "kernelFile") break; // skip all additional arguments added for running lift generated kernels
+    fprintf(stdout, "%9s;", option.c_str());
+  }
   fprintf(stdout, "%9s;%9s;%9s", "ms_1", "GFLOPS_1", "GBs_1");
   if (args.compare_clblas) { fprintf(stdout, ";%9s;%9s;%9s", "ms_2", "GFLOPS_2", "GBs_2"); }
   if (args.compare_cblas) { fprintf(stdout, ";%9s;%9s;%9s", "ms_3", "GFLOPS_3", "GBs_3"); }

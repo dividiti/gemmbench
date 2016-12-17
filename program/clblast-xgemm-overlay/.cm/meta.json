@@ -1,99 +1,118 @@
 {
-  "backup_data_uid": "5dbd24d34a039434",
+  "backup_data_uid": "5dbd24d34a039434", 
   "compile_deps": {
     "compiler": {
-      "local": "yes",
-      "name": "C++ compiler",
-      "sort": 10,
+      "local": "yes", 
+      "name": "C++ compiler", 
+      "sort": 10, 
       "tags": "compiler,lang-cpp"
-    },
-    "lib-opencl": {
-      "local": "yes",
-      "name": "OpenCL library",
-      "sort": 15,
-      "tags": "lib,opencl"
-    },
+    }, 
     "lib-clblast": {
-      "local": "yes",
-      "name": "CLBlast library",
-      "sort": 20,
+      "local": "yes", 
+      "name": "CLBlast library", 
+      "sort": 20, 
       "tags": "lib,clblast"
+    }, 
+    "lib-opencl": {
+      "local": "yes", 
+      "name": "OpenCL library", 
+      "sort": 15, 
+      "tags": "lib,opencl"
     }
-  },
+  }, 
   "compiler_add_include_as_env_from_deps": [
-    "CK_ENV_LIB_STDCPP_INCLUDE",
+    "CK_ENV_LIB_STDCPP_INCLUDE", 
     "CK_ENV_LIB_STDCPP_INCLUDE_EXTRA"
-  ],
-  "compiler_env": "CK_CXX",
-  "compiler_flags_as_env": "$<<CK_COMPILER_FLAG_MFLOAT_ABI_HARD>>$ $<<CK_COMPILER_FLAG_CPP11>>$",
-  "data_name": "clblast-xgemm",
-  "extra_ld_vars": "$<<CK_EXTRA_LIB_M>>$",
+  ], 
+  "compiler_env": "CK_CXX", 
+  "compiler_flags_as_env": "$<<CK_COMPILER_FLAG_MFLOAT_ABI_HARD>>$ $<<CK_COMPILER_FLAG_CPP11>>$", 
+  "data_name": "clblast-xgemm", 
+  "extra_ld_vars": "$<<CK_EXTRA_LIB_M>>$", 
   "linker_add_lib_as_env": [
-    "CK_CXX_EXTRA",
+    "CK_CXX_EXTRA", 
     "CK_ENV_LIB_STDCPP_STATIC"
-  ],
-  "main_language": "cpp",
-  "process_in_tmp": "yes",
-  "program": "yes",
+  ], 
+  "main_language": "cpp", 
+  "print_files_after_run": [
+    "run.stdout", 
+    "run.stderr"
+  ], 
+  "process_in_tmp": "yes", 
+  "program": "yes", 
   "run_cmds": {
-    "default": {
-      "ignore_return_code": "no",
+    "explore-layouts": {
+      "ignore_return_code": "no", 
       "run_time": {
-        "fine_grain_timer_file": "tmp-ck-timer.json",
-        "need_compute_device": "opencl",
-        "post_process_via_ck": "yes",
+        "fine_grain_timer_file": "tmp-ck-timer.json", 
+        "need_compute_device": "opencl", 
         "post_process_cmds": [
           "python $#src_path_local#$ck_postprocess.py"
-        ],
-        "run_cmd_main": "$#BIN_FILE#$ -platform $<<CK_COMPUTE_PLATFORM_ID>>$ -device $<<CK_COMPUTE_DEVICE_ID>>$",
-        "run_cmd_out1": "run.stdout",
-        "run_cmd_out2": "run.stderr",
-        "run_correctness_output_files": [],
-        "run_input_files": [],
+        ], 
+        "post_process_via_ck": "yes", 
+        "run_cmd_main": "$#BIN_FILE#$ -platform $<<CK_COMPUTE_PLATFORM_ID>>$ -device $<<CK_COMPUTE_DEVICE_ID>>$ -layout $<<CLBLAST_LAYOUT>>$", 
+        "run_cmd_out1": "run.stdout", 
+        "run_cmd_out2": "run.stderr", 
+        "run_correctness_output_files": [], 
+        "run_input_files": [], 
         "run_output_files": [
-          "run.stdout",
+          "run.stdout", 
           "run.stderr"
         ]
       }
-    },
-    "explore-layouts": {
-      "ignore_return_code": "no",
+    }, 
+    "explore-lift-kernels": {
+      "dataset_tags": [
+        "dataset", 
+        "lift", 
+        "gemmbench", 
+        "opencl kernel"
+      ], 
+      "ignore_return_code": "no", 
       "run_time": {
-        "fine_grain_timer_file": "tmp-ck-timer.json",
-        "need_compute_device": "opencl",
-        "post_process_via_ck": "yes",
+        "fine_grain_timer_file": "tmp-ck-timer.json", 
+        "need_compute_device": "opencl", 
         "post_process_cmds": [
           "python $#src_path_local#$ck_postprocess.py"
-        ],
-        "run_cmd_main": "$#BIN_FILE#$ -platform $<<CK_COMPUTE_PLATFORM_ID>>$ -device $<<CK_COMPUTE_DEVICE_ID>>$ -layout $<<CLBLAST_LAYOUT>>$",
-        "run_cmd_out1": "run.stdout",
-        "run_cmd_out2": "run.stderr",
-        "run_correctness_output_files": [],
-        "run_input_files": [],
+        ], 
+        "post_process_via_ck": "yes", 
+        "pre_process_via_ck": {
+          "script_name": "ck_preprocess"
+        }, 
+        "run_cmd_main": "$#BIN_FILE#$ -platform $<<CK_COMPUTE_PLATFORM_ID>>$ -device $<<CK_COMPUTE_DEVICE_ID>>$ -kernelFile $<<CK_XGEMM_KERNEL_FILE>>$ -kernelName $<<CK_XGEMM_KERNEL_NAME>>$ -globalX $<<CK_XGEMM_GLOBAL_X>>$ -globalY $<<CK_XGEMM_GLOBAL_Y>>$ -globalZ $<<CK_XGEMM_GLOBAL_Z>>$ -localX $<<CK_XGEMM_LOCAL_X>>$ -localY $<<CK_XGEMM_LOCAL_Y>>$ -localY $<<CK_XGEMM_LOCAL_Z>>$ -kernelArgOrder $<<CK_XGEMM_KERNEL_ARG_ORDER>>$ -m $<<CK_XGEMM_DATASET_M>>$ -n $<<CK_XGEMM_DATASET_N>>$ -k $<<CK_XGEMM_DATASET_K>>$", 
+        "run_cmd_out1": "run.stdout", 
+        "run_cmd_out2": "run.stderr", 
+        "run_correctness_output_files": [], 
+        "run_input_files": [], 
         "run_output_files": [
-          "run.stdout",
+          "run.stdout", 
           "run.stderr"
         ]
       }
     }
-  },
+  }, 
   "run_vars": {
-    "CK_COMPUTE_DEVICE_ID": 0,
-    "CK_COMPUTE_PLATFORM_ID": 0,
+    "CK_COMPUTE_DEVICE_ID": 0, 
+    "CK_COMPUTE_PLATFORM_ID": 0, 
+    "CK_XGEMM_DATASET_K": 512, 
+    "CK_XGEMM_DATASET_M": 512, 
+    "CK_XGEMM_DATASET_N": 512, 
     "LD_PRELOAD": "$<<CK_ENV_LIB_CLBLAST_LIB>>$/$<<CK_ENV_LIB_CLBLAST_DYNAMIC_NAME>>$"
-  },
+  }, 
   "source_files": [
-    "client/client.cpp",
-    "utilities/utilities.cpp",
+    "client/client.cpp", 
+    "utilities/utilities.cpp", 
+    "utilities/clblast_exceptions.cpp", 
+    "utilities/common.cpp", 
+    "utilities/routine.cpp", 
     "xgemm.cpp"
-  ],
-  "species": [],
+  ], 
+  "species": [], 
   "tags": [
-    "gemmbench",
-    "program",
-    "clblast",
-    "xgemm",
+    "gemmbench", 
+    "program", 
+    "clblast", 
+    "xgemm", 
     "overlay"
-  ],
+  ], 
   "target_file": "clblast_client_xgemm"
 }
