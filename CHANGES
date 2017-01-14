@@ -1,4 +1,6 @@
-* 2016.12.15 * adding XGEMM wrapper with exposed choices via env for auto/crowd-tuning ...
+* 2017.01.14 * added example of customized autotuning of XGEMM
+
+* 2016.12.15 * added XGEMM wrapper with exposed choices via env for auto/crowd-tuning ...
 
 * 2016.11.04 * making os.getcwd() safer
 

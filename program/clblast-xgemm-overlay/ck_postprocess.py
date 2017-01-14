@@ -51,6 +51,27 @@ def ck_postprocess(i):
     if d != {}:
         d["post_processed"] = "yes"
 
+        lms_1=d.get('ms_1',[])
+        if len(lms_1)>0:
+           ms=float(lms_1[0])
+           d['time_total_ms']=ms
+           d['time_total_ms_kernel_0']=ms
+           s=ms*1e-3
+           d['time_total_s']=s
+           d['time_total_s_kernel_0']=s
+           # Internal CK key to show overall time.
+           d['execution_time']=s
+
+        gbs_1=d.get('GBs_1',[])
+        if len(gbs_1)>0:
+           gbs=float(gbs_1[0])
+           d['gbs']=gbs
+
+        gflops_1=d.get('GFLOPS_1',[])
+        if len(gflops_1)>0:
+           gflops=float(gflops_1[0])
+           d['gflops']=gflops
+
     rr={}
     rr['return']=0
     if d.get('post_processed','')=='yes':

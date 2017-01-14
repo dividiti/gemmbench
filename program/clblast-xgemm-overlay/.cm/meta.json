@@ -11,7 +11,7 @@
       "local": "yes", 
       "name": "CLBlast library", 
       "sort": 20, 
-      "tags": "lib,clblast"
+      "tags": "lib,clblast,v0.9.0"
     }, 
     "lib-opencl": {
       "local": "yes", 
