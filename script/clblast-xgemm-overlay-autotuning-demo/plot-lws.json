@@ -1,29 +1,33 @@
 {
   "experiment_module_uoa":"experiment",
 
-  "data_uoa_list":["sgemm-mali-all"],
+  "data_uoa_list":["clblast-xgemm-overlay-autotuning-demo-all",
+                   "clblast-xgemm-overlay-autotuning-demo-default"],
+
+  "substitute_x_with_loop":"yes",
+
+  "sort_index":0,
+
+  "add_x_loop":"yes",
+
+  "ymin":0,
+  "ymax":250,
 
   "flat_keys_list":[
-    "##choices#env#MINDEX#min",
-    "##characteristics#run#run_time_state#EXECUTION#Gflops/s#center",
-    "##characteristics#run#run_time_state#EXECUTION#Gflops/s#halfrange"
+    "##characteristics#run#gflops#center",
+    "##characteristics#run#gflops#halfrange"
   ],
 
+  "ignore_point_if_none":"yes",
   "ignore_point_if_empty_string":"yes",
 
   "plot_type":"mpl_2d_scatter",
   "display_x_error_bar":"no",
   "display_y_error_bar":"yes",
 
-  "ymin" : 0,
-  "ymax" : 50,
+  "title":"GEMMbench overlay (CLBlast)",
 
-  "xmin" : 0,
-  "xmax" : 16,
-
-  "title":"Crowd-tuning GEMMbench: SGEMM Mali",
-
-  "axis_x_desc":"Matrix index",
+  "axis_x_desc":"Autotuning iteration",
   "axis_y_desc":"Gflops/s",
 
   "plot_grid":"yes",
@@ -33,7 +37,6 @@
   "mpl_image_dpi":"100",
 
   "point_style":{"1":{"elinewidth":"5", "color":"#dc3912"},
-                 "0":{"color":"#3366cc"}},
+                 "0":{"color":"#3366cc"}}
 
-  "out_to_file":"plot-lws_tmp.png"
 }
