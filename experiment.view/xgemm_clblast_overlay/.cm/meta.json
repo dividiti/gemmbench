@@ -1,0 +1,63 @@
+{
+  "flat_keys": [
+    "##characteristics#run#crowdtuning_user", 
+    "##choices#host_os", 
+    "##choices#target_os", 
+    "##features#platform.cpu#cpu#name", 
+    "##characteristics#run#run_time_state#CL_DEVICE_NAME", 
+    "##choices#gpu_freq", 
+    "##characteristics#run#run_time_state#EXECUTION#Gflops/s", 
+    "##choices#env#MINDEX", 
+    "##choices#env#MTX_A", 
+    "##choices#env#MTX_B", 
+    "##choices#env#GEMM_TYPE", 
+    "##choices#env#CK_LWS_X", 
+    "##choices#env#CK_LWS_Y"
+  ], 
+  "flat_keys_desc": [
+    {
+      "desc": "Participant", 
+      "type": "string"
+    }, 
+    {
+      "desc": "Host OS", 
+      "module_uoa": "0440cb72c2bc5cc6", 
+      "type": "uoa"
+    }, 
+    {
+      "desc": "Target OS", 
+      "module_uoa": "0440cb72c2bc5cc6", 
+      "type": "uoa"
+    }, 
+    {
+      "desc": "Platform"
+    }, 
+    {
+      "desc": "OpenCL device"
+    }, 
+    {
+      "desc": "OpenCL device frequency (MHz)"
+    }, 
+    {
+      "desc": "Performance (Gflops/s)"
+    }, 
+    {
+      "desc": "Matrix index"
+    }, 
+    {
+      "desc": "Matrix A"
+    }, 
+    {
+      "desc": "Matrix B"
+    }, 
+    {
+      "desc": "GEMM type"
+    }, 
+    {
+      "desc": "LWS X"
+    }, 
+    {
+      "desc": "LWS Y"
+    }
+  ]
+}
