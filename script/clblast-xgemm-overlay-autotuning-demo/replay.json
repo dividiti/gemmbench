@@ -1,0 +1,10 @@
+{
+  "data_uoa":"clblast-xgemm-overlay-autotuning-demo-all",
+
+  "dims_to_check":["##characteristics#run#gflops*"],
+  "end_of_dims_to_check":["#min", "#mean", "#exp", "#max"],
+
+  "repetitions":3,
+
+  "threshold_to_compare":0
+}
