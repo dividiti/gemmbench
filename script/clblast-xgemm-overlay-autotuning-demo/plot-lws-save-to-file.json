@@ -1,0 +1,48 @@
+{
+  "experiment_module_uoa":"experiment",
+
+  "data_uoa_list":["clblast-xgemm-overlay-autotuning-demo-all",
+                   "clblast-xgemm-overlay-autotuning-demo-default"],
+
+  "substitute_x_with_loop":"yes",
+
+  "sort_index":0,
+
+  "add_x_loop":"yes",
+
+  "ymin":0,
+  "ymax":250,
+
+  "flat_keys_list":[
+    "##characteristics#run#gflops#center",
+    "##characteristics#run#gflops#halfrange"
+  ],
+
+  "ignore_point_if_none":"yes",
+  "ignore_point_if_empty_string":"yes",
+
+  "plot_type":"mpl_2d_scatter",
+  "display_x_error_bar":"no",
+  "display_y_error_bar":"yes",
+
+  "title":"GEMMbench overlay (CLBlast)",
+
+  "axis_x_desc":"Autotuning iteration",
+  "axis_y_desc":"Gflops/s",
+
+  "plot_grid":"yes",
+
+  "mpl_image_size_x":"12",
+  "mpl_image_size_y":"6",
+  "mpl_image_dpi":"100",
+
+  "point_style":{"1":{"elinewidth":"5", "color":"#dc3912"},
+                 "0":{"color":"#3366cc"}},
+
+  "out_to_file":                 "plot-lws-save-to-file-tmp.png",
+
+  "save_table_to_json_file":     "plot-lws-save-to-file-tmp.json",
+  "save_info_table_to_json_file":"plot-lws-save-to-file-tmp-info.json",
+  "save_table_to_csv_file":      "plot-lws-save-to-file-tmp.csv"
+
+}
