@@ -1,24 +1,23 @@
 {
   "flat_keys": [
-    "##characteristics#run#crowdtuning_user", 
     "##choices#host_os", 
     "##choices#target_os", 
-    "##features#platform.cpu#cpu#name", 
-    "##characteristics#run#run_time_state#CL_DEVICE_NAME", 
-    "##choices#gpu_freq", 
-    "##characteristics#run#run_time_state#EXECUTION#Gflops/s", 
-    "##choices#env#MINDEX", 
-    "##choices#env#MTX_A", 
-    "##choices#env#MTX_B", 
-    "##choices#env#GEMM_TYPE", 
-    "##choices#env#CK_LWS_X", 
-    "##choices#env#CK_LWS_Y"
+    "##features#gpgpu@0#gpgpu#vendor", 
+    "##features#gpgpu@0#gpgpu#name", 
+    "##choices#dataset_uoa",
+    "##choices#dataset_file",
+    "##characteristics#run#gflops", 
+    "##choices#env#CK_XGEMM_DATASET_N", 
+    "##choices#env#CK_XGEMM_DATASET_M", 
+    "##choices#env#CK_XGEMM_DATASET_K", 
+    "##choices#env#CK_XGEMM_GLOBAL_X", 
+    "##choices#env#CK_XGEMM_GLOBAL_Y", 
+    "##choices#env#CK_XGEMM_GLOBAL_Z",
+    "##choices#env#CK_XGEMM_LOCAL_X", 
+    "##choices#env#CK_XGEMM_LOCAL_Y", 
+    "##choices#env#CK_XGEMM_LOCAL_Z"
   ], 
   "flat_keys_desc": [
-    {
-      "desc": "Participant", 
-      "type": "string"
-    }, 
     {
       "desc": "Host OS", 
       "module_uoa": "0440cb72c2bc5cc6", 
@@ -30,34 +29,48 @@
       "type": "uoa"
     }, 
     {
-      "desc": "Platform"
+      "desc": "GPU vendor"
     }, 
     {
-      "desc": "OpenCL device"
+      "desc": "GPU name"
     }, 
     {
-      "desc": "OpenCL device frequency (MHz)"
+      "desc": "Dataset UOA",
+      "module_uoa": "dataset", 
+      "type": "uoa"
     }, 
     {
-      "desc": "Performance (Gflops/s)"
+      "desc": "Dataset file"
     }, 
     {
-      "desc": "Matrix index"
+      "desc": "Performance (GFLOPS)"
     }, 
     {
-      "desc": "Matrix A"
+      "desc": "Matrix N"
     }, 
     {
-      "desc": "Matrix B"
+      "desc": "Matrix M"
     }, 
     {
-      "desc": "GEMM type"
+      "desc": "Matrix K"
     }, 
     {
-      "desc": "LWS X"
+      "desc": "GWS_X"
     }, 
     {
-      "desc": "LWS Y"
+      "desc": "GWS_Y"
+    }, 
+    {
+      "desc": "GWS_Z"
+    },
+    {
+      "desc": "LWS_X"
+    }, 
+    {
+      "desc": "LWS_Y"
+    }, 
+    {
+      "desc": "LWS_Z"
     }
   ]
 }
