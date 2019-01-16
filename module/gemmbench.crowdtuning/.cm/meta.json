@@ -1,28 +1,30 @@
 {
   "actions": {
     "clean": {
-      "desc": "clean results", 
+      "desc": "clean results",
       "for_web": "yes"
-    }, 
+    },
     "show": {
-      "desc": "show interactive results", 
+      "desc": "show interactive results",
       "for_web": "yes"
-    }, 
+    },
     "start": {
       "desc": "start gemmbench crowdtuning"
     }
-  }, 
-  "copyright": "See CK COPYRIGHT.txt for copyright details", 
-  "desc": "basic gemmbench crowdtuning", 
-  "developer": "Grigori Fursin", 
-  "developer_email": "Grigori.Fursin@cTuning.org", 
-  "developer_webpage": "http://fursin.net", 
-  "license": "See CK LICENSE.txt for licensing details", 
+  },
+  "copyright": "See CK COPYRIGHT.txt for copyright details",
+  "desc": "basic gemmbench crowdtuning",
+  "developer": "Grigori Fursin",
+  "developer_email": "Grigori.Fursin@cTuning.org",
+  "developer_webpage": "http://fursin.net",
+  "license": "See CK LICENSE.txt for licensing details",
   "module_deps": {
-    "cfg": "b34231a3467566f8", 
-    "experiment": "bc0409fb61f0aa82", 
-    "program.optimization": "27bc42ee449e880e", 
+    "cfg": "b34231a3467566f8",
+    "experiment": "bc0409fb61f0aa82",
+    "program.optimization": "27bc42ee449e880e",
     "script": "84e27ad9dd12e734"
-  }, 
-  "script_uoa": "SGEMM_NT"
+  },
+  "script_uoa": "SGEMM_NT",
+  "workflow": "yes",
+  "workflow_type": "GEMM benchmark autotuning/crowd-tuning pipeline"
 }
